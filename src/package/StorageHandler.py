@@ -7,7 +7,7 @@ Created on Mar 19, 2012
 #placeholder
 #used with update
 #returns: (int sinceid,int updatecount, String username)[] list
-def getAllUserUpdates():
+def getAllUsers():
     list=[]
     updatecount=30
     sinceid=7

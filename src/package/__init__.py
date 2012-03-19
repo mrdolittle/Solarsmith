@@ -1,4 +1,4 @@
 
 import StorageHandler
 
-print StorageHandler.getAllUserUpdates()
+print StorageHandler.getAllUsers()
