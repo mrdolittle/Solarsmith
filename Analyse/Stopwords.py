@@ -6,11 +6,11 @@ Includes methods: filter_keyword
 
 @author: 0tchii
 '''
-words = set(["something",
+stopwords = set(["something",
              "nothing"])
 
 def filter_keywords(keywords):
     """Receives the keywords and filters out words from the set 'words'"""
-    global words
+    global stopwords
     #return filter(lambda x: x not in words, keywords)
-    return [x for x in keywords if x not in words]            
+    return [x for x in keywords if x not in stopwords]
