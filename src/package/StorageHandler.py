@@ -14,4 +14,5 @@ def getAllUsers():
     username="hej"
     #Todo: add get method from sunburnt
     list.append((sinceid,updatecount,username))
+    print "hej"
     return list
