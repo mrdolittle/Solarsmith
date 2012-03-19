@@ -4,10 +4,13 @@ Created on Mar 19, 2012
 @author: mbernt
 '''
 
-#placeholder
-#used with update
-#returns: (int sinceid,int updatecount, String username)[] list
 def getAllUsers():
+    '''
+    placeholder
+    used with update
+    returns: (int sinceid,int updatecount, String username)[] list
+    '''
+    
     list=[]
     updatecount=30
     sinceid=7
