@@ -15,11 +15,15 @@ def getAllUserUpdate():
     list=[]
     updatecount=30
     sinceid=7
-    username="hej"
+    username="name"
     list.append((sinceid,updatecount,username))
-    print "hej"
     return list
 
 #placeholder
 def getAllUserNames():
-    return []
+    '''
+    used by scrape and...
+    
+    returns String[] names
+    '''
+    return ["name"]
