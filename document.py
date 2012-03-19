@@ -25,7 +25,7 @@ def keyword_list_to_text(lst):
             
     return "\n".join(stringsies)
 
-class document:
+class Document:
     def __init__(self,
                  id,
                  lovekeywords_list = [],
