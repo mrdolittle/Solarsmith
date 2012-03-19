@@ -16,3 +16,7 @@ def getAllUsers():
     list.append((sinceid,updatecount,username))
     print "hej"
     return list
+
+#placeholder
+def getAllUserNames():
+    return []
