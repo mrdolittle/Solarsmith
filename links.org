@@ -1,4 +1,17 @@
-* Den här filen innehåller länkar som är bra att läsa och så
+* Den här filen innehåller länkar som är bra att läsa och så !
 
 * Solr
-** http://wiki.apache.org/solr/AnalyzersTokenizersTokenFilters#solr.LetterTokenizerFactory
+  + http://wiki.apache.org/solr/AnalyzersTokenizersTokenFilters#solr.LetterTokenizerFactory
+
+* Analys-saker
+** Sentiment analysis
+   + http://www.sananalytics.com/lab/twitter-sentiment/
+
+** Keyword Extraction 
+   + inget än
+
+
+
+* Om python:
+  + main-funktion i python :: http://www.artima.com/weblogs/viewpost.jsp?thread=4829
+  + organisera paketen :: http://stackoverflow.com/questions/391879/organising-my-python-project  
