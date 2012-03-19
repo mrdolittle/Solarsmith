@@ -1,18 +1,24 @@
+# lite kladdig testkod bara
+
+
+
 import nltk
 
 ##FUNKTIONER##
 
+
+
 def Hi():
-	print"supz!"
-	return
+  print"supz!"
+  return
 
 
 def test(tweet):
-	tokens=nltk.word_tokenize(tweet)
-	test=nltk.pos_tag(tokens)
-	for token in test:
-		print token
-			
+  tokens=nltk.word_tokenize(tweet)
+  test=nltk.pos_tag(tokens)
+  for token in test:
+    print token
+      
 
 
 
@@ -51,5 +57,7 @@ print nltk.pos_tag(tweet2)
 test(goodTweet)
 test(badTweet)
 
+-
 
+-
 
