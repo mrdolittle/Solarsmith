@@ -8,7 +8,7 @@ def getAllUserUpdate():
     '''
     used by update
     
-    returns: (int sinceid,int updatecount, String username)[] list
+    returns: (int sinceid,int updatecount, String username)[] tuples
     '''
     
     #test, replace with real code

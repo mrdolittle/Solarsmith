@@ -8,16 +8,17 @@ Created on Mar 19, 2012
 
 def analyseAndAddToDatabase(username,sinceID,remakeProfile):
     '''
-    used by update, scrape and request
+    Used by: update, scrape and request
     
-    API: (boolean userUpdatedInDatabase) analyseAndUpdateUser(String username,int sinceid,boolean remakeProfile):
+    API: (boolean userUpdatedInDatabase) analyseAndAddToDatabase(String username,int sinceID,boolean remakeProfile):
+    
+    communicates with: Sunburnt and twitter API
     
     Description:
     if remakeProfile is true then it will disregard sinceID and analyse as many tweets as possible
     and then replace the profile in solr.
     
     if remakeProfile is false it will analyse tweets newer than sinceID and merge the result with the profile in solr
-    
     '''
     # maybe check if the user exists on twitter
     
@@ -36,6 +37,6 @@ def analyseAndAddToDatabase(username,sinceID,remakeProfile):
         
         # merge result with the profile in solr
         
-        return True # returns true if added to solr
+        return True # returns true if merged with solr
         
     
