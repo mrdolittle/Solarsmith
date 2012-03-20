@@ -13,7 +13,7 @@ def extract_keywords(string):
     '''Receives a string and returns a list of extracts keywords'''
     
     sequence=nltk.pos_tag(nltk.word_tokenize(string))
-
+    
     def doStuff(x, words):
         '''Recursive help method to parse for keywords and keyword sequences'''
         (thisWord, this) = sequence[x]
