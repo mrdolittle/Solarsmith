@@ -4,23 +4,28 @@ Created on Mar 19, 2012
 @author: mbernt
 '''
 
-def getAllUserUpdate():
+def get_all_user_for_update():
     '''
     used by update
     
     returns: (int sinceid,int updatecount, String username)[] tuples
     '''
+    # get profiles from sunburnt with only the needed info
+    # I don't know the format but maybe it's xml
+    #xml_res=sunburnt.get...
     
-    #test, replace with real code
-    list=[]
+    # change xml to tuple list
+    #list=to_tuple_list(xml_res)
+
+    # test return
     updatecount=30
     sinceid=7
     username="name"
-    list.append((sinceid,updatecount,username))
-    return list
+    return [(sinceid,updatecount,username)]
+    #return list 
 
 #placeholder
-def getAllUserNames():
+def get_all_user_names():
     '''
     used by scrape and...
     

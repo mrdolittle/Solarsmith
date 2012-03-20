@@ -7,12 +7,13 @@ Includes methods: extract_keywords
 @author: 0tchii
 '''
 import nltk
+import operator
 from Stopwords import filter_keywords
 
 def extract_keywords(string):
     '''Receives a string and returns a list of extracts keywords'''
-    
-    sequence=nltk.pos_tag(nltk.word_tokenize(string))
+    sequence=reduce(operator.add, map(nltk.pos_tag, map(nltk.word_tokenize, nltk.sent_tokenize(string))))
+    length=len(sequence)
     
     def doStuff(x, words):
         '''Recursive help method to parse for keywords and keyword sequences'''
@@ -33,7 +34,12 @@ def extract_keywords(string):
         if this in ['NN','NNS','NNP','VBG']:
             words.append(thisWord)
             
-        if x+1<(len(sequence)-1):
+        #Fix for last word
+        if x==(length-2) and nxt in ['NN','NNS','NNP','VBG']:
+            words.append(nextWord)
+                    
+        #Keep recursing or return            
+        if x+1<(length-1):
             return doStuff(x+1, words)
         else:
             return filter_keywords(words)
@@ -46,4 +52,4 @@ def extract_keywords(string):
 # nltk.pos_tag(nltk.word_tokenize("HEJ!"))
 # print "Done"
 if __name__ == '__main__':
-    print extract_keywords("just got my iphone in the mail, loving it!")
+    print extract_keywords("I wanted to go surfing, but I can't because there are too many alligators. This vacation sucks!")

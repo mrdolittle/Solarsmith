@@ -15,14 +15,15 @@ def request_add(username):
     @argument username: A string containing the username of a Twitter user.
     @return: A boolean set to true if the user has been added, otherwise false.'''
     
-    addalyse(username,0,False)
+    return addalyse(username,0,True)
 
-
+    
 def main():
     '''Listens for request and all that jazz. I am a program that
     should run you know. TODO: implement me.'''
-
+    
     # BLAHH
+    
 
 if __name__ == "__main__":
     main()
