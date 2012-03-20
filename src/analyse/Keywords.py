@@ -13,22 +13,34 @@ def extract_keywords(string):
     '''Receives a string and returns a list of extracts keywords'''
     
     sequence=nltk.pos_tag(nltk.word_tokenize(string))
-    words=[]
     
-    # Skriv om det har med en ordentlig pattern matcher
-    for x in range(0, len(sequence)):
-        part = sequence[x]
-        # Searching for nouns
-        if part[1] in ['NN','NNS','NNP','VBG']:
-            words.append(part[0])
-            # Searching for adjectives before nouns
-            if x>0 and sequence[x-1][1] in ['JJ','NN','NNP','NNS'] and not part[1] in ['NNP']:
-                words.append(sequence[x-1][0] +" "+ part[0])
-        elif x<len(sequence) and part[1] in ['TO'] and sequence[x+1][1] in ['VB']:
-            words.append(sequence[x+1][0])
-    words = filter_keywords(words)
+    def doStuff(x, words):
+        '''Recursive help method to parse for keywords and keyword sequences'''
+        (thisWord, this) = sequence[x]
+        (nextWord, nxt) = sequence[x+1]
+        
+        #Checks for adjectives followed by nouns or double nouns 
+        if this in ['JJ','NN','NNP','NNS'] and nxt in ['NN','NNS','NNP','VBG']:
+            #Avoids adjectives followed by names
+            if not(this=='JJ' and nxt=='NNP'):
+                words.append(thisWord + " "+nextWord)
+                
+        #Checks for verbs after 'to'
+        if this in ['TO'] and nxt in ['VB']:
+            words.append(nextWord)
+            
+        #Checks for simple nouns
+        if this in ['NN','NNS','NNP','VBG']:
+            words.append(thisWord)
+            
+        if x+1<(len(sequence)-1):
+            doStuff(x+1, words)
+        else:
+            print words
+            return filter_keywords(words)
+            
     
-    return words
+    print doStuff(0,[])
                     
 # Very very naughty, fix this:
 # Anarchy
