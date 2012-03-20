@@ -8,6 +8,7 @@ Created on Mar 20, 2012
 from addalyse import *
 from storageHandler import *
 from twitterHelp import *
+import time
 
 def main():
     '''Gets profiles from storageHandler and checks if they need updating, and if so 
@@ -20,7 +21,7 @@ def main():
             (since_id,update_count,username)=tuple
             if since_id!=twitter_help.get_latest_since_id(username):#check if need updating
                 addalyse(username,since_id,update_count>limit)#replace if update_count>limit else update
-            #sleep(1000) #sleep to not make to many requests to twitter
+            time.sleep(10)#sleep for ten seconds, to not make to many requests to twitter
     
 if __name__ == "__main__":
     main()
