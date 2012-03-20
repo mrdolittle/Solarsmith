@@ -8,7 +8,7 @@ Created on Mar 20, 2012
 '''
 
 from addalyse import *
-
+from twitterHelp import *
 
 def request_add(username):
     '''Requests a certain Twitter username to be added. 
@@ -22,9 +22,6 @@ def main():
     '''Listens for request and all that jazz. I am a program that
     should run you know. TODO: implement me.'''
     
-    # BLAHH
-    #
-    #if(!TwitterHelp.contains(username))
 
 if __name__ == "__main__":
     main()
