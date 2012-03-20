@@ -8,7 +8,7 @@ TODO: Maybe store the stuffs
 def weight_total(lst):
     '''Returns the total weight of a list of (keyword, weight) tuples.'''
     return sum(map(lambda x: x[1], lst))
-n
+
 def scale_keyword_list(lst):
     '''Scale list of (keyword, weight) pairs so that the weight will
     be scaled to the interval 0.0 to 1.0 inclusive, that is the
