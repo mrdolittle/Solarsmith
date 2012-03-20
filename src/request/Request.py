@@ -23,8 +23,7 @@ def main():
     should run you know. TODO: implement me.'''
     
     # BLAHH
-    #
-    #if(!TwitterHelp.contains(username))
+    
 
 if __name__ == "__main__":
     main()
