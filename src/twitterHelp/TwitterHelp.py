@@ -20,7 +20,7 @@ class TwitterHelp:
         
         try:
             self.twitter_API.GetUserTimeline(username, 0)
-            # We seem to have been able to find a user since we could get his timeline
+            # We seem to have been able to find a user since we could get a timeline
             return True
         except twitter.TwitterError as err:
             if err.message == "Not found":
