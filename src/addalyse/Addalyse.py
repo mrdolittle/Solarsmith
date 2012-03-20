@@ -9,9 +9,7 @@ Created on Mar 19, 2012
 
 from twitterHelp import *
 
-# global variable
-
-def addalyse(username,since_id,remake_profile):
+def addalyse(username, since_id, remake_profile):
     '''
     Description:
     Directly returns false if the twitter user isn't on twitter.
@@ -32,38 +30,41 @@ def addalyse(username,since_id,remake_profile):
     need to access via a connection to:
     twitter_API, sunburnt_API
     '''
-    twitter_help=TwitterHelp()
+    # make a new TwitterHelp object
+    twitter_help = TwitterHelp()
+    # make a new StorageHandler object
+    #storage_handler = StorageHandler()
+    
     # maybe check if the user exists on twitter, but this check might be done in get_all_tweets
     if not twitter_help.contains(username):
         return False
 
     
-    if(remake_profile):
+    if remake_profile:
         # get all tweeets from twitter API 
         tweets = twitter_help.get_all_tweets(username)
-        if tweets==None or tweets.length()==0:
+        if tweets == None or tweets.length() == 0:
             return False
-        #extra_infromation = twitter_help.get_extra_infromation(username) #see in document what extra infromation is needed
+        #extra_infromation = twitter_help.get_extra_infromation(username) # see in document what extra information is needed
         
         # send to analysis
         #analysis=analyser.analyse(tweets)
         
         # store result in sunburnt
-        #Storage_handler.add_profile(username,extra_infromation,analysis)
-        
-        return True #returns true if added to solr
+        #storage_handler.add_profile(username, extra_infromation, analysis)
     else:
         # get tweets newer than sinceID 
         tweets = twitter_help.get_tweets_since(username,since_id)
-        if tweets==None or tweets.length()==0:
+        if tweets == None or tweets.length() == 0:
             return False
         
         # send to analysis
-        #analysis=analyser.analyse(tweets)
+        #analysis = analyser.analyse(tweets)
         
         # merge result with the profile in solr
-        #Storage_handler.update_profile(username,analysis)#must remember to update update_count!!!!
+        #storage_handler.update_profile(username, analysis) # must remember to update update_count!!!!
         
-        return True # returns true if merged with solr
+    # returns true if added to database   
+    return True 
         
     
