@@ -1,7 +1,10 @@
 * Den här filen innehåller länkar som är bra att läsa och så !
 
 * Solr
-  + http://wiki.apache.org/solr/AnalyzersTokenizersTokenFilters#solr.LetterTokenizerFactory
+** Solr-inställningar
+   + http://wiki.apache.org/solr/AnalyzersTokenizersTokenFilters#solr.LetterTokenizerFactory
+** Sunburnt
+   + Sunburnt API docs :: http://opensource.timetric.com/sunburnt/index.html
 
 * Analys-saker
 ** Sentiment analysis

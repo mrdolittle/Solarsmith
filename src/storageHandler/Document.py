@@ -5,15 +5,16 @@ def weight_total(lst):
     return sum(map(lambda x: x[1], lst))
 
 def scale_keyword_list(lst):
-    '''Scale list of (keyword, weight) pairs so that the weight will be scaled
-    to the interval 0.0 to 1.0 inclusive, that is the weights will be relative.'''
+    '''Scale list of (keyword, weight) pairs so that the weight will
+    be scaled to the interval 0.0 to 1.0 inclusive, that is the
+    weights will be relative.'''
     scale = weight_total(lst)
     return map(lambda (a,b): (a, float(b)/scale), lst)
 
 def keyword_list_to_text(lst):
-    '''process lst into a single long string with words
-    repeated according to their weight so that the string can be
-    indexed in Solr in a way which makes the term frequency of the keywords
+    '''process lst into a single long string with words repeated
+    according to their weight so that the string can be indexed in
+    Solr in a way which makes the term frequency of the keywords
     correspond with the keyword weight'''
 
     newlst = map(lambda (a,b): (a, int(round(b*1000))), lst)
