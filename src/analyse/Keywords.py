@@ -13,10 +13,8 @@ def extract_keywords(string):
     '''Receives a string and returns a list of extracts keywords'''
     
     sequence=nltk.pos_tag(nltk.word_tokenize(string))
-    words=[]
-    x=0;
     
-    while(x<(len(sequence)-1)):
+    def doStuff(x, words):
         '''Recursive help method to parse for keywords and keyword sequences'''
         (thisWord, this) = sequence[x]
         (nextWord, nxt) = sequence[x+1]
@@ -34,15 +32,18 @@ def extract_keywords(string):
         #Checks for simple nouns
         if this in ['NN','NNS','NNP','VBG']:
             words.append(thisWord)
-        x=x+1
             
-    return filter_keywords(words)      
-    
-    
+        if x+1<(len(sequence)-1):
+            return doStuff(x+1, words)
+        else:
+            return filter_keywords(words)
+
+    return doStuff(0, [])
                     
 # Very very naughty, fix this:
 # Anarchy
-print "Initializing"
-nltk.pos_tag(nltk.word_tokenize("HEJ!"))
-print "Done"
-print extract_keywords("just got my iphone in the mail, loving it!")
+# print "Initializing"
+# nltk.pos_tag(nltk.word_tokenize("HEJ!"))
+# print "Done"
+if __name__ == '__main__':
+    print extract_keywords("just got my iphone in the mail, loving it!")
