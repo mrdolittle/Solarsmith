@@ -42,13 +42,13 @@ def addalyse(username,since_ID,remake_profile):
         #tweets = TwitterHelp.get_all_tweets(username)
         #if(tweets==None || tweets.length()==0):
         #    return False
-        # profile = TwitterHelp.get_profile()
+        # profile = TwitterHelp.get_profile() #see in solr schema what is needed
         
         # send to analysis
-        #analysis=analysis.analyse(tweets)
+        # analysis=analysis.analyse(tweets)
         
         # store result in sunburnt
-        # Storage_handler.add(username,profile,analysis)
+        # Storage_handler.add_profile(username,profile,analysis)
         
         return True #returns true if added to solr
     else:
@@ -56,13 +56,12 @@ def addalyse(username,since_ID,remake_profile):
         #tweets = TwitterHelp.get_all_tweets_newer_than(username,sinceID)
         #if(tweets==None || tweets.length()==0):
         #    return False
-        # profile = TwitterHelp.get_profile()
         
         # send to analysis
         # analysis=analysis.analyse(tweets)
         
         # merge result with the profile in solr
-        # Storage_handler.mergeProfile(username,profile,analysis)
+        # Storage_handler.update_profile(username,analysis)
         
         return True # returns true if merged with solr
         
