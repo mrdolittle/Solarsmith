@@ -11,11 +11,10 @@ def main():
     
     while(True):
         None
+        # TODO:
         # get a twitter user from twitter
-        
-        # add addalyse user if not in database
-        
-        # sleep
+        # addalyse user if not in database
+        # sleep for some period of time that will make us not wear out our twitter API request per day
     
 
 if __name__ == "__main__":
