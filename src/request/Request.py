@@ -15,4 +15,3 @@ from addalyse import *
 
 def request_add(username):
     addalyse(username,0,False)
-    
