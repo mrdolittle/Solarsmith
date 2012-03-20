@@ -6,11 +6,11 @@ Created on Mar 19, 2012
 
 
 
-def analyseAndAddToDatabase(username,sinceID,remakeProfile):
+def addalyse(username,sinceID,remakeProfile):
     '''
     Used by: update, scrape and request
     
-    API: (boolean userUpdatedInDatabase) analyseAndAddToDatabase(String username,int sinceID,boolean remakeProfile):
+    API: (boolean userUpdatedInDatabase) addalyse(String username,int sinceID,boolean remakeProfile):
     
     communicates with: Sunburnt and twitter API
     
@@ -24,6 +24,9 @@ def analyseAndAddToDatabase(username,sinceID,remakeProfile):
     
     if(remakeProfile):
         # get all tweeets from twitter API 
+        #tweets = TwitterHelp.getAllTweets()
+        #if(tweets==None):
+        #    return None
         
         # send to analysis
         
