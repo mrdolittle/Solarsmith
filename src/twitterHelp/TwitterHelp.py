@@ -28,8 +28,9 @@ class TwitterHelp:
                 return False
             else:
                 raise
-        #If it's a 404 Error (Happens using python-twitter 0.6.1:
+        #If it's a 404 Error (Happens for some reason when using python-twitter-0.6.1, but not with the newer python-twitter-0.8.2):
         except urllib2.HTTPError:
+            print "You seem to be using an old version of python-twitter herp DERP //Xantoz"
             return False
     
     def get_all_tweets(self,username):
