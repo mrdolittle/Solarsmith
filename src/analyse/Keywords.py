@@ -32,6 +32,7 @@ def extract_keywords(string):
         #Checks for simple nouns
         if this in ['NN','NNS','NNP','VBG']:
             words.append(thisWord)
+        x=x+1
             
         if x+1<(len(sequence)-1):
             return doStuff(x+1, words)
