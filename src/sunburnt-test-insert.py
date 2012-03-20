@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sunburnt
-from Document import Document
+from storageHandler.Document import Document
 
 # FIXME: can schema be gotten from server directly with sunburnt (pydoc seemed to suggest this)
 # interface = sunburnt.SolrInterface("http://localhost:8080", "schema.xml")
