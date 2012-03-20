@@ -1,7 +1,5 @@
 '''
-Module for class Document.
-
-TODO: Maybe store the stuffs
+Module for the eminent class Document
 '''
 
 
