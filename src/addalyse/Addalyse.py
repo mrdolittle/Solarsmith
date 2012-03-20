@@ -4,11 +4,24 @@ Created on Mar 19, 2012
 @author: mbernt
 '''
 
+#from twitterHelp import twitter_help_global
+#import addalyse.twitter_help
 
+# global variable
+twitter_help=1
 
-def addalyse(username,sinceID,remakeProfile):
+def set_globvar():
+    # gain access to global variable
+    global twitter_help
+    # do something
+    a=twitter_help
+
+def addalyse(username,since_ID,remake_profile):
     '''
     Used by: update, scrape and request
+    
+    need to access via a connection:
+    twitter_API, sunburnt_API
     
     API: (boolean userUpdatedInDatabase) addalyse(String username,int sinceID,boolean remakeProfile):
     
@@ -22,11 +35,10 @@ def addalyse(username,sinceID,remakeProfile):
     '''
     # maybe check if the user exists on twitter
     
-    if(remakeProfile):
+
+    
+    if(remake_profile):
         # get all tweeets from twitter API 
-        #tweets = TwitterHelp.getAllTweets()
-        #if(tweets==None):
-        #    return None
         
         # send to analysis
         
@@ -35,6 +47,9 @@ def addalyse(username,sinceID,remakeProfile):
         return True #returns true if added to solr
     else:
         # get tweets newer than sinceID 
+        #tweets = TwitterHelp.get_all_tweets_newer_than(username,sinceID)
+        #if(tweets==None || tweets.length()==0):
+        #    return False
         
         # send to analysis
         
