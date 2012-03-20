@@ -1,3 +1,5 @@
+#!/usr/bin/env python2
+
 '''
 Created on Mar 20, 2012
 
@@ -7,12 +9,22 @@ Created on Mar 20, 2012
 
 from addalyse import *
 
-'''
-    Requests a certain Twitter username to be added. 
-    @argument username: A string containing the username of a Twitter user.
-    @return: A boolean set to true if the user has been added, otherwise false.
-'''
 
 def request_add(username):
+    '''Requests a certain Twitter username to be added. 
+    @argument username: A string containing the username of a Twitter user.
+    @return: A boolean set to true if the user has been added, otherwise false.'''
+    
     addalyse(username,0,False)
+
+
+def main():
+    '''Listens for request and all that jazz. I am a program that
+    should run you know. TODO: implement me.'''
+
+    # BLAHH
+
+if __name__ == "__main__":
+    main()
+    
     
