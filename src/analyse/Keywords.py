@@ -31,19 +31,19 @@ def extract_keywords(string):
             
         #Checks for simple nouns
         if this in ['NN','NNS','NNP','VBG']:
-            words.append(thisWord)        
-        if(x+1<(len(sequence)-1)):
+            words.append(thisWord)
+            
+        if x+1<(len(sequence)-1):
             return doStuff(x+1, words)
         else:
             return filter_keywords(words)
-            
-    return doStuff(0,[])      
-    
-    
+
+    return doStuff(0, [])
                     
 # Very very naughty, fix this:
 # Anarchy
-print "Initializing"
-nltk.pos_tag(nltk.word_tokenize("HEJ!"))
-print "Done"
-print extract_keywords("just got my iphone in the mail, loving it!")
+# print "Initializing"
+# nltk.pos_tag(nltk.word_tokenize("HEJ!"))
+# print "Done"
+if __name__ == 'main':
+    print extract_keywords("just got my iphone in the mail, loving it!")

@@ -17,8 +17,8 @@ posids = movie_reviews.fileids('pos')
 negfeats = [(word_feats(movie_reviews.words(fileids=[f])), 'neg') for f in negids]
 posfeats = [(word_feats(movie_reviews.words(fileids=[f])), 'pos') for f in posids]
 
-for f in negids:
-    print movie_reviews.words([f])
+#for f in negids:
+#    print movie_reviews.words([f])
     
 negcutoff = len(negfeats)*3/4
 poscutoff = len(posfeats)*3/4
@@ -36,6 +36,8 @@ x=['I','fascination','car']
 print classifier.classify(word_feats(x));
 print word_feats(x)
 x=['I','uninvolving','car']
+muahahahhahahahha= 'hiihihihihiihihihihiihih' ,
+                    'hahahahhahahahahhahahah'
 print classifier.classify(word_feats(x));
 print word_feats(x)
 x=['I','idiotic','cugsdfar']
