@@ -7,7 +7,10 @@ Includes methods: filter_keyword
 @author: 0tchii
 '''
 stopwords = set(["something",
-             "nothing"])
+                 "nothing",
+                 "loving",       # ex: "just got my iphone in the mail, loving it!". This might somehow be appropriate as a keyword though...
+                 "hating"        # same as above applies. Strange idea: extract_keywords without filtering then use some extracted keywords for sentiment analysis?
+                 ])
 
 def filter_keywords(keywords):
     """Receives the keywords and filters out words from the set 'words'"""
