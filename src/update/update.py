@@ -18,8 +18,7 @@ def main():
     twitter_help = TwitterHelp() 
     limit = 100            # do complete update every hundredth update
     while(True):
-        list = StorageHandler.get_all_user_for_update()
-        for (since_id, update_count, username) in list:
+        for (since_id, update_count, username) in get_all_user_for_update():
             if since_id != twitter_help.get_latest_since_id(username): # check if need updating
                 addalyse(username, since_id, update_count > limit) # replace if update_count>limit else update
             time.sleep(10) # sleep for ten seconds, to not make to many requests to twitter

@@ -44,13 +44,12 @@ def get_all_like_a_crazy_ass_slurper_with_extra_potatomotos():
 
 def get_all_user_for_update():
     '''used by update
-    
-    returns: (int sinceid,int updatecount, String username)[] tuples'''
+    //returns: (String username,int sinceid,int updatecount)[] tuples
+    returns document[]'''
     global SOLR_SERVER
 
     si = sunburnt.SolrInterface(SOLR_SERVER)
-    # TODO: Figure out whether using document in a fashion like this is a good idea for returning the result?x
-    return [Document(x['id'], None, None, x['since_id'], x['updatecount'])
+    return [(x['id'], x['since_id'], x['updatecount'])
             for x in si.query(id='*').field_limit('id', 'since_id', 'updatecount').execute()]
 
 
