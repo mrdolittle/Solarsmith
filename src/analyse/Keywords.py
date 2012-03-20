@@ -39,7 +39,7 @@ def extract_keywords(string):
             return filter_keywords(words)
 
     return doStuff(0, [])
-                    
+
 # Very very naughty, fix this:
 # Anarchy
 # print "Initializing"
