@@ -45,5 +45,5 @@ def extract_keywords(string):
 # print "Initializing"
 # nltk.pos_tag(nltk.word_tokenize("HEJ!"))
 # print "Done"
-if __name__ == 'main':
+if __name__ == '__main__':
     print extract_keywords("just got my iphone in the mail, loving it!")
