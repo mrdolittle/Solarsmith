@@ -45,12 +45,12 @@ def addalyse(username,since_id,remake_profile):
     if(remake_profile):
         # get all tweeets from twitter API 
         #tweets = TwitterHelp.get_all_tweets(username)
-        #if(tweets==None || tweets.length()==0):
+        #if tweets==None || tweets.length()==0:
         #    return False
         #profile = TwitterHelp.get_profile() #see in solr schema what is needed
         
         # send to analysis
-        #analysis=analysis.analyse(tweets)
+        #analysis=analyser.analyse(tweets)
         
         # store result in sunburnt
         #Storage_handler.add_profile(username,profile,analysis)
@@ -59,14 +59,14 @@ def addalyse(username,since_id,remake_profile):
     else:
         # get tweets newer than sinceID 
         #tweets = TwitterHelp.get_all_tweets_newer_than(username,sinceID)
-        #if(tweets==None || tweets.length()==0):
+        #if tweets==None || tweets.length()==0:
         #    return False
         
         # send to analysis
-        #analysis=analysis.analyse(tweets)
+        #analysis=analyser.analyse(tweets)
         
         # merge result with the profile in solr
-        #Storage_handler.update_profile(username,analysis)
+        #Storage_handler.update_profile(username,analysis)#must remember to update update_count!!!!
         
         return True # returns true if merged with solr
         
