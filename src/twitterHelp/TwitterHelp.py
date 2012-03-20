@@ -19,14 +19,15 @@ class TwitterHelp:
         @return: True if the user exists, else False'''
         
         try:
-            #Catch the result
             self.twitter_API.GetUserTimeline(username, 0)
+            # We seem to have been able to find a user since we could get his timeline
             return True
-        #If an error occured, else raise the exception:
         except twitter.TwitterError as err:
             if err.message == "Not found":
+                # This sort of error message tells us that the user didn't exist
                 return False
             else:
+                # I don't know what went wrong //Derpy (now it is someone elses problem)
                 raise
         #If it's a 404 Error (Happens for some reason when using python-twitter-0.6.1, but not with the newer python-twitter-0.8.2):
         except urllib2.HTTPError:
