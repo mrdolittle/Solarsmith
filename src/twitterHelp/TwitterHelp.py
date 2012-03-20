@@ -31,6 +31,17 @@ class TwitterHelp:
         #If it's a 404 Error (Happens using python-twitter 0.6.1:
         except urllib2.HTTPError:
             return False
+    
+    def get_all_tweets(self,username):
+        '''Not implemented! 
+        A method to get all the tweets from a certain user.'''
+        return []
+    
+    def get_tweets_since(self,username,since_id):
+        '''Not implemented! 
+        A method to get all the tweets from a certain user
+        that are newer than the given since_id.'''
+        return []
 
     def get_latest_since_ID(self, username):
         '''A method to return the latest since_ID value of a certain user.'''
