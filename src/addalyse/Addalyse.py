@@ -9,7 +9,7 @@ Created on Mar 19, 2012
 
 from twitterHelp import *
 
-def addalyse(username, since_id, remake_profile):
+def addalyse(username, since_id, remake_profile):#,twitter_help=None,sunburnt_API=None):
     '''
     Description:
     Directly returns false if the twitter user isn't on twitter.
