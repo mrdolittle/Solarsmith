@@ -1,7 +1,7 @@
 '''
 Created on Mar 19, 2012
 
-TODO: WRITE A GOOD DESCRIPTION SDJFJFKJDFKJFDKJDF
+xTODO: WRITE A GOOD DESCRIPTION SDJFJFKJDFKJFDKJDF
 
 @author: mbernt, Xantoz
 '''
@@ -30,6 +30,8 @@ def get_all_like_a_crazy_ass_slurper_with_extra_potatomotos():
     something). '''
     global SOLR_SERVER
 
+
+    si = sunburnt.SolrInterface(SOLR_SERVER)
     return map(lambda x: Document(x['id'],
                                   x['lovekeywords_list'],
                                   x['hatekeywords_list'],
@@ -42,10 +44,9 @@ def get_all_like_a_crazy_ass_slurper_with_extra_potatomotos():
                                             'updatecount').execute())
     
 
-def get_all_user_for_update():
-    '''used by update
-    //returns: (String username,int sinceid,int updatecount)[] tuples
-    returns document[]'''
+def get_since_id_and_updatecount_for_all_users():
+    '''Get a tuple list in the following form (String username,num sinceid,num updatecount)[]
+    This method can be used by update.'''
     global SOLR_SERVER
 
     si = sunburnt.SolrInterface(SOLR_SERVER)
@@ -53,7 +54,17 @@ def get_all_user_for_update():
             for x in si.query(id='*').field_limit('id', 'since_id', 'updatecount').execute()]
 
 
+def get_user_updatecount(user):
+    '''Returns the updatecount stored for one particular user. Returns
+    None if user doesn't exist in Solr.
 
+    THIS FUNCTION JUST MIGHT END UP BEING UNNECESARY!'''
+    global SOLR_SERVER
+
+    si = sunburnt.SolrInterface(SOLR_SERVER)
+    result = si.query(id=user).field_limit('updatecount').execute()
+    return None if result == [] else result[0]['updatecount']
+    
 
 #placeholder
 def get_all_user_names():

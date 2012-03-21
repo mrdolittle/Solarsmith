@@ -21,8 +21,7 @@ def add_to_solr(username):
 def main():
     '''Listens for request and all that jazz. I am a program that
     should run you know. TODO: implement me.'''
-    
-    pass
+    th = TwitterHelp()
 
 if __name__ == "__main__":
     main()
