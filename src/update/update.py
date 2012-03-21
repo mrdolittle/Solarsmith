@@ -18,6 +18,9 @@ def main():
     '''Gets profiles from storageHandler and checks if they need
     updating, and if so updates those.'''
     twitter_help = TwitterHelp() 
+    
+    # create storageHandler object
+    #storage_handler = StorageHandler()
     limit = 100            # do complete update every hundredth update
     while(True):
         for (since_id, update_count, username) in get_all_user_for_update():

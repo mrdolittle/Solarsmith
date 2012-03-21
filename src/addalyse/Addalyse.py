@@ -1,7 +1,16 @@
 '''
 Created on Mar 19, 2012
 
-@author: mbernt
+Fetches tweets from Twitter analyses them and executes the order 
+if they should be updated or remade in Solr.
+
+Methods: addalyse
+
+Uses: analysis, storageHandler
+
+Used by: request, update, scrape 
+
+@author: mbernt, anneback
 '''
 
 #from twitterHelp import twitter_help_global
