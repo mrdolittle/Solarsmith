@@ -23,7 +23,7 @@ def main():
     #storage_handler = StorageHandler()
     limit = 100            # do complete update every hundredth update
     while True:
-        for (since_id, update_count, username) in get_tuples_info_for_all_users():
+        for (username, since_id, update_count) in get_since_id_and_updatecount_for_all_users():
             if since_id != twitter_help.get_latest_tweet_id(username): # check if need updating
                 addalyse(username,
                          since_id,

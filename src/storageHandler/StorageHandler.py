@@ -44,7 +44,7 @@ def get_all_like_a_crazy_ass_slurper_with_extra_potatomotos():
                                             'updatecount').execute())
     
 
-def get_tuples_info_for_all_users():
+def get_since_id_and_updatecount_for_all_users():
     '''Get a tuple list in the following form (String username,num sinceid,num updatecount)[]
     This method can be used by update.'''
     global SOLR_SERVER
