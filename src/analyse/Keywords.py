@@ -7,6 +7,7 @@ Includes methods: extract_keywords
 @author: 0tchii
 '''
 import nltk
+from nltk.tag import _POS_TAGGER
 import operator
 from Stopwords import filter_keywords
 
@@ -45,11 +46,33 @@ def extract_keywords(string):
             return filter_keywords(words)
 
     return doStuff(0, [])
+
+def extract_keywords_chunks(text):
+    sequence=reduce(operator.add, map(nltk.pos_tag, map(nltk.word_tokenize, nltk.sent_tokenize(text))))
+    grammar=''' Noun: {<DT>?<JJ>*(<NN>|<NNS>|<VBG>)+}
+                ToVerb: {<TO><VB>}
+                Name:{<NNP>+}                
+            '''
+    words=[]
+    chunks = nltk.RegexpParser(grammar)
+    for t in chunks.parse(sequence).subtrees():
+        if t.node=="Noun":
+            print t.flatten()           
+        elif t.node=="ToVerb":
+            for x in t:
+                if x[1]!="TO":
+                    words.append(x[0])
+        elif t.node=="Name":
+            for x in t:
+                words.append(x[0])
+                
+            
+    return chunks.parse(sequence)
                     
-# Very very naughty, fix this:
-# Anarchy
-# print "Initializing"
-# nltk.pos_tag(nltk.word_tokenize("HEJ!"))
-# print "Done"
+#Initialize _POS_TAGGER
+nltk.data.load(_POS_TAGGER)
+
 if __name__ == '__main__':
-    print extract_keywords("I wanted to go surfing, but I can't because there are too many alligators. This vacation sucks!")
+    text = "Bear Grylls likes to go spear fishing"
+    print extract_keywords(text)
+    print extract_keywords_chunks(text)
