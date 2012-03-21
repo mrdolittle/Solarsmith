@@ -52,8 +52,8 @@ class TwitterHelp:
             status_strings.append(s.text)
         return status_strings
 
-    def get_latest_since_ID(self, username):
-        '''A method to return the latest since_id value of a certain user.
+    def get_latest_tweet_id(self, username):
+        '''A method to return the id of the latest tweet of a certain user.
         @return: A numerical representation of the ID of a username. None if the user was not found.
         '''
         try:
