@@ -1,22 +1,25 @@
 '''
 Created on Mar 19, 2012
 
-@author: mbernt
+Fetches tweets from Twitter analyses them and executes the order 
+if they should be updated or remade in Solr.
+
+Methods: addalyse
+
+Uses: analysis, storageHandler
+
+Used by: request, update, scrape 
+
+@author: mbernt, anneback
 '''
 
 #from twitterHelp import twitter_help_global
 #import addalyse.twitter_help
 
-# global variable
-twitter_help=1
+from twitterHelp import *
+import storageHandler
 
-def set_globvar():
-    # gain access to global variable
-    global twitter_help
-    # do something
-    a=twitter_help
-
-def addalyse(username,since_id,remake_profile):
+def addalyse(username, since_id, remake_profile, update_count=0):#,twitter_help=None,sunburnt_API=None):
     '''
     Description:
     Directly returns false if the twitter user isn't on twitter.
@@ -34,40 +37,49 @@ def addalyse(username,since_id,remake_profile):
     Used by: 
     update, scrape and request
     
-    need to access via a connection:
+    need to access via a connection to:
     twitter_API, sunburnt_API
     '''
+    # make a new TwitterHelp object
+    twitter_help = TwitterHelp()
+    
     # maybe check if the user exists on twitter, but this check might be done in get_all_tweets
-    #if !TwitterHelp.contains(username):
-    #    return False
+    if not twitter_help.contains(username):
+        return False
 
     
-    if(remake_profile):
+    if remake_profile:
         # get all tweeets from twitter API 
-        #tweets = TwitterHelp.get_all_tweets(username)
-        #if(tweets==None || tweets.length()==0):
-        #    return False
-        #profile = TwitterHelp.get_profile() #see in solr schema what is needed
+        tweets = twitter_help.get_all_tweets(username)
+        if tweets == None or tweets.length() == 0:
+            return False
+
+        new_since_id = tweets[0].id # latest tweet is first in list
         
         # send to analysis
-        #analysis=analysis.analyse(tweets)
+        (lovekeywords, hatekeywords) = analyse.analyse(tweets)
         
         # store result in sunburnt
-        #Storage_handler.add_profile(username,profile,analysis)
-        
-        return True #returns true if added to solr
+        storageHandler.add_profile(username, lovekeywords, hatekeywords, new_since_id, updatecount)
     else:
         # get tweets newer than sinceID 
-        #tweets = TwitterHelp.get_all_tweets_newer_than(username,sinceID)
-        #if(tweets==None || tweets.length()==0):
-        #    return False
-        
+        tweets = twitter_help.get_tweets_since(username, since_id)
+        if tweets == None or tweets.length() == 0:
+            return False
+
+        new_since_id = tweets[0].id
+
         # send to analysis
-        #analysis=analysis.analyse(tweets)
+        (lovekeywords, hatekeywords) = analyse.analyse(tweets)
         
         # merge result with the profile in solr
-        #Storage_handler.update_profile(username,analysis)
+        # get a users old hatekeywords_list and lovekeywords_list 
+        # lovekeywords_old = ?
+        # hatekeywords_old = ?
+        (lovemerge, hatemerge) = (None, None) # TODO: somehow merge the lovekeywords_old hatekeywords_old with the new ones
+        storageHandler.add_profile(username, lovemerge, hatemerge, new_since_id, updatecount)
         
-        return True # returns true if merged with solr
+    # returns true if added to database   
+    return True 
         
     

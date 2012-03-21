@@ -8,9 +8,9 @@ Created on Mar 20, 2012
 '''
 
 from addalyse import *
+from twitterHelp import *
 
-
-def request_add(username):
+def add_to_solr(username):
     '''Requests a certain Twitter username to be added. 
     @argument username: A string containing the username of a Twitter user.
     @return: A boolean set to true if the user has been added, otherwise false.'''
@@ -21,9 +21,13 @@ def request_add(username):
 def main():
     '''Listens for request and all that jazz. I am a program that
     should run you know. TODO: implement me.'''
-    
-    # BLAHH
-    
+    th = TwitterHelp()
+    wicked = th.get_all_tweets("justinbieber")
+    count = 0
+    for s in wicked:
+        print s
+        count += 1
+    print count
 
 if __name__ == "__main__":
     main()
