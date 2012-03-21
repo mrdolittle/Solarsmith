@@ -44,7 +44,7 @@ def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,
     sh = StorageHandler(solr_server)
     
     # maybe check if the user exists on twitter, but this check might be done in get_all_tweets
-    if not twitter_help.contains(username):
+    if not th.contains(username):
         return False
 
     
