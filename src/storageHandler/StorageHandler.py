@@ -1,7 +1,7 @@
 '''
 Created on Mar 19, 2012
 
-xTODO: WRITE A GOOD DESCRIPTION SDJFJFKJDFKJFDKJDF
+TODO: WRITE A GOOD DESCRIPTION SDJFJFKJDFKJFDKJDF
 
 @author: mbernt, Xantoz
 '''
@@ -55,7 +55,7 @@ class StorageHandler:
                                       x['updatecount']       if 'updatecount'       in fields else None),
                    self.si.query(id=username).field_limit(fields).execute())
 
-    
+# old outcommented stuffs    
 
 # # Globally constanty wierdo thing.
 # # Should we maybe instead wrap all of this file into a class of some

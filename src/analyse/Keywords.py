@@ -51,7 +51,8 @@ def extract_keywords(string):
 def extract_keywords_chunks(text):
     '''Uses chunks matching to identify keywords in a tweet. The code looks much nicer this way :P'''
     sequence=reduce(operator.add, map(nltk.pos_tag, map(nltk.word_tokenize, nltk.sent_tokenize(text))))
-    grammar=''' Noun: {<DT>?<JJ>*(<NN>|<NNS>|<VBG>)+}
+    print sequence
+    grammar=''' Noun: {<DT>?<JJ>+(<NN>|<NNS>|<VBG>)+}
                 ToVerb: {<TO><VB>}
                 Name:{<NNP>+}                
             '''
@@ -82,6 +83,6 @@ def extract_keywords_chunks(text):
 nltk.data.load(_POS_TAGGER)
 
 if __name__ == '__main__':
-    text = "Bear Grylls likes to go spear fishing"
+    text = "Bear Grylls likes to go spear fishing :) #fishing"
     print extract_keywords(text)
     print extract_keywords_chunks(text)
