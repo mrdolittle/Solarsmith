@@ -1,11 +1,11 @@
 '''Created on Mar 20, 2012
 
-@author: Jimmy Larsson'''
+@author: Jimmy Larsson, Lucas Taubert
+@version: 0.9dev'''
 
 #Importing the Twitter library.
 import twitter
 import urllib2
-import re
 
 class TwitterHelp:
     '''TwitterHelp contains the Twitter API as well as 
@@ -14,62 +14,53 @@ class TwitterHelp:
     def __init__(self):
         # Get us a twitter API instance
         self.twitter_API = twitter.Api()
+        
+    def major_coolness(self):
+        return self.twitter_API.GetPublicTimeline()
     
     def twitter_contains(self, username):
         '''checks if a username exists on Twitter.
+        This method is rather slow, but does _not_ user up any API calls.
         @return: True if the user exists, else False'''
         #self.twitter_API.SetCredentials("SSAccount", "ssapiapi")
         try:
             urllib2.urlopen("http://www.twitter.com/" + username)
             # Url was found, the username exists
             return True
-        except urllib2.HTTPError as err:
+        except urllib2.HTTPError:
             # Page loading failed
             return False
-        except urllib2.URLError as err:
+        except urllib2.URLError:
             # Connection failed
             return None
         # Unknown error
         return None
-        '''
+    def get_all_tweets(self,username,since_id=None):
+        '''Retrieves all tweets from a twitter user.
+        @param username: The username of which to find tweets, either ID or alies is accepted.
+        @param since_id: [optional] The ID of the earliest tweet that will be included. 
+        @return: A list of strings representing tweets, ordered from newest to oldest. None if the user was not found'''
         try:
-            self.twitter_API.GetUserTimeline(username, 0)
-            # We seem to have been able to find a user since we could get a timeline
-            return True
-        except twitter.TwitterError as err:
-            if err.message == "Not found":
-                # This sort of error message tells us that the user didn't exist
-                return False
-            else:
-                # I don't know what went wrong //Derpy (now it is someone elses problem)
-                raise
-        
-        # If it's a HTTP Error from urrlib2 (404's tend to happen for some reason when using
-        # python-twitter-0.6.1 and getting at a non-existent timeline, but not with the newer
-        # python-twitter-0.8.2):
+            statuses = self.twitter_API.GetUserTimeline(username, 1000000, since_id, None)
+            a = self.twitter_API
+        except twitter.TwitterError:
+            return None
         except urllib2.HTTPError:
-            print "You seem to be using an old version of python-twitter herp DERP //Xantoz"
-            return False
-    '''
-    def get_all_tweets(self,username):
-        '''TODO: Not implemented! 
-        A method to get all the tweets from a certain user.'''
-        statuses = self.twitter_API.GetUserTimeline(username, None, None, None)
+            return None
         status_strings = []
         for s in statuses:
             status_strings.append(s.text)
         return status_strings
-    
-    def get_tweets_since(self,username,since_id):
-        '''TODO: Not implemented! 
-        A method to get all the tweets from a certain user
-        that are newer than the given since_id.'''
-        
-        return []
 
     def get_latest_since_ID(self, username):
-        '''A method to return the latest since_id value of a certain user.'''
-
-        return self.twitter_API.GetUserTimeline(username, 1)[0].GetId()
+        '''A method to return the latest since_id value of a certain user.
+        @return: A numerical representation of the ID of a username. None if the user was not found.
+        '''
+        try:
+            return self.twitter_API.GetUserTimeline(username, 1)[0].GetId()
+        except twitter.TwitterError:
+            return None
+        except urllib2.HTTPError:
+            return None
 
      
