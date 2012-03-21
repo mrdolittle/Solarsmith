@@ -16,7 +16,7 @@ from Document import Document
 SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"
 
 
-def get_all_like_a_crazy_ass_slurper_with_extra_potatomotos():
+def get_document_for_all_users():
     '''A crazy function that returns a list of Document:s with all
     fields set according to the result. Still doesn't fetch the
     automatic timestamp of Solrs of when the doc was inserted.
@@ -42,7 +42,29 @@ def get_all_like_a_crazy_ass_slurper_with_extra_potatomotos():
                                             'hatekeywords_list',
                                             'since_id',
                                             'updatecount').execute())
-    
+
+
+
+
+#(id, since_id) sh.get_fields_for_all('id', 'since_id')
+
+
+def get_document_for_user(username):
+    '''Not fully implemented!
+    returns Document[]'''
+    global SOLR_SERVER
+
+    si = sunburnt.SolrInterface(SOLR_SERVER)
+    return map(lambda x: Document(x['id'],
+                                  x['lovekeywords_list'],
+                                  x['hatekeywords_list'],
+                                  x['since_id'],
+                                  x['updatecount']),
+               si.query(id=username).field_limit('id',
+                                            'lovekeywords_list',
+                                            'hatekeywords_list',
+                                            'since_id',
+                                            'updatecount').execute())[0]    
 
 def get_since_id_and_updatecount_for_all_users():
     '''Get a tuple list in the following form (String username,num sinceid,num updatecount)[]
