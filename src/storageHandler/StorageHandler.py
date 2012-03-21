@@ -44,10 +44,9 @@ def get_all_like_a_crazy_ass_slurper_with_extra_potatomotos():
                                             'updatecount').execute())
     
 
-def get_all_user_for_update():
-    '''used by update
-    //returns: (String username,int sinceid,int updatecount)[] tuples
-    returns document[]'''
+def get_since_id_and_updatecount_for_all_users():
+    '''Get a tuple list in the following form (String username,num sinceid,num updatecount)[]
+    This method can be used by update.'''
     global SOLR_SERVER
 
     si = sunburnt.SolrInterface(SOLR_SERVER)
