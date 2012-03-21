@@ -3,28 +3,37 @@
 '''
 Created on Mar 20, 2012
 
-@author: Lucas Taubert
+@author: mbernt
 @version: 0.1
 '''
+from storageHandler import *
+from twitterHelp import *
+from addalyse import *
+    
+def main():
+    '''Finds new user to add to database.'''
+    twitter_help = TwitterHelp() 
+    
+    
+    while(True):
+        # get all all_users from storage handler
+        all_users=StorageHandler.get_all_user_names()
+        # create a set of users that has already been addalysed
+        skip_these_users=set(all_users)
+        # for each user add: following and follower
+        for user in all_users:
+            # get all followers and follows for the user
+            #followers_and_following=twitter_help.get_follow_and_followers(user)#need this method
+            for f_user in followers_and_following:
+                if not (f_user in skip_these_users):
+                    skip_these_users.add(f_user)
+                    # addalyse
+                    addalyse(f_user,0,True)
+                    
+            
+        #addalyse
+        
+    
 
-class Scrape:
-    
-    def __init__(self):
-        '''TODO Good stuff
-        '''
-        
-    def loop(self):
-        while(True):
-            None
-            # TODO:
-            # get a twitter user from twitter
-            # addalyse user if not in database
-            # sleep for some period of time that will make us not wear out our twitter API request per day
-        
-    
-    def main(self):
-        '''Adds users from twitter to database.'''
-        
-    
-    if __name__ == "__main__":
-        main()
+if __name__ == "__main__":
+    main()

@@ -19,7 +19,7 @@ Used by: request, update, scrape
 from twitterHelp import *
 import storageHandler
 
-def addalyse(username, since_id, remake_profile):
+def addalyse(username, since_id, remake_profile):#,twitter_help=None,sunburnt_API=None):
     '''
     Description:
     Directly returns false if the twitter user isn't on twitter.
