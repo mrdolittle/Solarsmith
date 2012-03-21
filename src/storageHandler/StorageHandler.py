@@ -30,6 +30,8 @@ def get_all_like_a_crazy_ass_slurper_with_extra_potatomotos():
     something). '''
     global SOLR_SERVER
 
+
+    si = sunburnt.SolrInterface(SOLR_SERVER)
     return map(lambda x: Document(x['id'],
                                   x['lovekeywords_list'],
                                   x['hatekeywords_list'],
