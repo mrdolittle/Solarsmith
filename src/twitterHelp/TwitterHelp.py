@@ -14,9 +14,7 @@ class TwitterHelp:
     def __init__(self):
         # Get us a twitter API instance
         self.twitter_API = twitter.Api()
-        
-    def major_coolness(self):
-        return self.twitter_API.GetPublicTimeline()
+        self.OAuthTokenString = ""
     
     def twitter_contains(self, username):
         '''checks if a username exists on Twitter.
@@ -42,7 +40,6 @@ class TwitterHelp:
         @return: A list of strings representing tweets, ordered from newest to oldest. None if the user was not found'''
         try:
             statuses = self.twitter_API.GetUserTimeline(username, 1000000, since_id, None)
-            a = self.twitter_API
         except twitter.TwitterError:
             return None
         except urllib2.HTTPError:
@@ -62,5 +59,3 @@ class TwitterHelp:
             return None
         except urllib2.HTTPError:
             return None
-
-     

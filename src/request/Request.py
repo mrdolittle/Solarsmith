@@ -22,12 +22,6 @@ def main():
     '''Listens for request and all that jazz. I am a program that
     should run you know. TODO: implement me.'''
     th = TwitterHelp()
-    wicked = th.get_all_tweets("justinbieber")
-    count = 0
-    for s in wicked:
-        print s
-        count += 1
-    print count
 
 if __name__ == "__main__":
     main()
