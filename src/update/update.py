@@ -14,16 +14,19 @@ from storageHandler import *
 from twitterHelp import *
 import time
 
+SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"
+
 def main():
     '''Gets profiles from storageHandler and checks if they need
     updating, and if so updates those.'''
-    twitter_help = TwitterHelp() 
+
     
-    # create storageHandler object
-    #storage_handler = StorageHandler()
+    th = TwitterHelp() 
+    sh = StorageHandler(SOLR_SERVER)
+    
     limit = 100            # do complete update every hundredth update
     while True:
-        for (username, since_id, update_count) in get_since_id_and_updatecount_for_all_users():
+        for (username, since_id, update_count) in sh.get_user_fields('*', 'id', 'since_id', 'updatecount'):
             if since_id != twitter_help.get_latest_tweet_id(username): # check if need updating
                 addalyse(username,
                          since_id,
