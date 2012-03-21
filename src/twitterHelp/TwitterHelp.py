@@ -31,7 +31,7 @@ class TwitterHelp:
         except urllib2.URLError:
             # Connection failed
             return None
-        # Unknown error
+        # Unknown error # TODO: reraise the exception if we get an error that we don't know how to handle? (or maybe this is already the case since we only match certain types of exceptions here anyhow!)
         return None
     
     def get_all_tweets(self,username,since_id=None):
