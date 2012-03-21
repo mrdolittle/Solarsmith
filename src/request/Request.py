@@ -3,6 +3,9 @@
 '''
 Created on Mar 20, 2012
 
+TODO: handle exceptions (like when we've been making too many twitter requests
+      respond with an apropriate error message when getting a request)
+
 @author: Jimmy
 @version: 0.1
 '''

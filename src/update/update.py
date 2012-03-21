@@ -6,6 +6,8 @@ Created on Mar 20, 2012
 The program that updates users that are already in the database so
 that they may be up to date.
 
+TODO: handle exceptions (like when we've been making too many twitter requests sleep for 1 hour in the exception handler)
+
 TODO: WRITE MORE DESCRIPTION OF ME?
 '''
 
