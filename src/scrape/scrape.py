@@ -10,6 +10,9 @@ from storageHandler import *
 from twitterHelp import *
 from addalyse import *
 import time
+
+# TODO: read this from some configuration file in a smart way?
+SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"
     
 def main():
     '''Finds new user to add to database.'''

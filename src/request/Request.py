@@ -10,6 +10,9 @@ Created on Mar 20, 2012
 from addalyse import *
 from twitterHelp import *
 
+# TODO: read this from some configuration file in a smart way?
+SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"
+
 def add_to_solr(username):
     '''Requests a certain Twitter username to be added. 
     @argument username: A string containing the username of a Twitter user.
