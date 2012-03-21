@@ -19,7 +19,7 @@ Used by: request, update, scrape
 from twitterHelp import *
 import storageHandler
 
-def addalyse(username, since_id, remake_profile, update_count=0):#,twitter_help=None,sunburnt_API=None):
+def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,twitter_help=None,sunburnt_API=None):
     '''
     Description:
     Directly returns false if the twitter user isn't on twitter.
@@ -74,10 +74,11 @@ def addalyse(username, since_id, remake_profile, update_count=0):#,twitter_help=
         
         # merge result with the profile in solr
         # get a users old hatekeywords_list and lovekeywords_list 
-        # lovekeywords_old = ?
-        # hatekeywords_old = ?
+        (lovekeywords_old, hatekeywords_old) = (None, None) # TODO: asdf
         (lovemerge, hatemerge) = (None, None) # TODO: somehow merge the lovekeywords_old hatekeywords_old with the new ones
         storageHandler.add_profile(username, lovemerge, hatemerge, new_since_id, updatecount)
+        
+        
         
     # returns true if added to database   
     return True 
