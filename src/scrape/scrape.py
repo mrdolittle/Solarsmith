@@ -21,8 +21,8 @@ def main():
     add_latest_tweeters_loop()
     
 def add_follow_followers_loop(requests_per_hour = 10):
-    '''finds the followers and following of the users in the database
-    and addalyses them'''
+    '''Finds the followers and following of the users in the database
+    and addalyses them.'''
     
     twitter_help = TwitterHelp()
     sh = StorageHandler(SOLR_SERVER)

@@ -63,6 +63,11 @@ class StorageHandler:
         self.si.add(Document(id, lovekeywords, hatekeywords, since_id, updatecount))
         self.si.commit()
 
+    def contains(self, id):
+        '''Check if a document known by id is stored in Solr.'''
+        
+        return self.get_user_fields(id, 'id') != []
+
 
     
 # old outcommented stuffs 
