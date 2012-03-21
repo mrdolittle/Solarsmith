@@ -1,4 +1,7 @@
-#!/usr/bin/python2.7
+'''
+Module for the eminent class Document
+'''
+
 
 def weight_total(lst):
     '''Returns the total weight of a list of (keyword, weight) tuples.'''
@@ -27,6 +30,21 @@ def keyword_list_to_text(lst):
     return "\n".join(stringsies)
 
 class Document:
+    '''Class for handling our Solr documents neatly together with Sunburnt.
+
+    TODO: Maybe store the stuff using some other format (JSON) rather
+          than using repr which forces us to use eval to get the data
+          back from the string format it is inevitably stored as later
+          (due to the schema we are using).
+
+          Though the crazy usage of eval is not as bad as it looks
+          since we are using repr when storing we can be pretty safe
+          that any sort of injectiony thing will not be inserted. At
+          least not by this class. However if someone had raw access
+          to Solr.... (but in a proper setting it should be
+          protected!!!)'''
+
+    
     def __init__(self,
                  id,
                  lovekeywords_list = [],
@@ -34,8 +52,12 @@ class Document:
                  since_id = 0,
                  updatecount = 0):
         self.id = id
-        self.__lovekeywords_list = lovekeywords_list
-        self.__hatekeywords_list = hatekeywords_list
+
+        # WOOP WOOP: I did warn ya that eval was up-a-coming!
+        # Parse the args if they are strings (otherwise they would normally be lists of tuples etc.etc.)
+        self.__lovekeywords_list = eval(lovekeywords_list) if isinstance(lovekeywords_list, str) else lovekeywords_list
+        self.__hatekeywords_list = eval(hatekeywords_list) if isinstance(hatekeywords_list, str) else hatekeywords_list
+        
         self.since_id = since_id
         self.updatecount = updatecount
 
