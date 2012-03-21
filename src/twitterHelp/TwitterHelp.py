@@ -33,6 +33,7 @@ class TwitterHelp:
             return None
         # Unknown error
         return None
+    
     def get_all_tweets(self,username,since_id=None):
         '''Retrieves all tweets from a twitter user.
         @param username: The username of which to find tweets, either ID or alies is accepted.
