@@ -1,7 +1,7 @@
 '''
 Created on Mar 19, 2012
 
-TODO: WRITE A GOOD DESCRIPTION SDJFJFKJDFKJFDKJDF
+xTODO: WRITE A GOOD DESCRIPTION SDJFJFKJDFKJFDKJDF
 
 @author: mbernt, Xantoz
 '''
@@ -53,7 +53,17 @@ def get_all_user_for_update():
             for x in si.query(id='*').field_limit('id', 'since_id', 'updatecount').execute()]
 
 
+def get_user_updatecount(user):
+    '''Returns the updatecount stored for one particular user. Returns
+    None if user doesn't exist in Solr.
 
+    THIS FUNCTION JUST MIGHT END UP BEING UNNECESARY!'''
+    global SOLR_SERVER
+
+    si = sunburnt.SolrInterface(SOLR_SERVER)
+    result = si.query(id=user).field_limit('updatecount').execute()
+    return None if result == [] else result[0]['updatecount']
+    
 
 #placeholder
 def get_all_user_names():

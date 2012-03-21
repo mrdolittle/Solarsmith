@@ -8,6 +8,7 @@ Created on Mar 19, 2012
 #import addalyse.twitter_help
 
 from twitterHelp import *
+import storageHandler
 
 def addalyse(username, since_id, remake_profile):
     '''
@@ -32,8 +33,6 @@ def addalyse(username, since_id, remake_profile):
     '''
     # make a new TwitterHelp object
     twitter_help = TwitterHelp()
-    # make a new StorageHandler object
-    #storage_handler = StorageHandler()
     
     # maybe check if the user exists on twitter, but this check might be done in get_all_tweets
     if not twitter_help.contains(username):
@@ -45,24 +44,32 @@ def addalyse(username, since_id, remake_profile):
         tweets = twitter_help.get_all_tweets(username)
         if tweets == None or tweets.length() == 0:
             return False
-        #extra_infromation = twitter_help.get_extra_infromation(username) # see in document what extra information is needed
+
+        new_since_id = tweets[0].id # latest tweet is first in list
         
         # send to analysis
-        #analysis=analyser.analyse(tweets)
+        (lovekeywords, hatekeywords) = analyse.analyse(tweets)
         
         # store result in sunburnt
-        #storage_handler.add_profile(username, extra_infromation, analysis)
+        storageHandler.add_profile(username, lovekeywords, hatekeywords, new_since_id, 0)
     else:
         # get tweets newer than sinceID 
-        tweets = twitter_help.get_tweets_since(username,since_id)
+        tweets = twitter_help.get_tweets_since(username, since_id)
         if tweets == None or tweets.length() == 0:
             return False
-        
+
+        new_since_id = tweets[0].id
+
         # send to analysis
-        #analysis = analyser.analyse(tweets)
+        (lovekeywords, hatekeywords) = analyse.analyse(tweets)
         
         # merge result with the profile in solr
-        #storage_handler.update_profile(username, analysis) # must remember to update update_count!!!!
+        # get a users old hatekeywords_list and lovekeywords_list as well as their updatecount
+        # lovekeywords_old = ?
+        # hatekeywords_old = ?
+        updatecount = 0 # TODO: argh
+        (lovemerge, hatemerge) = (None, None) # TODO: somehow merge the lovekeywords_old hatekeywords_old with the new ones
+        storageHandler.add_profile(username, lovemerge, hatemerge, new_since_id, updatecount + 1)
         
     # returns true if added to database   
     return True 
