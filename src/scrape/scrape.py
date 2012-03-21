@@ -28,7 +28,7 @@ def main():
                 if not (f_user in skip_these_users):
                     skip_these_users.add(f_user)
                     # addalyse
-                    addalyse(f_user,-1,True)
+                    addalyse(f_user,0,True)
                     
             
         #addalyse
