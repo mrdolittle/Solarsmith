@@ -46,6 +46,7 @@ class StorageHandler:
         as the fields to actually store in the Document object,
         setting other fields to None."""
 
+        # if extra parameters supplied use those, else use the default of all (relevant) fields
         fields = rst if rst else ['id', 'lovekeywords_list', 'hatekeywords_list', 'since_id', 'updatecount']
         
         return map(lambda x: Document(x['id']                if 'id'                in fields else None,
@@ -55,7 +56,16 @@ class StorageHandler:
                                       x['updatecount']       if 'updatecount'       in fields else None),
                    self.si.query(id=username).field_limit(fields).execute())
 
-# old outcommented stuffs    
+
+    def add_profile(self, id, lovekeywords, hatekeywords, since_id, updatecount):
+        '''Adds new profile or overrides old one for id in solr'''
+
+        self.si.add(Document(id, lovekeywords, hatekeywords, since_id, updatecount))
+        self.si.commit()
+
+
+    
+# old outcommented stuffs 
 
 # # Globally constanty wierdo thing.
 # # Should we maybe instead wrap all of this file into a class of some

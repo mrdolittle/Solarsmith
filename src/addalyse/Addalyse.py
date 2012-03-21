@@ -17,8 +17,7 @@ Used by: request, update, scrape
 #import addalyse.twitter_help
 
 from twitterHelp import *
-import storageHandler
-
+from storageHandler import *
 
 def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,twitter_help=None,sunburnt_API=None):
     '''
@@ -32,7 +31,7 @@ def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,
     
     Returns: True if successful else False
     Exceptions:
-    Input types:  addalyse(String username,int sinceID,boolean remakeProfile):
+    Input types:  addalyse(String solr_server, String username,int sinceID,boolean remakeProfile):
     Signature:  (boolean succesfull_add) addalyse(String username,int since_id,boolean remake_profile):
     
     Used by: 
@@ -41,8 +40,8 @@ def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,
     need to access via a connection to:
     twitter_API, sunburnt_API
     '''
-    # make a new TwitterHelp object
-    twitter_help = TwitterHelp()
+    th = TwitterHelp()
+    sh = StorageHandler(solr_server)
     
     # maybe check if the user exists on twitter, but this check might be done in get_all_tweets
     if not twitter_help.contains(username):
@@ -51,7 +50,7 @@ def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,
     
     if remake_profile:
         # get all tweeets from twitter API 
-        tweets = twitter_help.get_all_tweets(username)
+        tweets = th.get_all_tweets(username)
         if tweets == None or tweets.length() == 0:
             return False
 
@@ -61,10 +60,10 @@ def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,
         (lovekeywords, hatekeywords) = analyse.analyse(tweets)
         
         # store result in sunburnt
-        storageHandler.add_profile(username, lovekeywords, hatekeywords, new_since_id, updatecount)
+        sh.add_profile(username, lovekeywords, hatekeywords, new_since_id, updatecount)
     else:
         # get tweets newer than sinceID 
-        tweets = twitter_help.get_tweets_since(username, since_id)
+        tweets = th.get_tweets_since(username, since_id)
         if tweets == None or tweets.length() == 0:
             return False
 
@@ -74,10 +73,11 @@ def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,
         (lovekeywords, hatekeywords) = analyse.analyse(tweets)
         
         # merge result with the profile in solr
-        # get a users old hatekeywords_list and lovekeywords_list 
-        (lovekeywords_old, hatekeywords_old) = (None, None) # TODO: asdf
+        # get a users old hatekeywords_list and lovekeywords_list
+        doc = sh.get_user_documents(username, 'lovekeywords_list', 'hatekeywords_list')
+        (lovekeywords_old, hatekeywords_old) = (doc.lovekeywords_pylist, doc.hatekeywords_pylist) 
         (lovemerge, hatemerge) = (None, None) # TODO: somehow merge the lovekeywords_old hatekeywords_old with the new ones
-        storageHandler.add_profile(username, lovemerge, hatemerge, new_since_id, updatecount)
+        sh.add_profile(username, lovemerge, hatemerge, new_since_id, updatecount)
         
         
         
