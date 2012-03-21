@@ -7,7 +7,7 @@ TODO: WRITE A GOOD DESCRIPTION SDJFJFKJDFKJFDKJDF
 '''
 
 import sunburnt
-from .Document import Document
+from Document import Document
 
 
 class StorageHandler:
