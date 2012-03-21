@@ -47,28 +47,36 @@ def extract_keywords(string):
 
     return doStuff(0, [])
 
-#Ej klar än
+#In development
 def extract_keywords_chunks(text):
+    '''Uses chunks matching to identify keywords in a tweet. The code looks much nicer this way :P'''
     sequence=reduce(operator.add, map(nltk.pos_tag, map(nltk.word_tokenize, nltk.sent_tokenize(text))))
     grammar=''' Noun: {<DT>?<JJ>*(<NN>|<NNS>|<VBG>)+}
                 ToVerb: {<TO><VB>}
                 Name:{<NNP>+}                
             '''
-    words=[]
+    grammarSingular='''Noun:{(<NN>|<NNS>|<VBG>)}
+                        Name: {<NNP>}
+    '''
+    words = []
     chunks = nltk.RegexpParser(grammar)
+    chunksSingular = nltk.RegexpParser(grammarSingular)
+    
     for t in chunks.parse(sequence).subtrees():
-        if t.node=="Noun":
-            print t.flatten()           
-        elif t.node=="ToVerb":
-            for x in t:
-                if x[1]!="TO":
-                    words.append(x[0])
-        elif t.node=="Name":
-            for x in t:
-                words.append(x[0])
+        if t.node == "Noun":
+            words.append(reduce(lambda (x,_1),(y,_2): x+" "+y, t))          
+        elif t.node == "ToVerb":
+            words.append(t[1][0])
+        elif t.node == "Name":
+            words.append(reduce(lambda (x,_1),(y,_2): x+" "+y, t))  
                 
-            
-    return chunks.parse(sequence)
+    for s in chunksSingular.parse(sequence).subtrees():
+        if s.node == "Noun":
+            words.append(s[0][0])
+        elif s.node == "Name":
+            words.append(s[0][0])
+                    
+    return words
                     
 #Initialize _POS_TAGGER
 nltk.data.load(_POS_TAGGER)
