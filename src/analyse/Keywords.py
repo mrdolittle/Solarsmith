@@ -47,6 +47,7 @@ def extract_keywords(string):
 
     return doStuff(0, [])
 
+#Ej klar än
 def extract_keywords_chunks(text):
     sequence=reduce(operator.add, map(nltk.pos_tag, map(nltk.word_tokenize, nltk.sent_tokenize(text))))
     grammar=''' Noun: {<DT>?<JJ>*(<NN>|<NNS>|<VBG>)+}
