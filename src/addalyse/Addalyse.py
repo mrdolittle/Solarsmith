@@ -19,7 +19,7 @@ Used by: request, update, scrape
 from twitterHelp import *
 import storageHandler
 
-def addalyse(username, since_id, remake_profile):#,twitter_help=None,sunburnt_API=None):
+def addalyse(username, since_id, remake_profile, update_count=0):#,twitter_help=None,sunburnt_API=None):
     '''
     Description:
     Directly returns false if the twitter user isn't on twitter.
@@ -60,7 +60,7 @@ def addalyse(username, since_id, remake_profile):#,twitter_help=None,sunburnt_AP
         (lovekeywords, hatekeywords) = analyse.analyse(tweets)
         
         # store result in sunburnt
-        storageHandler.add_profile(username, lovekeywords, hatekeywords, new_since_id, 0)
+        storageHandler.add_profile(username, lovekeywords, hatekeywords, new_since_id, updatecount)
     else:
         # get tweets newer than sinceID 
         tweets = twitter_help.get_tweets_since(username, since_id)
@@ -73,12 +73,11 @@ def addalyse(username, since_id, remake_profile):#,twitter_help=None,sunburnt_AP
         (lovekeywords, hatekeywords) = analyse.analyse(tweets)
         
         # merge result with the profile in solr
-        # get a users old hatekeywords_list and lovekeywords_list as well as their updatecount
+        # get a users old hatekeywords_list and lovekeywords_list 
         # lovekeywords_old = ?
         # hatekeywords_old = ?
-        updatecount = 0 # TODO: argh
         (lovemerge, hatemerge) = (None, None) # TODO: somehow merge the lovekeywords_old hatekeywords_old with the new ones
-        storageHandler.add_profile(username, lovemerge, hatemerge, new_since_id, updatecount + 1)
+        storageHandler.add_profile(username, lovemerge, hatemerge, new_since_id, updatecount)
         
     # returns true if added to database   
     return True 
