@@ -30,7 +30,8 @@ def extract_keywords(string):
                 
         #Checks for verbs after 'to'
         if this in ['TO'] and nxt in ['VB']:
-            words.append(nextWord)
+            words.append(n
+                         extWord)
             
         #Checks for simple nouns
         if this in ['NN','NNS','NNP','VBG']:
@@ -80,7 +81,7 @@ def extract_keywords_grammar(words, sequence):
             '''
     grammarSingular='''Noun:{(<NN>|<NNS>|<VBG>)}
                         Name: {<NNP>}
-    '''
+                    '''
     chunks = nltk.RegexpParser(grammar)
     chunksSingular = nltk.RegexpParser(grammarSingular)
     
