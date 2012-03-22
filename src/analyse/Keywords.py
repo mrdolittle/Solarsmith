@@ -13,8 +13,9 @@ from Stopwords import filter_keywords
 
 def extract_keywords(string):
     '''Receives a string and returns a list of extracts keywords'''
-    sequence=reduce(operator.add, map(nltk.pos_tag, map(nltk.word_tokenize, nltk.sent_tokenize(string))))
-    length=len(sequence)
+    
+    sequence = reduce(operator.add, map(nltk.pos_tag, map(nltk.word_tokenize, nltk.sent_tokenize(string))))
+    length = len(sequence)
     
     def doStuff(x, words):
         '''Recursive help method to parse for keywords and keyword sequences'''
