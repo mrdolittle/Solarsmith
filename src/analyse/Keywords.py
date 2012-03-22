@@ -13,8 +13,9 @@ from Stopwords import filter_keywords
 
 def extract_keywords(string):
     '''Receives a string and returns a list of extracts keywords'''
-    sequence=reduce(operator.add, map(nltk.pos_tag, map(nltk.word_tokenize, nltk.sent_tokenize(string))))
-    length=len(sequence)
+    
+    sequence = reduce(operator.add, map(nltk.pos_tag, map(nltk.word_tokenize, nltk.sent_tokenize(string))))
+    length = len(sequence)
     
     def doStuff(x, words):
         '''Recursive help method to parse for keywords and keyword sequences'''
@@ -29,7 +30,8 @@ def extract_keywords(string):
                 
         #Checks for verbs after 'to'
         if this in ['TO'] and nxt in ['VB']:
-            words.append(nextWord)
+            words.append(n
+                         extWord)
             
         #Checks for simple nouns
         if this in ['NN','NNS','NNP','VBG']:
@@ -47,37 +49,39 @@ def extract_keywords(string):
 
     return doStuff(0, [])
 
-def strip_hashtags(text,words):
+def strip_hashtags(text, words):
     '''Searches for hashtags and adds the tag to the list of keywords.
-        Removes these from the sequence so that it can later be used by extract_keywords_grammar'''
-    sequence=reduce(operator.add, map(nltk.pos_tag, map(nltk.word_tokenize, nltk.sent_tokenize(text))))
-    length=len(sequence)
-    x=0;
-    while (x<length):
-        elem=sequence[x]
-        if elem[0]=='#':
+    Removes these from the sequence so that it can later be used by extract_keywords_grammar'''
+    
+    sequence = reduce(operator.add, map(nltk.pos_tag, map(nltk.word_tokenize, nltk.sent_tokenize(text))))
+    length = len(sequence)
+    x = 0
+    while (x < length):
+        elem = sequence[x]
+        if elem[0] == '#':
             del sequence[x]
-            length=length-1     
-            if x<length:
+            length = length-1     
+            if x < length:
                 words.append(sequence[x][0])
                 del sequence[x]
-                length=length-1
-                x=x-1
-            x=x-1
-        x=x+1
+                length = length - 1
+                x = x - 1
+            x = x - 1
+        x = x + 1
     print words
     return (words,sequence)          
         
 #Using grammar
-def extract_keywords_grammar(words,sequence):
-    '''Uses chunks matching to identify keywords in a tweet. The code looks much nicer this way :P'''           
+def extract_keywords_grammar(words, sequence):
+    '''Uses chunks matching to identify keywords in a tweet. The code looks much nicer this way :P'''
+    
     grammar=''' Noun: {<DT>?<JJ>+(<NN>|<NNS>|<VBG>)+}
                 ToVerb: {<TO><VB>}
                 Name:{<NNP>+}                
             '''
     grammarSingular='''Noun:{(<NN>|<NNS>|<VBG>)}
                         Name: {<NNP>}
-    '''
+                    '''
     chunks = nltk.RegexpParser(grammar)
     chunksSingular = nltk.RegexpParser(grammarSingular)
     
@@ -99,7 +103,7 @@ def extract_keywords_grammar(words,sequence):
 
 def extract(text,words):
     hashtagreturn = strip_hashtags(text,words)
-    return extract_keywords_grammar(hashtagreturn[0],hashtagreturn[1])
+    return extract_keywords_grammar(hashtagreturn[0], hashtagreturn[1])
                     
 #Initialize _POS_TAGGER
 nltk.data.load(_POS_TAGGER)
@@ -107,4 +111,4 @@ nltk.data.load(_POS_TAGGER)
 if __name__ == '__main__':
     text = "Bear Grylls likes to go spear fishing #fishing"
     print extract_keywords(text)
-    print extract(text,[])
+    print extract(text, [])
