@@ -51,20 +51,20 @@ def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,
     
     if remake_profile:
         # get all tweeets from twitter API 
-        tweets = th.get_all_tweets(username)
+        tweets = th.get_all_tweets(username, None, True)
         if tweets == None or tweets.length() == 0:
             return False
-
-        new_since_id = tweets[0].id # latest tweet is first in list
+        # latest tweet is first in list
+        new_since_id = tweets[0].id # assumes that the 
         
         # send to analysis
-        (lovekeywords, hatekeywords) = analyse.analyse(tweets)#TODO:implement in analyse or use analyse_tweets
+        (lovekeywords, hatekeywords) = analyse.analyse(tweets)# TODO:implement in analyse or use analyse_tweets
         
         # store result in sunburnt
         sh.add_profile(username, lovekeywords, hatekeywords, new_since_id, update_count)
     else:
         # get tweets newer than sinceID 
-        tweets = th.get_all_tweets(username, since_id)
+        tweets = th.get_all_tweets(username, since_id, True)
         if tweets == None or tweets.length() == 0:
             return False
 
@@ -73,16 +73,16 @@ def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,
         # merging
 
         # send to analysis
-        (lovekeywords, hatekeywords) = analyse.analyse(tweets)#TODO:implement in analyse or use analyse_tweets
+        (lovekeywords, hatekeywords) = analyse.analyse(tweets)# TODO:implement in analyse or use analyse_tweets
         
         # get a users old hatekeywords_list and lovekeywords_list
         doc = sh.get_user_documents(username, 'lovekeywords_list', 'hatekeywords_list')
-        lovekeywords_old =doc.lovekeywords_pylist
+        lovekeywords_old = doc.lovekeywords_pylist
         hatekeywords_old = doc.hatekeywords_pylist
         
         # merge tuple lists
-        lovemerge = merge_tuples(lovekeywords+lovekeywords_old)
-        hatemerge = merge_tuples(hatekeywords+hatekeywords_old)
+        lovemerge = merge_tuples(lovekeywords + lovekeywords_old)
+        hatemerge = merge_tuples(hatekeywords + hatekeywords_old)
         
         # add to merged result to database
         sh.add_profile(username, lovemerge, hatemerge, new_since_id, update_count)
@@ -102,8 +102,7 @@ def analyse_tweets(list_of_tweets):
     for tweet in list_of_tweets:
         #test, pretend all words are negative or positive
         # maybe want (word,value)[] where negative values are hate and positive love
-        pos_neg=mrb.analyse(tweet)#TODO: test
-        (l2, h2)=
+        (l2, h2) = mrb.analyse(tweet)#TODO: test
         l=l+l2
         h=h+h2
     return (l,h)
