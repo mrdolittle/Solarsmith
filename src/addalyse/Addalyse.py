@@ -84,8 +84,8 @@ def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,
         hatekeywords_old = doc.hatekeywords_pylist
         
         # merge tuple lists, 
-        lovemerge = merge_lists(lovekeywords, lovekeywords_old)# worse for testing because don't give error if analysis returns null
-        hatemerge = merge_lists(lovekeywords, lovekeywords_old)
+        lovemerge = merge_lists(lovekeywords, lovekeywords_old)# gives an exception if lovekeywords==None
+        hatemerge = merge_lists(hatekeywords, hatekeywords_old)
         #lovemerge = merge_tuples(lovekeywords + lovekeywords_old)
         #hatemerge = merge_tuples(lovekeywords + lovekeywords_old)
         
