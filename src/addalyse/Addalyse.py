@@ -116,10 +116,9 @@ def analyse_tweets(list_of_tweets):
 
 def merge_lists(new_list,old_list):
     '''Convenience method. Tries to merge a new_list with an old_list. 
-    Raise: nullpointer exceptions if newlist is None
-    returns None if both are None. 
-    Returns the other list if one of them are None.
-    Returns a merged list of both if both are not None.
+    Raise: "TypeError: object of type 'NoneType' has no len()" if newlist is None
+    Returns a merged list of both if old_list are not None and len(old_list)>0
+    else returns new_list
     .'''
     #if old_list != None and len(old_list) > 0 and new_list != None and len(new_list) > 0:
     if (len(new_list) > 0 and old_list != None and len(old_list) > 0):
