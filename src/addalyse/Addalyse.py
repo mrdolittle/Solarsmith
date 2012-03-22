@@ -18,6 +18,7 @@ Used by: request, update, scrape
 
 from twitterHelp import *
 from storageHandler import *
+from analyse import *
 
 def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,twitter_help=None,sunburnt_API=None):
     '''
@@ -42,6 +43,7 @@ def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,
     '''
     th = TwitterHelp()
     sh = StorageHandler(solr_server)
+    analyser=
     
     # maybe check if the user exists on twitter, but this check might be done in get_all_tweets
     if not th.contains(username):
@@ -83,5 +85,36 @@ def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,
         
     # returns true if added to database   
     return True 
+
+def analyse_tweets(list_of_tweets):
+    '''TODO: finish him!
+    calls analyse for all tweets.'''
+    mrb=MovieReviewBayes()
+    l=[]
+    h=[]
+    #test
+    for tweet in list_of_tweets:
+        #test, pretend all words are negative or positive
+        # maybe want (word,value)[] where negative values are hate and positive love
+        pos_neg=mrb.analyse(tweet)#TODO: test
+        (l2, h2)=
+        l=l+l2
+        h=h+h2
+    return (l,h)
+
+def merge_tuples(list_of_only_love_or_only_hate_tuples):
+    '''gets a list of love tuples or a list of hate tuple, it merges and adds the values
+    of all tuples with the same name. 
+    ex [('tjoo',-1),('hi',3),('hi',2),('tjoo',3)] gives [('hi',5),('tjoo',2)]'''
+    myDict={}
+    for (keyword,value) in list_of_only_love_or_only_hate_tuples:
+        if keyword  in myDict:
+            myDict[keyword] += value
+        else:
+            myDict[keyword] = value
+    #returns a list of all (key, value) tuples in the dictionary
+    return myDict.items()
+
+
         
     
