@@ -43,7 +43,6 @@ def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,
     '''
     th = TwitterHelp()
     sh = StorageHandler(solr_server)
-    analyser=
     
     # maybe check if the user exists on twitter, but this check might be done in get_all_tweets
     if not th.contains(username):
@@ -59,27 +58,34 @@ def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,
         new_since_id = tweets[0].id # latest tweet is first in list
         
         # send to analysis
-        (lovekeywords, hatekeywords) = analyse.analyse(tweets)
+        (lovekeywords, hatekeywords) = analyse.analyse(tweets)#TODO:implement in analyse or use analyse_tweets
         
         # store result in sunburnt
-        sh.add_profile(username, lovekeywords, hatekeywords, new_since_id, updatecount)
+        sh.add_profile(username, lovekeywords, hatekeywords, new_since_id, update_count)
     else:
         # get tweets newer than sinceID 
-        tweets = th.get_tweets_since(username, since_id)
+        tweets = th.get_all_tweets(username, since_id)
         if tweets == None or tweets.length() == 0:
             return False
 
         new_since_id = tweets[0].id
+        
+        # merging
 
         # send to analysis
-        (lovekeywords, hatekeywords) = analyse.analyse(tweets)
+        (lovekeywords, hatekeywords) = analyse.analyse(tweets)#TODO:implement in analyse or use analyse_tweets
         
-        # merge result with the profile in solr
         # get a users old hatekeywords_list and lovekeywords_list
         doc = sh.get_user_documents(username, 'lovekeywords_list', 'hatekeywords_list')
-        (lovekeywords_old, hatekeywords_old) = (doc.lovekeywords_pylist, doc.hatekeywords_pylist) 
-        (lovemerge, hatemerge) = (None, None) # TODO: somehow merge the lovekeywords_old hatekeywords_old with the new ones
-        sh.add_profile(username, lovemerge, hatemerge, new_since_id, updatecount)
+        lovekeywords_old =doc.lovekeywords_pylist
+        hatekeywords_old = doc.hatekeywords_pylist
+        
+        # merge tuple lists
+        lovemerge = merge_tuples(lovekeywords+lovekeywords_old)
+        hatemerge = merge_tuples(hatekeywords+hatekeywords_old)
+        
+        # add to merged result to database
+        sh.add_profile(username, lovemerge, hatemerge, new_since_id, update_count)
         
         
         
@@ -88,7 +94,7 @@ def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,
 
 def analyse_tweets(list_of_tweets):
     '''TODO: finish him!
-    calls analyse for all tweets.'''
+    calls an analyse method (in analyse) for each tweet.'''
     mrb=MovieReviewBayes()
     l=[]
     h=[]
