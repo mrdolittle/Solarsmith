@@ -6,6 +6,7 @@ Includes methods: extract_keywords
 
 @author: 0tchii
 '''
+
 import nltk
 from nltk.tag import _POS_TAGGER
 import operator
@@ -30,8 +31,7 @@ def extract_keywords(string):
                 
         #Checks for verbs after 'to'
         if this in ['TO'] and nxt in ['VB']:
-            words.append(n
-                         extWord)
+            words.append(nextWord)
             
         #Checks for simple nouns
         if this in ['NN','NNS','NNP','VBG']:
