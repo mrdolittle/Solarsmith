@@ -1,2 +1,2 @@
-from StorageHandler import *
-from Document import Document
+from .StorageHandler import StorageHandler
+from .Document import Document

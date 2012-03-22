@@ -32,6 +32,16 @@ def keyword_list_to_text(lst):
 class Document:
     '''Class for handling our Solr documents neatly together with Sunburnt.
 
+    Note: .lovekeywords_pylist/.hatekeywords_pylist is the actual list
+           structure, yet .lovekeywords_list()/.hatekeywords_list()
+           return the list structure in the list format for storing
+           into Solr.
+
+           since the fields used in our schema are named:
+           lovekeywords_list/hatekeywords_list we can actually just
+           add an object of this class to Solr's database elegantly
+           using Sunburnt, while excluding the _pylist ones.
+
     TODO: Maybe store the stuff using some other format (JSON) rather
           than using repr which forces us to use eval to get the data
           back from the string format it is inevitably stored as later
@@ -55,30 +65,30 @@ class Document:
 
         # WOOP WOOP: I did warn ya that eval was up-a-coming!
         # Parse the args if they are strings (otherwise they would normally be lists of tuples etc.etc.)
-        self.__lovekeywords_list = eval(lovekeywords_list) if isinstance(lovekeywords_list, str) else lovekeywords_list
-        self.__hatekeywords_list = eval(hatekeywords_list) if isinstance(hatekeywords_list, str) else hatekeywords_list
+        self.lovekeywords_pylist = eval(lovekeywords_list) if isinstance(lovekeywords_list, str) else lovekeywords_list
+        self.hatekeywords_pylist = eval(hatekeywords_list) if isinstance(hatekeywords_list, str) else hatekeywords_list
         
         self.since_id = since_id
         self.updatecount = updatecount
 
     def lovekeywords_list(self):
         # repr gives string representation
-        return repr(self.__lovekeywords_list)
+        return repr(self.lovekeywords_pylist)
 
     def hatekeywords_list(self):
-        return repr(self.__hatekeywords_list)
+        return repr(self.hatekeywords_pylist)
 
     def lovekeywords_list_scaled(self):
-        return repr(scale_keyword_list(self.__lovekeywords_list))
+        return repr(scale_keyword_list(self.lovekeywords_pylist))
 
     def hatekeywords_list_scaled(self):
-        return repr(scale_keyword_list(self.__hatekeywords_list))
+        return repr(scale_keyword_list(self.hatekeywords_pylist))
     
     def lovekeywords(self):
-        return keyword_list_to_text(scale_keyword_list(self.__lovekeywords_list))
+        return keyword_list_to_text(scale_keyword_list(self.lovekeywords_pylist))
 
     def hatekeywords(self):
-        return keyword_list_to_text(scale_keyword_list(self.__hatekeywords_list))
+        return keyword_list_to_text(scale_keyword_list(self.hatekeywords_pylist))
 
 
 

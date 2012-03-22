@@ -7,6 +7,7 @@ Includes methods: extract_keywords
 @author: 0tchii
 '''
 import nltk
+from nltk.tag import _POS_TAGGER
 import operator
 from Stopwords import filter_keywords
 
@@ -46,10 +47,42 @@ def extract_keywords(string):
 
     return doStuff(0, [])
 
-# Very very naughty, fix this:
-# Anarchy
-# print "Initializing"
-# nltk.pos_tag(nltk.word_tokenize("HEJ!"))
-# print "Done"
+#In development
+def extract_keywords_chunks(text):
+    '''Uses chunks matching to identify keywords in a tweet. The code looks much nicer this way :P'''
+    sequence=reduce(operator.add, map(nltk.pos_tag, map(nltk.word_tokenize, nltk.sent_tokenize(text))))
+    print sequence
+    grammar=''' Noun: {<DT>?<JJ>+(<NN>|<NNS>|<VBG>)+}
+                ToVerb: {<TO><VB>}
+                Name:{<NNP>+}                
+            '''
+    grammarSingular='''Noun:{(<NN>|<NNS>|<VBG>)}
+                        Name: {<NNP>}
+    '''
+    words = []
+    chunks = nltk.RegexpParser(grammar)
+    chunksSingular = nltk.RegexpParser(grammarSingular)
+    
+    for t in chunks.parse(sequence).subtrees():
+        if t.node == "Noun":
+            words.append(reduce(lambda (x,_1),(y,_2): x+" "+y, t))          
+        elif t.node == "ToVerb":
+            words.append(t[1][0])
+        elif t.node == "Name":
+            words.append(reduce(lambda (x,_1),(y,_2): x+" "+y, t))  
+                
+    for s in chunksSingular.parse(sequence).subtrees():
+        if s.node == "Noun":
+            words.append(s[0][0])
+        elif s.node == "Name":
+            words.append(s[0][0])
+                    
+    return words
+                    
+#Initialize _POS_TAGGER
+nltk.data.load(_POS_TAGGER)
+
 if __name__ == '__main__':
-    print extract_keywords("I wanted to go surfing, but I can't because there are too many alligators. This vacation sucks!")
+    text = "Bear Grylls likes to go spear fishing :) #fishing"
+    print extract_keywords(text)
+    print extract_keywords_chunks(text)
