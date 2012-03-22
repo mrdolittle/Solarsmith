@@ -105,7 +105,7 @@ def analyse_tweets(list_of_tweets):
 def merge_tuples(list_of_only_love_or_only_hate_tuples):
     '''gets a list of love tuples or a list of hate tuple, it merges and adds the values
     of all tuples with the same name. 
-    ex [('tjoo',-1)('hi',3),('hi',2),('tjoo',3)] gives [('hi',5),('tjoo',2)]'''
+    ex [('tjoo',-1),('hi',3),('hi',2),('tjoo',3)] gives [('hi',5),('tjoo',2)]'''
     myDict={}
     for (keyword,value) in list_of_only_love_or_only_hate_tuples:
         if keyword  in myDict:
