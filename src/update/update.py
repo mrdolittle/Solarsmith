@@ -36,7 +36,7 @@ def main():
                 addalyse(SOLR_SERVER,
                          username,
                          since_id,
-                         (update_count % limit) == 0,
+                         (update_count % UPDATE_N) == 0,
                          update_count + 1) 
             time.sleep(10) # sleep for ten seconds, to not make to many requests to twitter
     
