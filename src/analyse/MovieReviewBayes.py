@@ -9,9 +9,8 @@ from nltk.corpus import movie_reviews
  
 def word_feats(words):
     return dict([(word, True) for word in words])
- 
-def main():
-    
+class MovieReviewBayes:
+    """Enkel analysmetod hittad på nätet på filmrecensioner"""
     negids = movie_reviews.fileids('neg')
     posids = movie_reviews.fileids('pos')
     
@@ -25,19 +24,14 @@ def main():
      
     trainfeats = negfeats[:negcutoff] + posfeats[:poscutoff]
     testfeats = negfeats[negcutoff:] + posfeats[poscutoff:]
-    print 'train on %d instances, test on %d instances' % (len(trainfeats), len(testfeats))
-    print  testfeats[450]
+    #print 'train on %d instances, test on %d instances' % (len(trainfeats), len(testfeats))
+    #print  testfeats[450]
     classifier = NaiveBayesClassifier.train(trainfeats)
-    print 'accuracy:', nltk.classify.util.accuracy(classifier, testfeats)
+    #print 'accuracy:', nltk.classifMyClassy.util.accuracy(classifier, testfeats)
     classifier.show_most_informative_features()
     
- 
+    def analyse(self,tweet):
+        '''Metod som används utifrån för att analysera tweet'''
+        return MovieReviewBayes.classifier.classify(word_feats(tweet))
 
-    while True:
-        x = raw_input("type string to analyse! \n")
-        token=nltk.word_tokenize(x)
-        print word_feats(token)
-        print classifier.classify(word_feats(token))
-
-if __name__ =="__main__":
-    main()
+  
