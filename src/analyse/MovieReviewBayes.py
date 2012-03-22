@@ -29,9 +29,17 @@ class MovieReviewBayes:
     classifier = NaiveBayesClassifier.train(trainfeats)
     #print 'accuracy:', nltk.classifMyClassy.util.accuracy(classifier, testfeats)
     classifier.show_most_informative_features()
+    classifier.probdist(word_feats("I DONT LIKE CARS HAHA :)"))
+    
     
     def analyse(self,tweet):
         '''Metod som används utifrån för att analysera tweet'''
         return MovieReviewBayes.classifier.classify(word_feats(tweet))
+    
+    def analyse_value(self,tweet):
+        '''returnerar en arbiträrt sätt att mäta positivt/negativt'''
+        return MovieReviewBayes.classifier.prob_classify(word_feats(tweet)).items()
+        
+        
 
   
