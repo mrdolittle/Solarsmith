@@ -8,7 +8,7 @@ from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from SocketServer import ThreadingMixIn
 import socket
 import urlparse
-
+import tallstore
 
 def read_line(s):
     ret = ''
@@ -46,8 +46,31 @@ def send_to_request(username):
     print line
 
 
-def create_xml():
-    xml = "<searchResult>\
+def create_xml(result):
+    lovekeywords, hatekeywords = result.getKeywords()
+    friendusername = result.getId()
+    foeusername = result.getId()
+    xml = "<?xml version 1.0?>"
+    searchtag = "<searchResult>"
+    friendtag = "<friends>"
+    foestag = "<foes>"
+    entrytag = "<entry>"
+    nametag = "<name>"
+    endsearchtag = "</searchResult>"
+    endfriendstag = "</friends>"
+    endfoestag = "</foes>"
+    endentrytag = "</entry>"
+    endnametag = "</name>"
+   
+    tosend = xml + searchtag + friendtag
+    tosend = tosend + entrytag + nametag + friendusername + endnametag
+    tosend = tosend + lovekeywords + hatekeywords + endentrytag + endfriendstag
+    tosend = tosend + foestag + entrytag + nametag + foeusername + endnametag
+    tosend = tosend + lovekeywords + hatekeywords + endentrytag + endfoestag
+    tosend = tosend + endsearchtag
+
+    return tosend
+    xml = "<?xml version 1.0?><searchResult>\
     <friends>\
     <entry>\
      <name>potatismos</name>\
@@ -146,10 +169,13 @@ class RequestHandler(BaseHTTPRequestHandler):
         print self.path
         if self.path == "/favicon.ico":
             return
+        if self.path == '/':
+            return
         command, data = get_arguments(self.path)
         print "Command: " + command
         print "Data: " + data
-        self.send_result(create_xml())
+        result = tallstore.getUserid(data)
+        self.send_result(create_xml(result))
 #        result = send_to_storage(command, data)
 #        if result == False:
 #            send_to_request(data)

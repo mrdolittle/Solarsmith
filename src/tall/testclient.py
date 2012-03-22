@@ -4,11 +4,13 @@ Created on Mar 21, 2012
 @author: Jonas & Petter
 '''
 import httplib
+import urllib
 
 
 def client(string):
-    host = httplib.HTTPConnection('localhost', 8001, timeout=10)
-    host.request("POST", 'localhost:8001')
+    host = httplib.HTTPConnection('localhost', 8001)
+#    urllib.urlretrieve('localhost', None, None, "hej=123")
+    host.request("GET", '/?username=xantestuser2')
     print host.getresponse(True).read(None)
 
 print "nagonting"
