@@ -19,6 +19,7 @@ import time
 # TODO: read this from some configuration file in a smart way?
 SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"
 
+# Every UPDATE_N:th update of a profile do a full analysis throwing away the old one
 UPDATE_N = 100
 
 def main():
