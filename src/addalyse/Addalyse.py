@@ -115,16 +115,16 @@ def analyse_tweets(list_of_tweets):
     return (l,h)
 
 def merge_lists(new_list,old_list):
-    '''Convenience method. Tries to do a merge a new_list with a old_list. 
-    returns None if both are None. 
-    Returns the other list if one of them are None.
-    Returns a merged list of both if both are not None.
-    Good if you always want to try to update the database instead replacing.'''
+    '''Convenience method. Tries to merge a new_list with an old_list. 
+    Raise: "TypeError: object of type 'NoneType' has no len()" if newlist is None
+    Returns a merged list of both if old_list are not None and len(old_list)>0
+    else returns new_list
+    .'''
     #if old_list != None and len(old_list) > 0 and new_list != None and len(new_list) > 0:
-    if old_list != None and len(old_list) > 0 and len(new_list) > 0:
+    if (len(new_list) > 0 and old_list != None and len(old_list) > 0):
         return merge_tuples(new_list + old_list)
     else: 
-        return new_list if new_list != None else old_list
+        return new_list #if new_list != None else old_list
 
 def merge_tuples(list_of_only_love_or_only_hate_tuples):
     '''gets a list of love tuples or a list of hate tuple, it merges and adds the values
