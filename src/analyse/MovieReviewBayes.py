@@ -10,7 +10,8 @@ from nltk.corpus import movie_reviews
 def word_feats(words):
     return dict([(word, True) for word in words])
 class MovieReviewBayes:
-    """Enkel analysmetod hittad på nätet på filmrecensioner"""
+    '''Enkel analysmetod hittad på nätet på filmrecensioner'''
+    
     negids = movie_reviews.fileids('neg')
     posids = movie_reviews.fileids('pos')
     
@@ -33,11 +34,13 @@ class MovieReviewBayes:
     
     
     def analyse(self,tweet):
-        '''Metod som används utifrån för att analysera tweet'''
+        '''Public method used for analysing tweet.'''
+        
         return MovieReviewBayes.classifier.classify(word_feats(tweet))
     
     def analyse_value(self,tweet):
-        '''returnerar en arbiträrt sätt att mäta positivt/negativt'''
+        '''Returns an arbitrary method to measure positive/negative.'''
+        
         return MovieReviewBayes.classifier.prob_classify(word_feats(tweet)).items()
         
         
