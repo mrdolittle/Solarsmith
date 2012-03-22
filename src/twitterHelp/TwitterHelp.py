@@ -34,21 +34,44 @@ class TwitterHelp:
         # Unknown error # TODO: reraise the exception if we get an error that we don't know how to handle? (or maybe this is already the case since we only match certain types of exceptions here anyhow!)
         return None
     
-    def get_all_tweets(self,username,since_id=None):
-        '''Retrieves all tweets from a twitter user.
-        @param username: The username of which to find tweets, either ID or alies is accepted.
-        @param since_id: [optional] The ID of the earliest tweet that will be included. 
-        @return: A list of strings representing tweets, ordered from newest to oldest. None if the user was not found'''
+    def get_public_tweets(self):
+        '''Retrieves a dictionary of recent tweets from the public twitter feed.
+        '''
+        status_dic = {}
         try:
-            statuses = self.twitter_API.GetUserTimeline(username, 1000000, since_id, None)
+            statuses = self.twitter_API.GetPublicTimeline()
         except twitter.TwitterError:
             return None
         except urllib2.HTTPError:
             return None
-        status_strings = []
         for s in statuses:
-            status_strings.append(s.text)
-        return status_strings
+            status_dic[s.GetUser().GetScreenName()] = s.text
+        return status_dic
+        
+    
+    def get_public_twitters(self):
+        tweets = self.get_public_tweets()
+        return set(tweets.keys())
+    
+    def get_all_tweets(self, username, since_id=None, as_pure=False):
+        all_added_users = {}
+        '''Retrieves all tweets from a twitter user.
+        @param username: The username of which to find tweets, either ID or alies is accepted.
+        @param since_id: [optional] The ID of the earliest tweet that will be included. 
+        @return: A dictionary containing the tweet IDs mapped to their corresponding tweets in string 
+        form. None if the user was not found'''
+        status_dic = {}
+        try:
+            statuses = self.twitter_API.GetUserTimeline(username, 1000000, since_id, None)
+            if as_pure: 
+                return statuses
+        except twitter.TwitterError:
+            return None
+        except urllib2.HTTPError:
+            return None
+        for s in statuses:
+            status_dic[s.id] = s.text
+        return status_dic
 
     def get_latest_tweet_id(self, username):
         '''A method to return the id of the latest tweet of a certain user.
