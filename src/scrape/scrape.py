@@ -9,7 +9,6 @@ TODO: handle exceptions (like when we've been making too many twitter requests s
 @version: 0.1
 '''
 
-import TestHandler
 import random
 from twitterHelp import *
 #from addalyse import *
@@ -21,6 +20,25 @@ SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"
 def main():
     '''Finds new user to add to database.'''
     gather_data_loop()
+    
+def load_followers(users, requests_per_hour=30):
+    '''TODO: Does not work!! API Support?
+    Warning: Many API calls, can take a lot of time!
+    Loads followers to a specified set of users.
+    @arg users: The users which to find followers for (list/set).
+    @return: A unique set of users that follows the input users, none that was found in the input set.
+    '''
+    th = TwitterHelp()
+    
+    users = set(users);
+    new_users = set([]);
+    
+    for u in users:
+        # Does not work (Implement get_followers, change None)
+        new_users.update(th.get_followers(None))
+    new_users.difference_update(users)
+    
+    return None
     
     
 def load_existing_users():
@@ -49,6 +67,9 @@ def gather_data_loop(request_per_hour = 30):
     # Adds a set from the recent public twitters.
     set_of_publics = th.get_public_twitters()
     
+    # Might add the followers of something later...
+    #set_of_followers = load_followers(set_of_something)
+    
     # Initiates the set that will be used for the main loop.
     set_to_add = set([])
     
@@ -58,16 +79,16 @@ def gather_data_loop(request_per_hour = 30):
     set_to_add.update(set_of_publics)
     
     
+    # Might add the followers of something later...
     time.sleep(sleep_time)
     
+    # Might add the followers of something later...
     for s in set_of_publics:
         print s
     
     all_added_users = {}    
     set_to_ignore = load_existing_users()
     set_to_add.difference_update(set_to_ignore)
-    #dh = TestHandler()
-    #list_to_add = dh.new_users(list_to_add)
     
     # Numbers of loops, to track storage ratio.
     loops = 0
@@ -96,46 +117,6 @@ def gather_data_loop(request_per_hour = 30):
         print key + ": "
         for kkey in all_added_users[key]:
             print str(kkey) + ": " + all_added_users[key][kkey]
-            
-def add_follow_followers_loop(requests_per_hour = 10):
-    '''Finds the followers and following of the users in the database
-    and addalyses them.'''
-    '''
-    
-    twitter_help = TwitterHelp()
-    sh = StorageHandler(SOLR_SERVER)
-    
-    sleep_time = 3600 / requests_per_hour
-    
-    while(True):
-        skip_these_users = set(all_users) # create a set of users that has already been addalysed
-        for user in all_users: # for each user add: following and follower
-
-            # get all followers and follows for the user
-            followers_and_following = twitter_help.get_follow_and_followers(user) # TODO: implement in TwitterHelp!
-            time.sleep(sleep_time) # can't make to many requests to twitter
-
-            for f_user in followers_and_following:
-                if not sh.contains(f_user): # don't add already added users
-                    addalyse(f_user, 0, True) # TODO: implement in Addalyse!
-                    time.sleep(sleep_time) 
-
-'''                    
-def add_latest_tweeters_loop(nr_of_latest = 20, requests_per_hour = 10):
-    '''Repeatedly tries to add the latest tweeters.'''
-    '''
-    twitter_help = TwitterHelp() 
-    sleep_time = 3600 / requests_per_hour
-    
-    while(True):
-        users = twitter_help.get_latest_tweeters(nr_of_latest) # TODO: implement in TwitterHelp!
-        time.sleep(sleep_time) # can't make to many requests to twitter
-
-        for user in users:
-            if not sh.contains(user): # don't add already added users
-                addalyse(user,0,True) # TODO: implement in Addalyse!
-                time.sleep(sleep_time) 
-       '''             
     
 
 if __name__ == "__main__":

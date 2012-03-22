@@ -83,3 +83,17 @@ class TwitterHelp:
             return None
         except urllib2.HTTPError:
             return None
+    
+    def get_followers(self, username, as_pure=False):
+        '''TODO: THIS DOES NOT WORK!!
+        Returns a set of usernames that follows the specified user.
+        @param username: The input username, whom followers will be found for.
+        @return: A set of usernames, following the input username.
+        '''
+        users = self.twitter_API.GetFollowers()
+        if as_pure:
+            return users
+        user_set = set([])
+        for u in users:
+            user_set.add(u.GetScreenName()) 
+        return user_set
