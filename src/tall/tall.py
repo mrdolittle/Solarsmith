@@ -10,26 +10,34 @@ import socket
 import urlparse
 import tallstore
 
-def read_line(s):
-    ret = ''
 
+def read_line(s):
+    '''
+    Taken from somewhere, to read a line from a socket.
+    ''' 
+    ret = ''
     while True:
         c = s.recv(1)
-
         if c == '\n' or c == '':
             break
         else:
             ret += c
-
     return ret
 
 
 def create_socket(address):
+    '''
+    Creates a socket for communicating with either storage handler or request.
+    '''
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     soc.connect(address)
 
 
 def send_to_storage(command, data):
+    '''
+
+    '''
+    # TODO: write method to send commands to storage handler
     print "Command: " + command + " Data: " + data
     soc = create_socket("localhost:8002")
     soc.sendall(command)
@@ -40,6 +48,10 @@ def send_to_storage(command, data):
 
 
 def send_to_request(username):
+    '''
+    Sends a username to request and awaits an answer.
+    '''
+    # TODO: write method to send commands to request
     soc = create_socket("localhost:8003")
     soc.sendall(username)
     line = read_line(soc)
@@ -47,9 +59,13 @@ def send_to_request(username):
 
 
 def create_xml(result):
+    '''
+    Creates the xml-string that will be sent to the GUI.
+    '''
     lovekeywords, hatekeywords = result.getKeywords()
     friendusername = result.getId()
     foeusername = result.getId()
+    # All xml-flags
     xml = "<?xml version 1.0?>"
     searchtag = "<searchResult>"
     friendtag = "<friends>"
@@ -61,77 +77,49 @@ def create_xml(result):
     endfoestag = "</foes>"
     endentrytag = "</entry>"
     endnametag = "</name>"
-   
-    tosend = xml + searchtag + friendtag
-    tosend = tosend + entrytag + nametag + friendusername + endnametag
-    tosend = tosend + lovekeywords + hatekeywords + endentrytag + endfriendstag
-    tosend = tosend + foestag + entrytag + nametag + foeusername + endnametag
-    tosend = tosend + lovekeywords + hatekeywords + endentrytag + endfoestag
-    tosend = tosend + endsearchtag
+    # Add xml
+    tosend = xml + searchtag
+    # Add friends
+    tosend = tosend + friendtag
 
+    # Start of friends
+    tosend = tosend + entrytag + nametag + friendusername + endnametag
+    tosend = tosend + lovekeywords + hatekeywords + endentrytag
+
+    # End of friends
+    tosend = tosend + endfriendstag
+
+    # Start of foes
+    tosend = tosend + foestag
+
+    # Add a foe
+    tosend = tosend + entrytag + nametag + foeusername + endnametag
+    tosend = tosend + lovekeywords + hatekeywords + endentrytag
+
+    # End of foes
+    tosend = tosend + endfoestag
+    # End of Search result
+    tosend = tosend + endsearchtag
+    print "Response: " + tosend
     return tosend
-    xml = "<?xml version 1.0?><searchResult>\
-    <friends>\
-    <entry>\
-     <name>potatismos</name>\
-     <score>123.4</score>\
-     <lovekeywords>\
-       <keyword name=\"cat\" weight=\"34\" />\
-       <keyword name=\"bear grylls\" weight=\"33\" />\
-       <keyword name=\"fishing\" weight=\"22\" />\
-     </lovekeywords>\
-     <hatekeywords>\
-       <keyword name=\"car\" weight=\"34\" />\
-       <keyword name=\"bike\" weight=\"33\" />\
-       <keyword name=\"walking\" weight=\"22\" />\
-     </hatekeywords>\
-   </entry>\
-   <entry>\
-     <name>potatismos2</name>\
-     <score>123.4</score>\
-     <lovekeywords>\
-       <keyword name=\"cat\" weight=\"34\" />\
-       <keyword name=\"fishing\" weight=\"22\" />\
-       <keyword name=\"bear grylls\" weight=\"33\" />\
-     </lovekeywords>\
-     <hatekeywords>\
-       <keyword name=\"cat\" weight=\"34\" />\
-       <keyword name=\"fishing\" weight=\"22\" />\
-       <keyword name=\"bear grylls\" weight=\"33\" />\
-     </hatekeywords>\
-   </entry>\
- </friends>\
- <foes>\
-    <entry>\
-     <name>motatispos</name>\
-     <score>1337.2</score>\
-     <lovekeywords>\
-       <keyword name=\"cat\" weight=\"44\" />\
-       <keyword name=\"bear hunting\" weight=\"12\" />\
-     </lovekeywords>\
-     <hatekeywords>\
-       <keyword name=\"cat\" weight=\"44\" />\
-       <keyword name=\"bear hunting\" weight=”12” />\
-     </hatekeywords>\
-   </entry>\
-  </foes>\
-</searchResult>"
-    return xml
 
 
 def get_arguments(path):
+    '''
+    Retrieves the arguments from the http GET request recieved from the GUI.
+    '''
     parsedUrl = urlparse.urlparse(path, 'http', True)
- #   print parsedUrl
+#   print parsedUrl
     arguments = parsedUrl.query
- #   print arguments
+#   print arguments
     splitarguments = arguments.split('&')
 #    print splitarguments
 
     if len(splitarguments) != 1:
-        print "bigger than 1"
+        print "more than one argument"
         return
     if splitarguments[0] == '':
-        print "null"
+        print "argument is null"
         return
     print "correct number of arguments"
 
@@ -145,6 +133,9 @@ def get_arguments(path):
 
 
 class ThreadingServer(ThreadingMixIn, HTTPServer):
+    '''
+    A class for making the server use threads.
+    '''
     # Ctrl-C will cleanly kill all spawned threads
     daemon_threads = True
     # much faster rebinding
@@ -152,6 +143,9 @@ class ThreadingServer(ThreadingMixIn, HTTPServer):
 
 
 class RequestHandler(BaseHTTPRequestHandler):
+    '''
+    This Handler defines what to do with incoming HTTP requests.
+    '''
     def _writeheaders(self):
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
@@ -174,14 +168,18 @@ class RequestHandler(BaseHTTPRequestHandler):
         command, data = get_arguments(self.path)
         print "Command: " + command
         print "Data: " + data
-        result = tallstore.getUserid(data)
+        result = tallstore.get_user_by_id(data)
         self.send_result(create_xml(result))
 #        result = send_to_storage(command, data)
 #        if result == False:
 #            send_to_request(data)
 #        else:
 #            self.send_result("this is our xmlfile")
-# main
+
+
+'''
+This is for starting the server.
+'''
 serveraddr = ('', 8001)
 srvr = ThreadingServer(serveraddr, RequestHandler)
 srvr.serve_forever()
