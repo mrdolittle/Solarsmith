@@ -3,7 +3,21 @@ Created on Mar 21, 2012
 
 @author: jonas
 '''
-[].s
+xml = "<?xml version 1.0?>"
+searchtag = "<searchResult>"
+friendtag = "<friends>"
+foestag = "<foes>"
+entrytag = "<entry>"
+nametag = "<name>"
+endsearchtag = "</searchResult>"
+endfriendstag = "</friends>"
+endfoestag = "</foes>"
+endentrytag = "</entry>"
+endnametag = "</name>"
+
+tosend = ""
+tosend = tosend.join((xml, searchtag, friendtag))
+print tosend
 #from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 #from SocketServer import ThreadingMixIn
 #
