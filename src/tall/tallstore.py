@@ -5,7 +5,7 @@ Created on Mar 22, 2012
 '''
 import sunburnt
 import ast
-
+from tall import SOLR_SERVER    # import dat silly global variable (should be somehow betterified in the futuritude)
 
 class SolrUser:
     '''
@@ -47,11 +47,9 @@ class SolrUser:
 
 
 def get_user_by_id(username):
-    '''
-    get_user_by_id(username)
-    Retrieves a user from Solr with the specified username.
-    '''
-    SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"
+    '''Retrieves a user from Solr with the specified username.'''
+    global SOLR_SERVER
+    
     interface = sunburnt.SolrInterface(SOLR_SERVER)
     ans = interface.query(id=username)
     for result in ans.execute(constructor=SolrUser):
@@ -62,11 +60,10 @@ def get_user_by_id(username):
 
 
 def get_friends_by_id(username):
-    '''
-    Retrieves a users friends and enemies from Solr.
-    '''
-    # TODO: write method
-    SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"
+    '''Retrieves a users friends and enemies from Solr.'''
+    global SOLR_SERVER
+    
+    # TODO: write function
     interface = sunburnt.SolrInterface(SOLR_SERVER)
     ans = interface.query(id=username)
     for result in ans.execute(constructor=SolrUser):
