@@ -11,6 +11,9 @@ import urlparse
 import tallstore
 
 
+SOLR_SERVER = 
+
+
 def read_line(s):
     '''
     Taken from somewhere, to read a line from a socket.

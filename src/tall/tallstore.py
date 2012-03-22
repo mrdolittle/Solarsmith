@@ -5,7 +5,8 @@ Created on Mar 22, 2012
 '''
 import sunburnt
 import ast
-from tall import SOLR_SERVER    # import dat silly global variable (should be somehow betterified in the futuritude)
+
+SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"
 
 class SolrUser:
     '''
