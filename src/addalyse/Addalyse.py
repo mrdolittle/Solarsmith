@@ -48,14 +48,14 @@ def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,
     sh = StorageHandler(solr_server)
     
     # maybe check if the user exists on twitter, but this check might be done in get_all_tweets
-    if not th.contains(username):
+    if not th.twitter_contains(username):
         return False
 
     
     if remake_profile:
         # get all tweeets from twitter API 
         tweets = th.get_all_tweets(username, None, True)
-        if tweets == None or tweets.length() == 0:
+        if tweets == None or len(tweets) == 0:
             return False
         # latest tweet is first in list
         new_since_id = tweets[0].id # assumes that the 
@@ -69,7 +69,7 @@ def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,
     else:
         # get tweets newer than sinceID 
         tweets = th.get_all_tweets(username, since_id, True)
-        if tweets == None or tweets.length() == 0:
+        if tweets == None or len(tweets) == 0:
             return False
 
         new_since_id = tweets[0].id

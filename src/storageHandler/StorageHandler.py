@@ -43,7 +43,7 @@ class StorageHandler:
             except Exception, e:
                 None
 
-        return [tuple(map(lambda a: x[a], fields)) for x in self.si.query(id=username).field_limit(fields).execute()]
+        return res 
 
     def get_user_documents(self, username, *rst):
         """Gets list of documents, represented as Document objects, matching the username wildcard.
