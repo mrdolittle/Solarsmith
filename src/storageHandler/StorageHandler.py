@@ -44,6 +44,14 @@ class StorageHandler:
                 None
 
         return res 
+    
+    def try_get_user_fields_as_dicts(self, username, *fields):
+        '''returns dict[] with the specified fields that also are in the database. 
+        all users are returned if the given username is a  '*'.
+        This method is needed because the database contains incomplete information, 
+        and update want to fill in that missing information. The other methods crashes 
+        if a field are missing from the database.'''
+        return self.si.query(id=username).field_limit(fields).execute()
 
     def get_user_documents(self, username, *rst):
         """Gets list of documents, represented as Document objects, matching the username wildcard.
