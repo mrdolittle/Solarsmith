@@ -32,6 +32,16 @@ class StorageHandler:
             for (a, b, c) in sh.get_user_fields('someuser', 'id', 'since_id', 'updatecount'):
                 blah
         """
+        #debugging
+        res=[]
+        for dict in self.si.query(id=username).field_limit(fields).execute():
+            tmp_list=[]
+            try:
+                for field in fields:
+                    tmp_list.append(dict[field])
+                res.append(tuple(tmp_list))
+            except Exception, e:
+                None
 
         return [tuple(map(lambda a: x[a], fields)) for x in self.si.query(id=username).field_limit(fields).execute()]
 
