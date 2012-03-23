@@ -61,7 +61,8 @@ def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,
         new_since_id = tweets[0].id # assumes that the 
         
         # send to analysis
-        (lovekeywords, hatekeywords) = analyse.analyse(tweets)# TODO:implement in analyse
+        (lovekeywords, hatekeywords) = ([("cat", 44), ("bear hunting", 22), ("dog", 33)], [("fishing", 55), ("bear grylls", 33)])
+        #(lovekeywords, hatekeywords) = analyse.analyse(tweets)# TODO:implement in analyse
         
         # store result in sunburnt
         sh.add_profile(username, lovekeywords, hatekeywords, new_since_id, update_count)
@@ -76,7 +77,8 @@ def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,
         # merging
 
         # send to analysis
-        (lovekeywords, hatekeywords) = analyse.analyse(tweets)# TODO:implement in analyse
+        (lovekeywords, hatekeywords) = ([("cat", 44), ("bear hunting", 22), ("dog", 33)], [("fishing", 55), ("bear grylls", 33)])
+        #(lovekeywords, hatekeywords) = analyse.analyse(tweets)# TODO:implement in analyse
         
         # get a users old hatekeywords_list and lovekeywords_list
         doc = sh.get_user_documents(username, 'lovekeywords_list', 'hatekeywords_list')
