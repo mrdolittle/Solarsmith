@@ -67,6 +67,12 @@ class StorageHandler:
         '''Check if a document known by id is stored in Solr.'''
         
         return self.get_user_fields(id, 'id') != []
+    
+    def get_friends_enemies(self, love_keywords, hate_keywords):
+        '''Not implemented!
+        returns the tuple (friends, enemies) where friends are a list of usernames sorted on friendliness and
+        enemies are a list of usernames sorted on how hate'''
+        return ([],[])
 
 
     
