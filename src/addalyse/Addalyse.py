@@ -133,8 +133,8 @@ def merge_tuples(list_of_only_love_or_only_hate_tuples):
     myDict={}
     # merge all tuples with the same keyword and sum the values
     for (keyword,value) in list_of_only_love_or_only_hate_tuples:
-        if keyword  in myDict:
-            myDict[keyword] = myDict.get(keyword, 0) + 1
+        # if exist increment by value  else add (keyword, value)
+        myDict [ keyword ] = myDict.get(keyword, 0) + value
     #returns a list of all (key, value) tuples in the dictionary
     return myDict.items()
 
