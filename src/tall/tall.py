@@ -53,7 +53,7 @@ def send_to_request(username):
     # TODO: write method to send commands to request
     soc = create_socket("localhost:8003")
     soc.sendall(username)
-    line = read_line(soc)
+    line = soc.recv(1024)
     print line
 
 
@@ -71,6 +71,10 @@ def create_xml(result):
     foestag = "<foes>"
     entrytag = "<entry>"
     nametag = "<name>"
+    lovekeywordstag = "<lovekeywords>"
+    hatekeywordstag = "<hatekeywords>"
+    endlovekeywordstag = "</lovekeywords>"
+    endhatekeywordstag = "</hatekeywords>"
     endsearchtag = "</searchResult>"
     endfriendstag = "</friends>"
     endfoestag = "</foes>"
@@ -83,7 +87,19 @@ def create_xml(result):
 
     # Start of friends
     tosend = tosend + entrytag + nametag + friendusername + endnametag
-    tosend = tosend + lovekeywords + hatekeywords + endentrytag
+    tosend = tosend + lovekeywordstag
+    
+    # Add friend's lovekeywords
+    for keyword in lovekeywords:
+        tosend = tosend + keyword + ","
+    tosend = tosend.rstrip(",")
+    tosend = tosend + endlovekeywordstag + hatekeywordstag
+    
+    # Add friend's hatekeywords
+    for keyword in hatekeywords:
+        tosend = tosend + keyword + ","
+    tosend = tosend.rstrip(",")
+    tosend = tosend + endhatekeywordstag + endentrytag
 
     # End of friends
     tosend = tosend + endfriendstag
@@ -93,7 +109,17 @@ def create_xml(result):
 
     # Add a foe
     tosend = tosend + entrytag + nametag + foeusername + endnametag
-    tosend = tosend + lovekeywords + hatekeywords + endentrytag
+    tosend = tosend + lovekeywordstag
+    # Add foe's lovekeywords
+    for keyword in lovekeywords:
+        tosend = tosend + keyword + ","
+    tosend = tosend.rstrip(",")
+    tosend = tosend + endlovekeywordstag + hatekeywordstag
+    # add foe's hatekeywords
+    for keyword in hatekeywords:
+        tosend = tosend + keyword + ","
+    tosend = tosend.rstrip(",")
+    tosend = tosend + endhatekeywordstag + endentrytag
 
     # End of foes
     tosend = tosend + endfoestag
@@ -167,7 +193,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         command, data = get_arguments(self.path)
         print "Command: " + command
         print "Data: " + data
-        result = tallstore.get_user_by_id(data)
+        result = tallstore.get_friends_by_id(data)
         self.send_result(create_xml(result))
 #        result = send_to_storage(command, data)
 #        if result == False:

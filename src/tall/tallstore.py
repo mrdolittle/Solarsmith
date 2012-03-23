@@ -26,18 +26,18 @@ class SolrUser:
         Get two lists. One with all lovekeywords and one with all hatekeywords.
         None of the lists contain weights.
         '''
-        lovekeywords = "<lovekeywords>"
+        lovekeywords = []
         lovelist = ast.literal_eval(self.lovekeywords_list)
         for key, w in lovelist:
-            lovekeywords = lovekeywords + key + ","
+#            lovekeywords = lovekeywords + [key + ","]
+            lovekeywords = lovekeywords + [key]
         lovekeywords = lovekeywords[:-1]
-        lovekeywords = lovekeywords + "</lovekeywords>"
-        hatekeywords = "<hatekeywords>"
-        hatelist = ast.literal_eval(self.lovekeywords_list)
+        hatekeywords = []
+        hatelist = ast.literal_eval(self.hatekeywords_list)
         for key, w in hatelist:
-            hatekeywords = hatekeywords + key + ","
+#            hatekeywords = hatekeywords + [key + ","]
+            hatekeywords = hatekeywords + [key]
         hatekeywords = hatekeywords[:-1]
-        hatekeywords = hatekeywords + "</hatekeywords>"
         return lovekeywords, hatekeywords
 
     def getId(self):
@@ -56,7 +56,6 @@ def get_user_by_id(username):
     for result in ans.execute(constructor=SolrUser):
         print "Query executed, result: "
         print result
-    result.getKeywords()
     return result
 
 
@@ -67,11 +66,18 @@ def get_friends_by_id(username):
     # TODO: write function
     interface = sunburnt.SolrInterface(SOLR_SERVER)
     ans = interface.query(id=username)
-    for result in ans.execute(constructor=SolrUser):
+    for searchee in ans.execute(constructor=SolrUser):
         print "Query executed, result: "
-        print result
-    result.getKeywords()
+        print searchee
 
+    lovekeywords, hatekeywords = searchee.getKeywords()
+#    print "trying to find with two keywords"
+    print lovekeywords
+    ans = interface.query(lovekeywords=lovekeywords[0])
+    result = []
+    for friends in ans.execute(constructor=SolrUser):
+#        print "get_friends_by_id test: "
+        result = result + friends
     return result
 
 get_friends_by_id("xantestuser2")
