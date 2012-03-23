@@ -18,7 +18,7 @@ Used by: request, update, scrape
 
 from twitterHelp import *
 from storageHandler import *
-from analyse import *
+#from analyse import *
 
 def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,twitter_help=None,sunburnt_API=None):
 # this might be a better ordering of input arguments because then more of them can be optional
@@ -100,10 +100,10 @@ def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,
     return True 
 
 # for haxing test, not working
-def analyse_tweets(list_of_tweets):
-    '''Will not be used! Only for testing. Not working.
+'''def analyse_tweets(list_of_tweets):
+    ''''''Will not be used! Only for testing. Not working.
     TODO: finish him!
-    calls an analyse method (in analyse) for each tweet.'''
+    calls an analyse method (in analyse) for each tweet.''''''
     mrb=MovieReviewBayes()
     l=[]
     h=[]
@@ -114,7 +114,7 @@ def analyse_tweets(list_of_tweets):
         (l2, h2) = mrb.analyse(tweet)#TODO: test
         l=l+l2
         h=h+h2
-    return (l,h)
+    return (l,h)'''
 
 def merge_lists(new_list,old_list):
     '''Convenience method. Tries to merge a new_list with an old_list. 
