@@ -21,7 +21,7 @@ from storageHandler import *
 from analyse import *
 
 def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,twitter_help=None,sunburnt_API=None):
-# this might be a better ordering of input arguments because then some of them can be optional
+# this might be a better ordering of input arguments because then more of them can be optional
 #def addalyse(solr_server, username, remake_profile=True, since_id_from_database=0, update_count_from_database=0)
     '''
     Description:
@@ -134,9 +134,7 @@ def merge_tuples(list_of_only_love_or_only_hate_tuples):
     # merge all tuples with the same keyword and sum the values
     for (keyword,value) in list_of_only_love_or_only_hate_tuples:
         if keyword  in myDict:
-            myDict[keyword] += value
-        else:
-            myDict[keyword] = value
+            myDict[keyword] = myDict.get(keyword, 0) + 1
     #returns a list of all (key, value) tuples in the dictionary
     return myDict.items()
 
