@@ -61,9 +61,7 @@ def create_xml(result):
     '''
     Creates the xml-string that will be sent to the GUI.
     '''
-    lovekeywords, hatekeywords = result.getKeywords()
-    friendusername = result.getId()
-    foeusername = result.getId()
+    friendresult, foeresult = result
     # All xml-flags
     xml = "<?xml version 1.0?>"
     searchtag = "<searchResult>"
@@ -85,21 +83,24 @@ def create_xml(result):
     # Add friends
     tosend = tosend + friendtag
 
-    # Start of friends
-    tosend = tosend + entrytag + nametag + friendusername + endnametag
-    tosend = tosend + lovekeywordstag
-    
-    # Add friend's lovekeywords
-    for keyword in lovekeywords:
-        tosend = tosend + keyword + ","
-    tosend = tosend.rstrip(",")
-    tosend = tosend + endlovekeywordstag + hatekeywordstag
-    
-    # Add friend's hatekeywords
-    for keyword in hatekeywords:
-        tosend = tosend + keyword + ","
-    tosend = tosend.rstrip(",")
-    tosend = tosend + endhatekeywordstag + endentrytag
+    for friends in friendresult:
+        lovekeywords, hatekeywords = friends.getKeywords()
+        friendusername = friends.getId()
+        # Start of friends
+        tosend = tosend + entrytag + nametag + friendusername + endnametag
+        tosend = tosend + lovekeywordstag
+        
+        # Add friend's lovekeywords
+        for keyword in lovekeywords:
+            tosend = tosend + keyword + ","
+        tosend = tosend.rstrip(",")
+        tosend = tosend + endlovekeywordstag + hatekeywordstag
+        
+        # Add friend's hatekeywords
+        for keyword in hatekeywords:
+            tosend = tosend + keyword + ","
+        tosend = tosend.rstrip(",")
+        tosend = tosend + endhatekeywordstag + endentrytag
 
     # End of friends
     tosend = tosend + endfriendstag
@@ -107,19 +108,22 @@ def create_xml(result):
     # Start of foes
     tosend = tosend + foestag
 
-    # Add a foe
-    tosend = tosend + entrytag + nametag + foeusername + endnametag
-    tosend = tosend + lovekeywordstag
-    # Add foe's lovekeywords
-    for keyword in lovekeywords:
-        tosend = tosend + keyword + ","
-    tosend = tosend.rstrip(",")
-    tosend = tosend + endlovekeywordstag + hatekeywordstag
-    # add foe's hatekeywords
-    for keyword in hatekeywords:
-        tosend = tosend + keyword + ","
-    tosend = tosend.rstrip(",")
-    tosend = tosend + endhatekeywordstag + endentrytag
+    for foes in foeresult:
+        lovekeywords, hatekeywords = foes.getKeywords()
+        foeusername = foes.getId()
+        # Add a foe
+        tosend = tosend + entrytag + nametag + foeusername + endnametag
+        tosend = tosend + lovekeywordstag
+        # Add foe's lovekeywords
+        for keyword in lovekeywords:
+            tosend = tosend + keyword + ","
+        tosend = tosend.rstrip(",")
+        tosend = tosend + endlovekeywordstag + hatekeywordstag
+        # add foe's hatekeywords
+        for keyword in hatekeywords:
+            tosend = tosend + keyword + ","
+        tosend = tosend.rstrip(",")
+        tosend = tosend + endhatekeywordstag + endentrytag
 
     # End of foes
     tosend = tosend + endfoestag

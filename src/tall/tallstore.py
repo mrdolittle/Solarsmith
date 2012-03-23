@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 '''
 Created on Mar 22, 2012
 
@@ -28,16 +29,14 @@ class SolrUser:
         '''
         lovekeywords = []
         lovelist = ast.literal_eval(self.lovekeywords_list)
-        for key, w in lovelist:
-#            lovekeywords = lovekeywords + [key + ","]
-            lovekeywords = lovekeywords + [key]
-        lovekeywords = lovekeywords[:-1]
+        # Iterate over the list of lovekeyword tuples and throw away the weights.
+        for key, _ in lovelist:
+            lovekeywords = lovekeywords + [key] # Appends the lovekeywords to a list
         hatekeywords = []
         hatelist = ast.literal_eval(self.hatekeywords_list)
-        for key, w in hatelist:
-#            hatekeywords = hatekeywords + [key + ","]
-            hatekeywords = hatekeywords + [key]
-        hatekeywords = hatekeywords[:-1]
+        # Iterate over the list of hatekeyword tuples and throw away the weights.
+        for key, _ in hatelist:
+            hatekeywords = hatekeywords + [key] # Appends the hatekeywords to a list
         return lovekeywords, hatekeywords
 
     def getId(self):
@@ -71,16 +70,20 @@ def get_friends_by_id(username):
         print searchee
 
     lovekeywords, hatekeywords = searchee.getKeywords()
-#    print "trying to find with two keywords"
-    print lovekeywords
-    ans = interface.query(lovekeywords=lovekeywords[0])
-    result = []
+    
+    ans = interface.query(lovekeywords=lovekeywords[0]) # Ska fixas så den inte bara söker på första keyworden
+    loveresult = []
     for friends in ans.execute(constructor=SolrUser):
-#        print "get_friends_by_id test: "
-        result = result + friends
-    return result
+        loveresult = loveresult + [friends]
+    # print loveresult
+    
+    ans = interface.query(lovekeywords=hatekeywords[0])
+    hateresult = []
+    for foes in ans.execute(constructor=SolrUser):
+        hateresult = hateresult + [foes]
+    return (loveresult, hateresult)
 
-get_friends_by_id("xantestuser2")
+
 #getUserid("xantestuser2")
 #friends = interface.query(lovekeywords='Fear')
 #for fres in friends.execute(constructor=SolrUser):
