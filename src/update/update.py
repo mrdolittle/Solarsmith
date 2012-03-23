@@ -28,7 +28,7 @@ def main():
     th = TwitterHelp() 
     sh = StorageHandler(SOLR_SERVER)
     
-    limit=UPDATE_N
+    sleep_time=10
     
     while True:
         for (username, since_id, update_count, timestamp) in sh.get_user_fields('*', 'id', 'since_id', 'updatecount', 'timestamp'):
@@ -41,7 +41,7 @@ def main():
                          since_id,
                          (update_count % UPDATE_N) == 0,
                          update_count + 1) 
-            time.sleep(10) # sleep for ten seconds, to not make to many requests to twitter
+            time.sleep(sleep_time) # sleep for ten seconds, to not make to many requests to twitter
     
 if __name__ == "__main__":
     main()
