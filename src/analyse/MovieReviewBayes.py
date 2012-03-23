@@ -9,9 +9,27 @@ from nltk.corpus import movie_reviews
  
 def word_feats(words):
     return dict([(word, True) for word in words])
-class MovieReviewBayes:
-    '''Enkel analysmetod hittad på nätet på filmrecensioner'''
+
+def analyse(self,tweet):
+    '''method that returns if a word is positive or negative'''
+    return self.classifier.classify(word_feats(tweet))
     
+def analyse_value(self,tweet):
+    '''method that returns a value of how positive or negative a sentence is'''
+    value=0
+    itr=self.classifier
+    for item in itr:
+        value=value+item[1]
+    return value
+    
+def test(self,tweet):
+    value=0
+    itr=self.classifier.probdist(word_feats(tweet)).items()
+    for item in itr:
+        value=value+item[1]
+    return value
+class MovieReviewBayes:
+    '''Simple analys script found on the internet, trained on moviereviews'''
     negids = movie_reviews.fileids('neg')
     posids = movie_reviews.fileids('pos')
     
@@ -30,7 +48,18 @@ class MovieReviewBayes:
     classifier = NaiveBayesClassifier.train(trainfeats)
     #print 'accuracy:', nltk.classifMyClassy.util.accuracy(classifier, testfeats)
     classifier.show_most_informative_features()
-    classifier.probdist(word_feats("I DONT LIKE CARS HAHA :)"))
+    #classifier._feature_probdist.items()[0].prob()
+    cpdist = classifier._feature_probdist
+
+    print classifier.most_informative_features(100)
+    cpdist.get
+    #print classifier.batch_prob_classify(word_feats("HAHA I DONT THINK THIS WILL WORK")).items()
+  
+analyser=MovieReviewBayes()
+
+print analyse(analyser,"I DONT LIKE THIS CAR")
+#test(analyser,"I DONT LIKE THIS CAR")
+
     
     
     def analyse(self,tweet):
@@ -43,6 +72,6 @@ class MovieReviewBayes:
         
         return MovieReviewBayes.classifier.prob_classify(word_feats(tweet)).items()
         
-        
+
 
   

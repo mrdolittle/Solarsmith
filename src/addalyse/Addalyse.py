@@ -61,7 +61,7 @@ def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,
         new_since_id = tweets[0].id # assumes that the 
         
         # send to analysis
-        (lovekeywords, hatekeywords) = analyse.analyse(tweets)# TODO:implement in analyse or use analyse_tweets
+        (lovekeywords, hatekeywords) = analyse.analyse(tweets)# TODO:implement in analyse
         
         # store result in sunburnt
         sh.add_profile(username, lovekeywords, hatekeywords, new_since_id, update_count)
@@ -76,7 +76,7 @@ def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,
         # merging
 
         # send to analysis
-        (lovekeywords, hatekeywords) = analyse.analyse(tweets)# TODO:implement in analyse or use analyse_tweets
+        (lovekeywords, hatekeywords) = analyse.analyse(tweets)# TODO:implement in analyse
         
         # get a users old hatekeywords_list and lovekeywords_list
         doc = sh.get_user_documents(username, 'lovekeywords_list', 'hatekeywords_list')
@@ -116,15 +116,15 @@ def analyse_tweets(list_of_tweets):
 
 def merge_lists(new_list,old_list):
     '''Convenience method. Tries to merge a new_list with an old_list. 
-    Raise: "TypeError: object of type 'NoneType' has no len()" if newlist is None
-    Returns a merged list of both if old_list are not None and len(old_list)>0
+    Raise exception: "TypeError: 'NoneType' object is not iterable" if new_list is None
+    Returns a merged list of both if both
     else returns new_list
     .'''
-    #if old_list != None and len(old_list) > 0 and new_list != None and len(new_list) > 0:
-    if (len(new_list) > 0 and old_list != None and len(old_list) > 0):
+    # try to merge the tuples in both lists
+    if new_list != None and old_list != None:
         return merge_tuples(new_list + old_list)
     else: 
-        return new_list #if new_list != None else old_list
+        return merge_tuples(new_list) # raises exception if new_list == None
 
 def merge_tuples(list_of_only_love_or_only_hate_tuples):
     '''gets a list of love tuples or a list of hate tuple, it merges and adds the values
@@ -137,9 +137,6 @@ def merge_tuples(list_of_only_love_or_only_hate_tuples):
         myDict [ keyword ] = myDict.get(keyword, 0) + value
     #returns a list of all (key, value) tuples in the dictionary
     return myDict.items()
-
-# test
-
 
         
     
