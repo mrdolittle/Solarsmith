@@ -61,6 +61,16 @@ print analyse(analyser,"I DONT LIKE THIS CAR")
 #test(analyser,"I DONT LIKE THIS CAR")
 
     
+    
+    def analyse(self,tweet):
+        '''Public method used for analysing tweet.'''
+        
+        return MovieReviewBayes.classifier.classify(word_feats(tweet))
+    
+    def analyse_value(self,tweet):
+        '''Returns an arbitrary method to measure positive/negative.'''
+        
+        return MovieReviewBayes.classifier.prob_classify(word_feats(tweet)).items()
         
 
 

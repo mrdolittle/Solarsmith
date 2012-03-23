@@ -4,12 +4,17 @@ Created on Mar 21, 2012
 @author: Jonas & Petter
 '''
 import httplib
+import socket
+import urllib
 
 
-def client(string):
-    host = httplib.HTTPConnection('localhost', 8001, timeout=10)
-    host.request("POST", 'localhost:8001')
-    print host.getresponse(True).read(None)
-
-print "nagonting"
-client('hej pa servern')
+def create_socket(address):
+    '''
+    Creates a socket for communicating with either storage handler or request.
+    '''
+    soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    soc.connect(address)
+    soc.sendall('lol')
+    print soc.recv(1024)
+    
+create_socket(("130.229.128.185", 1337))
