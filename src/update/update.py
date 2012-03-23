@@ -58,7 +58,7 @@ def update_and_repair_loop():
     
     sleep_time=1
     
-    fields=['id', 'since_id', 'updatecount', 'timestamp']
+    fields=tuple(['id', 'since_id', 'updatecount', 'timestamp'])
     
     while True:
         for dct in sh.try_get_user_fields_as_dicts('*', fields):
