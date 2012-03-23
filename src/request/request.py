@@ -28,17 +28,20 @@ def main():
     #Create the request list
     request_list = []
     
+    #Start the username handler
+    username_handle_instance = UsernameHandler(request_list)
+    username_handle_instance.start()
+
     #Create a new Server instance
     server_instance = Server(request_list)
     
     #Start listening:
     server_instance.run()
-
-    if request_list != []:
-        for e in request_list:
-            sys.stdout.write(request_list[e])
-    else:
-        sys.stdout.write("Request list was empty. Program now shutting down.")
+    
+    #Terminate
+    sys.stdout.write("calling the stop_username_handler")
+    username_handle_instance.stop_username_handler()
+    
 class Server():
     '''The server that handles the incomming connections'''
     
@@ -71,6 +74,8 @@ class Server():
         self.open_server_socket()
         input = [self.server,sys.stdin]
         listen = True
+        #Print out console information
+        sys.stdout.write("Waiting for connections.\n")
         while(listen):
             ready_for_input,ready_for_output,ready_for_except = select(input,[],[])
             
@@ -78,11 +83,12 @@ class Server():
                 if s == self.server:
                     #Create a client on an incomming connection
                     client = Client(self.server.accept(), self.request_list)
+                    #Print out console information
+                    sys.stdout.write("Server: A connection has been established\n")
                     #Start the thread
                     client.start()
                     #Append the thread to a list of threads
                     self.threads.append(client)
-                    sys.stdout.write("New socket accepted!\n")
                 elif s == sys.stdin:
                     #Handle the input junk
                     server_input = sys.stdin.readline()
@@ -90,7 +96,7 @@ class Server():
                     if server_input == "Terminate\n":
                         listen = False
                     if server_input == "Connections\n" and self.threads != []:
-                        sys.stdout.write("Connection found " + str(len(self.threads)) + " connections!\n")
+                        sys.stdout.write("Found " + str(len(self.threads)) + " active connection(s)!\n")
                     if server_input == "Connections\n" and self.threads == []:
                         sys.stdout.write("Currently there are no active threads \n")
                     
@@ -113,15 +119,31 @@ class Client(threading.Thread):
         while(running):
             data = self.client.recv(self.size)
             if data:
-                sys.stdout.write("Recieved username: " + data)
-                self.client.send("Recieved username: " + data)
+                self.client.send("Server response: Recieved username: " + data)
                 if not self.request_list.__contains__(data):
                     self.request_list.append(data)
             else:
                 self.client.close()
                 running = False
                 
-#class UsernameHandler:
+class UsernameHandler(threading.Thread):
+    '''A class that will handle all of the usernames and make sure that they are
+        sent and processed one by one. '''
     
+    def __init__(self, request_list_input):
+        threading.Thread.__init__(self)
+        self.size = 1024
+        self.request_list_empty = True 
+        self.request_list = request_list_input
+        self.stop_thread = False
+        
+    def run(self):
+        running = True
+        while(running):
+            if self.request_list != []:
+                data = self.request_list.pop()
+                sys.stdout.write("Processing username: " + data + "\n")
+                #TODO: Send to addalyse        
+        
 if __name__ == "__main__":
     main()

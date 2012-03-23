@@ -14,7 +14,7 @@ def create_socket(address):
     '''
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     soc.connect(address)
-    soc.sendall('lol')
+    soc.sendall('Trolololololol')
     print soc.recv(1024)
     
 create_socket(("130.229.128.185", 1337))
