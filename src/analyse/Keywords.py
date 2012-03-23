@@ -3,7 +3,6 @@ Keywords
 
 Used to extract keywords from tweets (rather greedy)
 Includes methods: extract_keywords
-
 @author: 0tchii
 '''
 import nltk
@@ -12,7 +11,8 @@ import operator
 from Stopwords import filter_keywords
 
 def extract_keywords(string):
-    '''Receives a string and returns a list of extracts keywords'''
+    '''Receives a string and returns a list of extracts keywords.
+    Method is not used, but not yet removed due to any reasonable reason'''
     sequence=reduce(operator.add, map(nltk.pos_tag, map(nltk.word_tokenize, nltk.sent_tokenize(string))))
     length=len(sequence)
     
@@ -65,7 +65,6 @@ def strip_hashtags(text,words):
                 x=x-1
             x=x-1
         x=x+1
-    print words
     return (words,sequence)          
         
 #Using grammar
@@ -98,6 +97,8 @@ def extract_keywords_grammar(words,sequence):
     return words
 
 def extract(text,words):
+    '''The main purpose of Keywords. Uses the hashtag function and the extract keywords by 
+    grammar function to find as many keywords as possible'''
     hashtagreturn = strip_hashtags(text,words)
     return extract_keywords_grammar(hashtagreturn[0],hashtagreturn[1])
                     
