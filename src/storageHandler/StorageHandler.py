@@ -19,10 +19,14 @@ class StorageHandler:
         self.si = sunburnt.SolrInterface(solr_server, schema)
         
     def get_user_fields(self, username, *fields):
-        """Gets fields on all documents matching the username wildcard.
-        username may be either a full username or a wildcard containing: *.
-        e.g.: '_xantoz_' '_xan*' or '*'.
-        The latter would return all users in Solr.
+        """Gets fields on all documents matching the username
+        wildcard.  username may be either a full username or a
+        wildcard containing: *.  However no leading wildcards are
+        allowed (refer to sunburnt documentation for instance).
+        
+        e.g.: '_xantoz_', '_x*z_', '_xan*' or '*'.
+              The latter would return all users in Solr.
+              However '*toz_' is not a valid wildcard query
 
         Returns the specified fields in a tuple in the same orders as specified.
 

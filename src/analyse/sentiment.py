@@ -31,16 +31,14 @@ def analyse_sentiment(sentence):
         return 1.0 # byts mot en riktig relevansmetod
     else:
         return 0.5 # byts mot en riktig relevansmetod
-
-
     
 	
 ## read all tweets and labels
 with open(CORPUS, 'rb') as fp:
-    reader = csv.reader( fp, delimiter=',', quotechar='"', escapechar='\\' )
+    reader = csv.reader(fp, delimiter=',', quotechar='"', escapechar='\\')
     tweets = []
     for row in reader:
-        tweets.append( [row[4], row[1]] )
+        tweets.append([row[4], row[1]])
 
 ## treat neutral and irrelevant the same
 for t in tweets:
@@ -49,7 +47,7 @@ for t in tweets:
         
 ## split in to training and test sets
 #print "SHUFFLING TWEETS"
-random.shuffle( tweets );
+random.shuffle(tweets);
 #print "PUTTING INTO TRAINING AND TESTING VECTORS"
 fvecs = [(tweet_features.make_tweet_dict(t),s) for (t,s) in tweets]
 v_train = fvecs[:2000]
