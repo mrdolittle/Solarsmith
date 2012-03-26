@@ -59,11 +59,11 @@ class TwitterHelp:
         @param since_id: [optional] The ID of the earliest tweet that will be included
         @return: A list of status objects'''
         try:
-            return self.twitter_API.GetUserTimeline(username, 1000000, since_id, None)
+            return self.twitter_API.GetUserTimeline(username, 100000, since_id)
         except twitter.TwitterError:
             raise #Skickar vidare felet. Kan skicka eget exception om man vill.
-        except urllib2.HTTPError:
-            raise twitter.TwitterError("Fel i get_all_statuses")
+        #except urllib2.HTTPError:
+            #raise twitter.TwitterError("Fel i get_all_statuses")
         
     def get_all_tweets(self, username, since_id=None):
         all_added_users = {}

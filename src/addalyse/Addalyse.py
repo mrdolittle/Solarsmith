@@ -52,7 +52,7 @@ def addalyse(solr_server, username, since_id=0, remake_profile=True, update_coun
     
     if remake_profile:
         # get all tweeets from twitter API 
-        tweets = th.get_all_tweets(username, None, True)
+        tweets = th.get_all_statuses(username, None)
         if tweets == None or len(tweets) == 0:
             return False
         # latest tweet is first in list
@@ -69,7 +69,7 @@ def addalyse(solr_server, username, since_id=0, remake_profile=True, update_coun
         
     else:
         # get tweets newer than sinceID 
-        tweets = th.get_all_tweets(username, since_id, True)
+        tweets = th.get_all_statuses(username, since_id)
         if tweets == None or len(tweets) == 0:
             return False
         
