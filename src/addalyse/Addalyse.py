@@ -121,6 +121,14 @@ def addalyse(solr_server, username, since_id, remake_profile=True, update_count=
         h=h+h2
     return (l,h)'''
 
+def appender(list1,list2):
+    tmp=[]
+    for a in list1:
+        tmp.append(a)
+    for b in list2:
+        tmp.append(b)
+    return tmp
+
 def merge_lists(new_list,old_list):
     '''Convenience method. Tries to merge a new_list with an old_list. 
     Raise exception: "TypeError: 'NoneType' object is not iterable" if new_list is None
