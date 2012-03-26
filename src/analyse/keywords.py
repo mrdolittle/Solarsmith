@@ -9,7 +9,7 @@ Includes methods: extract_keywords
 
 import nltk
 from nltk.tag import _POS_TAGGER
-from Stopwords import filter_keywords, strip_tweet
+from stopwords import filter_keywords, strip_tweet
 
 def extract_keywords_grammar(text):
     '''Uses chunks matching to identify keywords in a tweet. The code looks much nicer this way :P'''

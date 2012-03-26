@@ -19,20 +19,22 @@ If it is not empty, the thread will pop the first element and process it by send
 addalyse package and then expect an answer. This will be done untill the list is empty again.  
 '''
 
-#from addalyse import *
+from addalyse import *
 from twitterHelp import *
 from select import *
 from sys import *
 import threading
 import socket
 import sys
+
+SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"
         
 def add_to_solr(username):
     '''Requests a certain Twitter username to be added. 
     @argument username: A string containing the username of a Twitter user.
     @return: A boolean set to true if the user has been added, otherwise false.'''
     
-    #return addalyse(username,0,True)
+    return addalyse(SOLR_SERVER, username)
 
     
 def main():
@@ -197,12 +199,13 @@ class UsernameHandler(threading.Thread):
             if self.request_list != []:
                 data = self.request_list.pop()
                 sys.stdout.write("Processing username: " + data[0] + "\n")
-                #TODO: Send to addalyse
+                res = add_to_solr(data[0])
+                data[1].close()
                 #On response:
-                    #If user_added response = "User added"
-                    #elif user_does_not_exist response = "User does not exist"
-                    #elif timeout response = "Timeout occured"
-                    #else response = "An unknown error has occured"
+                    #If user_added response = 1 #User added
+                    #elif user_does_not_exist response = 2 #User does not exist
+                    #elif timeout response = 3 #Timeout occured ##SKA GORAS I TALL
+                    #else response = 4 #An unknown error has occured
                     #sent = data[1].self.client.send(response)
                     #if sent == 0:
                         #raise RuntimeError("socket connection broken")
