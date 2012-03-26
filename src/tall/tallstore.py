@@ -9,6 +9,11 @@ import ast
 
 SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"
 
+
+def get_list_from_string(string):
+    return ast.literal_eval(string)
+
+
 class SolrUser:
     '''
     A class representing a User retrieved from Solr.
@@ -38,7 +43,7 @@ class SolrUser:
         for key, _ in hatelist:
             hatekeywords = hatekeywords + [key] # Appends the hatekeywords to a list
         return lovekeywords, hatekeywords
-
+    
     def getId(self):
         '''
         Return the username.
@@ -55,22 +60,33 @@ def get_frienenmies_by_id(username):
     for searchee in ans.execute(constructor=SolrUser):
         print "Query executed, result: "
         print searchee
-
+        
     if "searchee" not in locals():
         return False # User is not in Solr
     
-    lovekeywords, hatekeywords = searchee.getKeywords()
-    ans = interface.query(lovekeywords=lovekeywords[0]) # Ska fixas så den inte bara söker på första keyworden
-    loveresult = []
-    for friends in ans.execute(constructor=SolrUser):
-        loveresult = loveresult + [friends]
-    # print loveresult
-    
-    ans = interface.query(lovekeywords=hatekeywords[0])
-    hateresult = []
-    for foes in ans.execute(constructor=SolrUser):
-        hateresult = hateresult + [foes]
-    return (loveresult, hateresult)
+    userlovekeywords = get_list_from_string(searchee.lovekeywords_list)
+    userhatekeywords = get_list_from_string(searchee.hatekeywords_list)
+    print userlovekeywords
+    print userhatekeywords
+    q = interface.Q
+    for key, weight in userlovekeywords:
+        q = q | interface.Q(lovekeywords=key) ** int(weight)
+    query = interface.query(q)
+    for friends in query.execute(constructor=SolrUser):
+        print friends
+  #  si.query(si.Q(lovekeywords='cat') ** 2.3 | si.Q(lovekeywords='fish') ** 1.2)
+
+#    ans = interface.query(lovekeywords=lovekeywords[0]) # Ska fixas så den inte bara söker på första keyworden
+#    loveresult = []
+#    for friends in ans.execute(constructor=SolrUser):
+#        loveresult = loveresult + [friends]
+#    # print loveresult
+#    
+#    ans = interface.query(lovekeywords=hatekeywords[0])
+#    hateresult = []
+#    for foes in ans.execute(constructor=SolrUser):
+#        hateresult = hateresult + [foes]
+#    return (loveresult, hateresult)
 
 
 #getUserid("xantestuser2")
