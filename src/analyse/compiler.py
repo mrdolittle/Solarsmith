@@ -11,15 +11,33 @@ from sentiment import analyse_sentiment
 
 def analyse_sentence(sentence):
     '''Takes a tweet and performs sentimentanalysis on the given tweet, 
-    then gives the weight that returns from the sentiment analysis'''
+    then gives the weight that was returned from the sentiment analysis
+
+    TODO: Is this function neccesary? HALF-DEPRECATED'''
     
-    sentiment=analyse_sentiment(sentence)
+    sentiment = analyse_sentiment(sentence)
     keywordtuples = extract_keywords(sentence)
     return [(keyword,sentiment*weight) for (keyword,weight) in keywordtuples]
 
-def analyse_sentences(sentences):
+def analyse_sentences_var_1(sentences):
     '''Does analysis of all sentences and returns a compilation of all
-    results in the form of two lists'''
+    results in the form of two lists in the magical and fantastical
+    format we all know and love.
+
+    ...'''
+
+    def foo(keywords_dict):
+        lovekeywords[keyword] = lovekeywords.get(keyword, 0.0)
+
+    hatekeywords = {}
+    lovekeywords = {}
+    for sentence in sentences:
+        sentiment = analyse_sentiment(sentence)
+        for (keyword, weight) = extract_keywords(sentence):
+            a = lovekeywords if sentiment > 0.0 else hatekeywords
+            a[keyword] = a.get(keyword, 0.0)*weight*abs(sentiment)
+
+    return (list(lovekeywords), list(hatekeywords))
 
 def analyse(tweets):
     '''Do the whole analysis shebang and return the results as one lovekeyword list and one hatekeyword list.
@@ -28,6 +46,6 @@ def analyse(tweets):
     (love, hate) = analyse(tweets)
     print love => [("cat", 34), ("fishing", 22), ("bear grylls", 33)]
     print hate => [("dog", 123), ("bear hunting", 44)]'''
-    
-    sentences = reduce(lambda x,y: x.append(y), map(nltk.sent_tokenize, tweetlist))
-    return analyse_sentences(sentences)
+
+    # split the list of tweets to a list of sentences and send it to analyse_sentences
+    return analyse_sentences_var_1(reduce(lambda x,y: x.append(y), map(nltk.sent_tokenize, tweetlist)))

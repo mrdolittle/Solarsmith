@@ -31,8 +31,6 @@ def analyse_sentiment(sentence):
         return 1.0 # byts mot en riktig relevansmetod
     else:
         return 0.5 # byts mot en riktig relevansmetod
-
-
     
 	
 ## read all tweets and labels
