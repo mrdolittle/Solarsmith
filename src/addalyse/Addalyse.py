@@ -10,7 +10,7 @@ Uses: analysis, storageHandler
 
 Used by: request, update, scrape 
 
-@author: mbernt, anneback
+@author: mbernt, anneback, Xantoz
 '''
 
 #from twitterHelp import twitter_help_global
@@ -18,7 +18,18 @@ Used by: request, update, scrape
 
 from twitterHelp import *
 from storageHandler import *
+from exception import Exception
 #from analyse import *
+
+class AddalyseError(Exception):
+    '''Base class for all variants of errors Addalyse wants to raise.'''
+    
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
+class AddalyseUserNotOnTwitterError(AddalyseError): pass
 
 def addalyse(solr_server, username, since_id=0, remake_profile=True, update_count=1):
     '''
@@ -45,11 +56,11 @@ def addalyse(solr_server, username, since_id=0, remake_profile=True, update_coun
     th = TwitterHelp()
     
     # Does not user up a twitter API call.
-    if( not th.twitter_contains(username)):
-        return False
+    if not th.twitter_contains(username):
+        raise AddalyseUserNotOnTwitterError("Couldn't find any trace of '" + username + "'")
     
     sh = StorageHandler(solr_server)
-    
+
     #remake if not in solr
     remake_profile = remake_profile or not sh.contains(username)
     
