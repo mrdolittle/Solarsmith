@@ -30,6 +30,7 @@ def create_socket(address):
     '''
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     soc.connect(address)
+    return soc
 
 
 def send_to_storage(command, data):
@@ -51,10 +52,28 @@ def send_to_request(username):
     Sends a username to request and awaits an answer.
     '''
     # TODO: write method to send commands to request
-    soc = create_socket("localhost:8003")
+    soc = create_socket(("130.229.128.185", 1337))
     soc.sendall(username)
-    line = soc.recv(1024)
-    print line
+    response = soc.recv(1024)
+    
+    if response == 1:
+        print 1
+        return (True, "User added, retrying.")
+        # Anropa storage igen med användarnamnet
+    
+    elif response == 2:
+        print 2
+        return (False, "User does not exist.")
+        # Tala om för gui att användaren inte finns
+    elif response == 3 | response == 4:
+        print response
+        return (False, "ERROR")
+        # Tala om för gui att nånting pajade
+
+    # 1 = user added
+    # 2 = user does not exist
+    # 3 = timeout
+    # 4 = unknown error
 
 
 def create_xml(result):
@@ -197,8 +216,20 @@ class RequestHandler(BaseHTTPRequestHandler):
         command, data = get_arguments(self.path)
         print "Command: " + command
         print "Data: " + data
-        result = tallstore.get_friends_by_id(data)
-        self.send_result(create_xml(result))
+        frienemy_result = tallstore.get_frienenmies_by_id(data) # Ska ersättas med anrop till storage handler
+        if frienemy_result == False:
+            self.send_result('User not found, attempting to add')
+            succeeded, message = send_to_request(data)
+            if succeeded == True:
+                self.send_result(message)
+                # Hämta från storage
+                frienemy_result = tallstore.get_frienenmies_by_id(data)
+                if frienemy_result == False:
+                    return # Bör ersättas med felkod. Kommer vi hit är något allvarligt fel
+            else:
+                self.send_result(message)
+                return
+        self.send_result(create_xml(frienemy_result))
 #        result = send_to_storage(command, data)
 #        if result == False:
 #            send_to_request(data)
