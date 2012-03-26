@@ -32,8 +32,18 @@ class StorageHandler:
             for (a, b, c) in sh.get_user_fields('someuser', 'id', 'since_id', 'updatecount'):
                 blah
         """
+        #debugging
+        res=[]
+        for dict in self.si.query(id=username).field_limit(fields).execute():
+            tmp_list=[]
+            try:
+                for field in fields:
+                    tmp_list.append(dict[field])
+                res.append(tuple(tmp_list))
+            except Exception, e:
+                None
 
-        return [tuple(map(lambda a: x[a], fields)) for x in self.si.query(id=username).field_limit(fields).execute()]
+        return res 
 
     def get_user_documents(self, username, *rst):
         """Gets list of documents, represented as Document objects, matching the username wildcard.
@@ -67,6 +77,12 @@ class StorageHandler:
         '''Check if a document known by id is stored in Solr.'''
         
         return self.get_user_fields(id, 'id') != []
+    
+    def get_friends_enemies(self, love_keywords, hate_keywords):
+        '''Not implemented!
+        returns the tuple (friends, enemies) where friends are a list of usernames sorted on friendliness and
+        enemies are a list of usernames sorted on how hate'''
+        return ([],[])
 
 
     

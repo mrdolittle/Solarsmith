@@ -3,18 +3,20 @@ Keywords
 
 Used to extract keywords from tweets (rather greedy)
 Includes methods: extract_keywords
-@author: 0tchii
+
+@author: 0tchii, Xantoz
 '''
+
 import nltk
 from nltk.tag import _POS_TAGGER
 import operator
-from Stopwords import filter_keywords
+from Stopwords import filter_keywords, strip_tweet
 
 def extract_keywords(string):
-    '''Receives a string and returns a list of extracts keywords.
-    Method is not used, but not yet removed due to any reasonable reason'''
-    sequence=reduce(operator.add, map(nltk.pos_tag, map(nltk.word_tokenize, nltk.sent_tokenize(string))))
-    length=len(sequence)
+    '''Receives a string and returns a list of extracts keywords'''
+    
+    sequence = reduce(operator.add, map(nltk.pos_tag, map(nltk.word_tokenize, nltk.sent_tokenize(string))))
+    length = len(sequence)
     
     def doStuff(x, words):
         '''Recursive help method to parse for keywords and keyword sequences'''
@@ -43,40 +45,44 @@ def extract_keywords(string):
         if x+1<(length-1):
             return doStuff(x+1, words)
         else:
-            return filter_keywords(words)
+            return words
 
     return doStuff(0, [])
 
-def strip_hashtags(text,words):
-    '''Searches for hashtags and adds the tag to the list of keywords.
-        Removes these from the sequence so that it can later be used by extract_keywords_grammar'''
-    sequence=reduce(operator.add, map(nltk.pos_tag, map(nltk.word_tokenize, nltk.sent_tokenize(text))))
-    length=len(sequence)
-    x=0;
-    while (x<length):
-        elem=sequence[x]
-        if elem[0]=='#':
-            del sequence[x]
-            length=length-1     
-            if x<length:
-                words.append(sequence[x][0])
-                del sequence[x]
-                length=length-1
-                x=x-1
-            x=x-1
-        x=x+1
-    return (words,sequence)          
+# def strip_hashtags(text, words):
+#     '''Searches for hashtags and adds the tag to the list of keywords.
+#     Removes these from the sequence so that it can later be used by extract_keywords_grammar'''
+    
+#     sequence = reduce(operator.add, map(nltk.pos_tag, map(nltk.word_tokenize, nltk.sent_tokenize(text))))
+#     length = len(sequence)
+#     x = 0
+#     while (x < length):
+#         elem = sequence[x]
+#         if elem[0] == '#':
+#             del sequence[x]
+#             length = length-1     
+#             if x < length:
+#                 words.append(sequence[x][0])
+#                 del sequence[x]
+#                 length = length - 1
+#                 x = x - 1
+#             x = x - 1
+#         x = x + 1
+#     print words
+#     return (words,sequence)          
         
 #Using grammar
-def extract_keywords_grammar(words,sequence):
-    '''Uses chunks matching to identify keywords in a tweet. The code looks much nicer this way :P'''           
+# def extract_keywords_grammar(words,sequence):
+def extract_keywords_grammar(sequence):
+    '''Uses chunks matching to identify keywords in a tweet. The code looks much nicer this way :P'''
+    
     grammar=''' Noun: {<DT>?<JJ>+(<NN>|<NNS>|<VBG>)+}
                 ToVerb: {<TO><VB>}
                 Name:{<NNP>+}                
             '''
     grammarSingular='''Noun:{(<NN>|<NNS>|<VBG>)}
                         Name: {<NNP>}
-    '''
+                    '''
     chunks = nltk.RegexpParser(grammar)
     chunksSingular = nltk.RegexpParser(grammarSingular)
     
@@ -96,11 +102,21 @@ def extract_keywords_grammar(words,sequence):
                     
     return words
 
-def extract(text,words):
-    '''The main purpose of Keywords. Uses the hashtag function and the extract keywords by 
-    grammar function to find as many keywords as possible'''
-    hashtagreturn = strip_hashtags(text,words)
-    return extract_keywords_grammar(hashtagreturn[0],hashtagreturn[1])
+# def extract(text,words):
+#     hashtagreturn = strip_hashtags(text,words)
+#     return extract_keywords_grammar(hashtagreturn[0], hashtagreturn[1])
+
+def get_hashtags(tweet):
+    '''Splits tweet on whitespace (this is ok, since hashtags are rarely combined together with
+    punctuation in scary ways that other words might be... I think... (TODO: investigate this)) and
+    finds hashtags in it.'''
+    
+    return filter(lambda x: x[0] == '#', tweet.split())
+
+def extract(tweet):
+    '''Extracts hashtags and keywords from a tweet, stores them in a neat little list. Wee'''
+    
+    return filter_keywords(extract_keywords_grammar(strip_tweet(tweet))) + get_hashtags(tweet)
                     
 #Initialize _POS_TAGGER
 nltk.data.load(_POS_TAGGER)
@@ -108,4 +124,4 @@ nltk.data.load(_POS_TAGGER)
 if __name__ == '__main__':
     text = "Bear Grylls likes to go spear fishing #fishing"
     print extract_keywords(text)
-    print extract(text,[])
+    print extract(text, [])
