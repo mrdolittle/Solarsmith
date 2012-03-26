@@ -47,10 +47,8 @@ def addalyse(solr_server, username, since_id, remake_profile=True, update_count=
     th = TwitterHelp()
     sh = StorageHandler(solr_server)
     
-    # maybe check if the user exists on twitter, but this check might be done in get_all_tweets
-    if not th.twitter_contains(username):
-        return False
-
+    #remake if not in solr
+    remake_profile = remake_profile or not sh.contains(username)
     
     print "addalyse test indata: " + str(tuple([solr_server, username, since_id, remake_profile, update_count]))
     
@@ -74,8 +72,6 @@ def addalyse(solr_server, username, since_id, remake_profile=True, update_count=
         if tweets == None or len(tweets) == 0:
             return False
         
-        print tweets
-        
         new_since_id = tweets[0].id
         
         # merging
@@ -93,8 +89,8 @@ def addalyse(solr_server, username, since_id, remake_profile=True, update_count=
         print "tar fran solr: " + str(lovekeywords_old) + str(hatekeywords_old)
         
         # merge tuple lists, 
-        lovemerge = merge_lists(lovekeywords, lovekeywords_old)# gives an exception if lovekeywords==None
-        hatemerge = merge_lists(hatekeywords, hatekeywords_old)
+        lovemerge = merge_tuples(lovekeywords + lovekeywords_old)# gives an exception if lovekeywords==None
+        hatemerge = merge_tuples(hatekeywords + hatekeywords_old)
         #lovemerge = merge_tuples(lovekeywords + lovekeywords_old)
         #hatemerge = merge_tuples(lovekeywords + lovekeywords_old)
         
