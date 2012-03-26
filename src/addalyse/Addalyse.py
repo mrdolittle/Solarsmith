@@ -66,6 +66,9 @@ def addalyse(solr_server, username, since_id, remake_profile=True, update_count=
         
         # store result in sunburnt
         sh.add_profile(username, lovekeywords, hatekeywords, new_since_id, update_count)
+        
+        print "add_profile: "+str(sh.get_user_fields(username,'id','since_id','updatecount','lovekeywords_list', 'hatekeywords_list')[0])
+        
     else:
         # get tweets newer than sinceID 
         tweets = th.get_all_tweets(username, since_id, True)
@@ -83,14 +86,16 @@ def addalyse(solr_server, username, since_id, remake_profile=True, update_count=
         # get a users old hatekeywords_list and lovekeywords_list
         doc = sh.get_user_documents(username, 'lovekeywords_list', 'hatekeywords_list')[0]
         
+        print "DOC: " + str(doc)
+        
         lovekeywords_old = doc.lovekeywords_pylist
         hatekeywords_old = doc.hatekeywords_pylist
         
         print "tar fran solr: " + str(lovekeywords_old) + str(hatekeywords_old)
         
-        # merge tuple lists, 
-        lovemerge = merge_tuples(lovekeywords + lovekeywords_old)# gives an exception if lovekeywords==None
-        hatemerge = merge_tuples(hatekeywords + hatekeywords_old)
+        # merge tuple lists
+        lovemerge = merge_tuples(appender(lovekeywords, lovekeywords_old))# gives an exception if lovekeywords==None
+        hatemerge = merge_tuples(appender(hatekeywords, hatekeywords_old))
         #lovemerge = merge_tuples(lovekeywords + lovekeywords_old)
         #hatemerge = merge_tuples(lovekeywords + lovekeywords_old)
         
@@ -145,6 +150,7 @@ def merge_tuples(list_of_only_love_or_only_hate_tuples):
     '''gets a list of love tuples or a list of hate tuple, it merges and adds the values
     of all tuples with the same name. 
     ex [('tjoo',-1),('hi',3),('hi',2),('tjoo',3)] gives [('hi',5),('tjoo',2)]'''
+    
     myDict={}
     # merge all tuples with the same keyword and sum the values
     for (keyword,value) in list_of_only_love_or_only_hate_tuples:
