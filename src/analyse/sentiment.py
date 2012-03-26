@@ -10,7 +10,7 @@ to a naive Bayes CLASSIFIER to assign a label of 'positive', 'negative', or
 the influence of covariant features.
 
 """
-
+## anton nu e den hääääär
 import csv, random
 import nltk
 import tweet_features, tweet_pca
