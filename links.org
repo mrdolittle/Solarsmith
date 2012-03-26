@@ -3,13 +3,14 @@
 * Solr
 ** Solr-inställningar
    + http://wiki.apache.org/solr/AnalyzersTokenizersTokenFilters#solr.LetterTokenizerFactory
+   + tagga saker med Solr :: http://wiki.apache.org/solr/UserTagDesign
+        - kolla upp om här föreslås vettigare sätt att hantera keywordsiga saker i solr
 ** Sunburnt
    + Sunburnt API docs :: http://opensource.timetric.com/sunburnt/index.html
 
 * Analys-saker
 ** Sentiment analysis
    + http://www.sananalytics.com/lab/twitter-sentiment/
-
 ** Keyword Extraction 
    + inget än
 
