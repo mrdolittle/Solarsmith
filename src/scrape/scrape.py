@@ -58,7 +58,7 @@ def load_existing_users():
     print mset
     return mset
     
-def gather_data_loop(request_per_hour = 3600, users_to_add = 10):
+def gather_data_loop(request_per_hour = 3600, users_to_add = 21):
     '''Gathers data about twitter IDs, and sends the data to the storage handler.
     '''
     # TODO: Change for real implementation!
@@ -67,25 +67,29 @@ def gather_data_loop(request_per_hour = 3600, users_to_add = 10):
     th = TwitterHelp()
     sh = storageHandler.StorageHandler(SOLR_SERVER)
     
-    
-    # The set of users which will be added.
-    set_to_add = th.get_public_twitters()
-    
-    print "These will be added:"
-    for s in set_to_add:
-        print s
+    added_users = 0
     
     # Creates a set for all the users that will be added successfully
     users_added = set()
-    for user in set_to_add:
-        if(not sh.contains(user)):
-            time.sleep(sleep_time)
-            try:
-                if addalyse.addalyse(SOLR_SERVER, user):
-                    users_added.add(user)
-            except urllib2.HTTPError:
-                'do nothing'
-            
+    
+    while(added_users < users_to_add):
+        # The set of users which will be added.
+        set_to_add = th.get_public_twitters()
+        
+        print "These will be added:"
+        for s in set_to_add:
+            print s
+        
+        for user in set_to_add:
+            if(not sh.contains(user)):
+                time.sleep(sleep_time)
+                try:
+                    if addalyse.addalyse(SOLR_SERVER, user):
+                        users_added.add(user)
+                        added_users += 1
+                except urllib2.HTTPError:
+                    'do nothing'
+                
     # For debugging purposes, displays all users found in this session.
     for key in users_added:
         print key + " was added"
