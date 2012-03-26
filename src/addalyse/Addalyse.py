@@ -122,7 +122,7 @@ def merge_lists(new_list,old_list):
     Returns a merged list of both if both
     else returns new_list
     .'''
-    # try to merge the tuples in both lists
+    # merge the tuples in both lists 
     if new_list != None and old_list != None:
         return merge_tuples(new_list + old_list)
     else: 
