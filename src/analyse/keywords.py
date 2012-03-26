@@ -12,71 +12,10 @@ from nltk.tag import _POS_TAGGER
 import operator
 from stopwords import filter_keywords, strip_tweet
 
-def extract_keywords(string):
-    '''Receives a string and returns a list of extracts keywords'''
-    
-    sequence = reduce(operator.add, map(nltk.pos_tag, map(nltk.word_tokenize, nltk.sent_tokenize(string))))
-    length = len(sequence)
-    
-    def doStuff(x, words):
-        '''Recursive help method to parse for keywords and keyword sequences'''
-        (thisWord, this) = sequence[x]
-        (nextWord, nxt) = sequence[x+1]
-        
-        #Checks for adjectives followed by nouns or double nouns 
-        if this in ['JJ','NN','NNP','NNS'] and nxt in ['NN','NNS','NNP','VBG']:
-            #Avoids adjectives followed by names
-            if not(this=='JJ' and nxt=='NNP'):
-                words.append(thisWord + " "+nextWord)
-                
-        #Checks for verbs after 'to'
-        if this in ['TO'] and nxt in ['VB']:
-            words.append(nextWord)
-            
-        #Checks for simple nouns
-        if this in ['NN','NNS','NNP','VBG']:
-            words.append(thisWord)
-            
-        #Fix for last word
-        if x==(length-2) and nxt in ['NN','NNS','NNP','VBG']:
-            words.append(nextWord)
-                    
-        #Keep recursing or return            
-        if x+1<(length-1):
-            return doStuff(x+1, words)
-        else:
-            return words
-
-    return doStuff(0, [])
-
-# def strip_hashtags(text, words):
-#     '''Searches for hashtags and adds the tag to the list of keywords.
-#     Removes these from the sequence so that it can later be used by extract_keywords_grammar'''
-    
-#     sequence = reduce(operator.add, map(nltk.pos_tag, map(nltk.word_tokenize, nltk.sent_tokenize(text))))
-#     length = len(sequence)
-#     x = 0
-#     while (x < length):
-#         elem = sequence[x]
-#         if elem[0] == '#':
-#             del sequence[x]
-#             length = length-1     
-#             if x < length:
-#                 words.append(sequence[x][0])
-#                 del sequence[x]
-#                 length = length - 1
-#                 x = x - 1
-#             x = x - 1
-#         x = x + 1
-#     print words
-#     return (words,sequence)          
-        
-#Using grammar
-# def extract_keywords_grammar(words,sequence):
 def extract_keywords_grammar(text):
     '''Uses chunks matching to identify keywords in a tweet. The code looks much nicer this way :P'''
-    
-    sequence = reduce(operator.add, map(nltk.pos_tag, map(nltk.word_tokenize, nltk.sent_tokenize(text))))
+
+    sequence = nltk.pos_tag(nltk.word_tokenize(text))
     words = []
     grammar=''' Noun: {<DT>?<JJ>+(<NN>|<NNS>|<VBG>)+}
                 ToVerb: {<TO><VB>}
@@ -103,10 +42,6 @@ def extract_keywords_grammar(text):
             words.append(s[0][0])
                     
     return words
-
-# def extract(text,words):
-#     hashtagreturn = strip_hashtags(text,words)
-#     return extract_keywords_grammar(hashtagreturn[0], hashtagreturn[1])
 
 def get_hashtags(tweet):
     '''Splits tweet on whitespace (this is ok, since hashtags are rarely combined together with
