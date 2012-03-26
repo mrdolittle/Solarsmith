@@ -1,17 +1,16 @@
-'''This file contains all the functions responsible for mashing the
-various analysis results into the format that the result that the rest
-of the project is expecting (two keyword lists with tuples of keyword
-and weight).
+'''This file contains all the functions responsible for mashing the various analysis results into
+the format that the result that the rest of the project is expecting (two keyword lists with tuples
+of keyword and weight).
 
-This is what implements the actual analyse function that we export in __init__.py 
+This is what implements the actual analyse function that we export in __init__.py
 '''
 
 from keywords import extract_keywords
 from sentiment import analyse_sentiment
 
 def analyse_sentence(sentence):
-    '''Takes a tweet and performs sentimentanalysis on the given tweet, 
-    then gives the weight that was returned from the sentiment analysis
+    '''Takes a tweet and performs sentimentanalysis on the given tweet, then gives the weight that
+    was returned from the sentiment analysis
 
     TODO: Is this function neccesary? HALF-DEPRECATED'''
     
@@ -20,14 +19,10 @@ def analyse_sentence(sentence):
     return [(keyword,sentiment*weight) for (keyword,weight) in keywordtuples]
 
 def analyse_sentences_var_1(sentences):
-    '''Does analysis of all sentences and returns a compilation of all
-    results in the form of two lists in the magical and fantastical
-    format we all know and love.
+    '''Does analysis of all sentences and returns a compilation of all results in the form of two
+    lists in the magical and fantastical format we all know and love.
 
     ...'''
-
-    def foo(keywords_dict):
-        lovekeywords[keyword] = lovekeywords.get(keyword, 0.0)
 
     hatekeywords = {}
     lovekeywords = {}
@@ -39,8 +34,18 @@ def analyse_sentences_var_1(sentences):
 
     return (list(lovekeywords), list(hatekeywords))
 
+def analyse_sentences_var_2(sentences):
+    '''Does analysis of all sentences and returns a compilation of all results in the form of one
+    list of tuples where the weight might be negative or positive depending on the overall sentiment
+    around the keyword.'''
+
+    # TODO
+    pass
+
+
 def analyse(tweets):
-    '''Do the whole analysis shebang and return the results as one lovekeyword list and one hatekeyword list.
+    '''Do the whole analysis shebang and return the results as one lovekeyword list and one
+    hatekeyword list.
 
     Ex:
     (love, hate) = analyse(tweets)
@@ -48,4 +53,5 @@ def analyse(tweets):
     print hate => [("dog", 123), ("bear hunting", 44)]'''
 
     # split the list of tweets to a list of sentences and send it to analyse_sentences
-    return analyse_sentences_var_1(reduce(lambda x,y: x.append(y), map(nltk.sent_tokenize, tweetlist)))
+    return analyse_sentences_var_1(reduce(lambda x,y: x.append(y),
+                                          map(nltk.sent_tokenize, tweetlist)))
