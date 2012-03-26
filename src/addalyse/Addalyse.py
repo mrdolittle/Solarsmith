@@ -53,7 +53,7 @@ def addalyse(solr_server, username, since_id=0, remake_profile=True, update_coun
     #remake if not in solr
     remake_profile = remake_profile or not sh.contains(username)
     
-    print "addalyse test indata: " + str(tuple([solr_server, username, since_id, remake_profile, update_count]))
+    print "DBG: addalyse indata: " + str((solr_server, username, since_id, remake_profile, update_count))
     
     if remake_profile:
         # get all tweeets from twitter API 
