@@ -72,9 +72,12 @@ def addalyse(solr_server, username, since_id=0, remake_profile=True, update_coun
         # get all tweeets from twitter API 
         tweets = th.get_all_statuses(username, None)
         if tweets == []:
-            raise AddalyseUnableToProcureTweetsError("I couldn't for the love of me extract some tweets for '" +
-                                                     username +
-                                                     "'. Maybe he just doesn't have any new ones?")
+            e = AddalyseUnableToProcureTweetsError("I couldn't for the love of me extract some tweets for '" +
+                                                   username +
+                                                   "'. Maybe he just doesn't have any new ones?")
+            e.remake_profile = True
+            raise e
+        
         # latest tweet is first in list
         new_since_id = tweets[0].id # assumes that the 
         
@@ -91,9 +94,13 @@ def addalyse(solr_server, username, since_id=0, remake_profile=True, update_coun
         # get tweets newer than sinceID 
         tweets = th.get_all_statuses(username, since_id)
         if tweets == []:
-            raise AddalyseUnableToProcureTweetsError("I couldn't for the love of me extract some tweets for '" +
-                                                     username +
-                                                     "'. Maybe he just doesn't have any?")
+            e = AddalyseUnableToProcureTweetsError("I couldn't for the love of me extract some tweets for '" +
+                                                   username +
+                                                   "'. Maybe he just doesn't have any?")
+            e.remake_profile = False
+            raise e
+        
+        
         
         new_since_id = tweets[0].id
         
