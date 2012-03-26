@@ -4,7 +4,7 @@ Keywords
 Used to extract keywords from tweets (rather greedy)
 Includes methods: extract_keywords
 
-@author: 0tchii
+@author: 0tchii, Xantoz
 '''
 
 import nltk
@@ -73,9 +73,11 @@ def extract_keywords(string):
         
 #Using grammar
 # def extract_keywords_grammar(words,sequence):
-def extract_keywords_grammar(sequence):
+def extract_keywords_grammar(text):
     '''Uses chunks matching to identify keywords in a tweet. The code looks much nicer this way :P'''
     
+    sequence = reduce(operator.add, map(nltk.pos_tag, map(nltk.word_tokenize, nltk.sent_tokenize(text))))
+    words = []
     grammar=''' Noun: {<DT>?<JJ>+(<NN>|<NNS>|<VBG>)+}
                 ToVerb: {<TO><VB>}
                 Name:{<NNP>+}                
@@ -124,4 +126,4 @@ nltk.data.load(_POS_TAGGER)
 if __name__ == '__main__':
     text = "Bear Grylls likes to go spear fishing #fishing"
     print extract_keywords(text)
-    print extract(text, [])
+    print extract(text)

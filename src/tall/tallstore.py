@@ -46,31 +46,20 @@ class SolrUser:
         return self.id
 
 
-def get_user_by_id(username):
-    '''Retrieves a user from Solr with the specified username.'''
-    global SOLR_SERVER
-    
-    interface = sunburnt.SolrInterface(SOLR_SERVER)
-    ans = interface.query(id=username)
-    for result in ans.execute(constructor=SolrUser):
-        print "Query executed, result: "
-        print result
-    return result
-
-
-def get_friends_by_id(username):
+def get_frienenmies_by_id(username):
     '''Retrieves a users friends and enemies from Solr.'''
     global SOLR_SERVER
     
-    # TODO: write function
     interface = sunburnt.SolrInterface(SOLR_SERVER)
     ans = interface.query(id=username)
     for searchee in ans.execute(constructor=SolrUser):
         print "Query executed, result: "
         print searchee
 
-    lovekeywords, hatekeywords = searchee.getKeywords()
+    if "searchee" not in locals():
+        return False # User is not in Solr
     
+    lovekeywords, hatekeywords = searchee.getKeywords()
     ans = interface.query(lovekeywords=lovekeywords[0]) # Ska fixas så den inte bara söker på första keyworden
     loveresult = []
     for friends in ans.execute(constructor=SolrUser):

@@ -29,7 +29,14 @@ def test(self,tweet):
         value=value+item[1]
     return value
 class MovieReviewBayes:
+<<<<<<< HEAD
     '''Simple analys script found on the internet, trained on moviereviews'''
+=======
+    '''Enkel analysmetod hittad på nätet på filmrecensioner'''
+    
+>>>>>>> branch 'master' of https://Exithero@github.com/dollittle/Solarsmith.git
+    '''Enkel analysmetod hittad på nätet på filmrecensioner'''
+    
     negids = movie_reviews.fileids('neg')
     posids = movie_reviews.fileids('pos')
     
@@ -61,6 +68,8 @@ print analyse(analyser,"I DONT LIKE THIS CAR")
 #test(analyser,"I DONT LIKE THIS CAR")
 
     
+<<<<<<< HEAD
+=======
     
     def analyse(self,tweet):
         '''Public method used for analysing tweet.'''
@@ -71,6 +80,7 @@ print analyse(analyser,"I DONT LIKE THIS CAR")
         '''Returns an arbitrary method to measure positive/negative.'''
         
         return MovieReviewBayes.classifier.prob_classify(word_feats(tweet)).items()
+>>>>>>> branch 'master' of https://Exithero@github.com/dollittle/Solarsmith.git
         
 
 
