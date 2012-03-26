@@ -50,7 +50,7 @@ def get_hashtags(tweet):
     
     return filter(lambda x: x[0] == '#', tweet.split())
 
-def extract(tweet):
+def extract_keywords(tweet):
     '''Extracts hashtags and keywords from a tweet, stores them in a neat little list. Wee'''
     
     return filter_keywords(extract_keywords_grammar(strip_tweet(tweet))) + get_hashtags(tweet)
