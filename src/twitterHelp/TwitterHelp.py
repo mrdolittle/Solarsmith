@@ -59,6 +59,7 @@ class TwitterHelp:
         @param since_id: [optional] The ID of the earliest tweet that will be included
         @return: A list of status objects'''
         try:
+            print(username)
             return self.twitter_API.GetUserTimeline(username, 100000, since_id)
         except twitter.TwitterError:
             raise #Skickar vidare felet. Kan skicka eget exception om man vill.
