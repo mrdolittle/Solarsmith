@@ -25,6 +25,11 @@ class StorageHandler:
         The latter would return all users in Solr.
 
         Returns the specified fields in a tuple in the same orders as specified.
+
+        TODO: This method explodes when it tries to get fields not in
+              the documents matched or not in the schema or
+              whatever. Try to explode nicer? (catch exception; throw
+              our own more descriptive one)
         
         Example usage:
             (updatecount,) = sh.get_user_fields('someuser', 'updatecount')[0]   # NOTE: single-element tuple is returned so deconstruct it
@@ -67,65 +72,9 @@ class StorageHandler:
         '''Check if a document known by id is stored in Solr.'''
         
         return self.get_user_fields(id, 'id') != []
-
-
     
-# old outcommented stuffs 
-
-# # Globally constanty wierdo thing.
-# # Should we maybe instead wrap all of this file into a class of some
-# # sort that takes a solr server in it's constructor?
-# SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"
-
-
-# def get_all_like_a_crazy_ass_slurper_with_extra_potatomotos():
-#     '''A crazy function that returns a list of Document:s with all
-#     fields set according to the result. Still doesn't fetch the
-#     automatic timestamp of Solrs of when the doc was inserted.
-
-#     Don't know if this will actually be used, but it could in fact
-#     come in handy for instance for updates (instead of the function
-#     below)
-
-#     The crazy name is to emphasize the uncertain future of this
-#     function (rename it to something sane if we decide to keep it or
-#     something). '''
-#     global SOLR_SERVER
-
-
-#     si = sunburnt.SolrInterface(SOLR_SERVER)
-    
-
-# def get_since_id_and_updatecount_for_all_users():
-#     '''Get a tuple list in the following form (String username,num sinceid,num updatecount)[]
-#     This method can be used by update.'''
-#     global SOLR_SERVER
-
-#     si = sunburnt.SolrInterface(SOLR_SERVER)
-#     return [(x['id'], x['since_id'], x['updatecount'])
-#             for x in si.query(id='*').field_limit('id', 'since_id', 'updatecount').execute()]
-
-
-# def get_user_updatecount(user):
-#     '''Returns the updatecount stored for one particular user. Returns
-#     None if user doesn't exist in Solr.
-
-#     THIS FUNCTION JUST MIGHT END UP BEING UNNECESARY!'''
-#     global SOLR_SERVER
-
-#     si = sunburnt.SolrInterface(SOLR_SERVER)
-#     result = si.query(id=user).field_limit('updatecount').execute()
-#     return None if result == [] else result[0]['updatecount']
-    
-
-# #placeholder
-# def get_all_user_names():
-#     '''Queries Solr for all the the twitter user id's currently stored.'''
-#     global SOLR_SERVER
-
-#     # Note: field_limit so we don't get more than neccesary
-#     # Note: A sunburnt query needs to be executed after it is built
-#     si = sunburnt.SolrInterface(SOLR_SERVER)
-#     return [x['id'] for x in si.query(id='*').field_limit('id').execute()]
-
-
+    def get_friends_enemies(self, love_keywords, hate_keywords):
+        '''Not implemented!
+        returns the tuple (friends, enemies) where friends are a list of usernames sorted on friendliness and
+        enemies are a list of usernames sorted on how hate'''
+        return ([],[])

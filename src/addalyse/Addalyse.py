@@ -18,9 +18,9 @@ Used by: request, update, scrape
 
 from twitterHelp import *
 from storageHandler import *
-from analyse import *
+#from analyse import *
 
-def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,twitter_help=None,sunburnt_API=None):
+def addalyse(solr_server, username, since_id, remake_profile=True, update_count=0):#,twitter_help=None,sunburnt_API=None):
 # this might be a better ordering of input arguments because then more of them can be optional
 #def addalyse(solr_server, username, remake_profile=True, since_id_from_database=0, update_count_from_database=0)
     '''
@@ -48,27 +48,28 @@ def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,
     sh = StorageHandler(solr_server)
     
     # maybe check if the user exists on twitter, but this check might be done in get_all_tweets
-    if not th.contains(username):
+    if not th.twitter_contains(username):
         return False
 
     
     if remake_profile:
         # get all tweeets from twitter API 
         tweets = th.get_all_tweets(username, None, True)
-        if tweets == None or tweets.length() == 0:
+        if tweets == None or len(tweets) == 0:
             return False
         # latest tweet is first in list
         new_since_id = tweets[0].id # assumes that the 
         
         # send to analysis
-        (lovekeywords, hatekeywords) = analyse.analyse(tweets)# TODO:implement in analyse or use analyse_tweets
+        (lovekeywords, hatekeywords) = ([("cat", 44), ("bear hunting", 22), ("dog", 33)], [("fishing", 55), ("bear grylls", 33)])
+        #(lovekeywords, hatekeywords) = analyse.analyse(tweets)# TODO:implement in analyse
         
         # store result in sunburnt
         sh.add_profile(username, lovekeywords, hatekeywords, new_since_id, update_count)
     else:
         # get tweets newer than sinceID 
         tweets = th.get_all_tweets(username, since_id, True)
-        if tweets == None or tweets.length() == 0:
+        if tweets == None or len(tweets) == 0:
             return False
 
         new_since_id = tweets[0].id
@@ -76,7 +77,8 @@ def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,
         # merging
 
         # send to analysis
-        (lovekeywords, hatekeywords) = analyse.analyse(tweets)# TODO:implement in analyse or use analyse_tweets
+        (lovekeywords, hatekeywords) = ([("cat", 44), ("bear hunting", 22), ("dog", 33)], [("fishing", 55), ("bear grylls", 33)])
+        #(lovekeywords, hatekeywords) = analyse.analyse(tweets)# TODO:implement in analyse
         
         # get a users old hatekeywords_list and lovekeywords_list
         doc = sh.get_user_documents(username, 'lovekeywords_list', 'hatekeywords_list')
@@ -98,10 +100,10 @@ def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,
     return True 
 
 # for haxing test, not working
-def analyse_tweets(list_of_tweets):
-    '''Will not be used! Only for testing. Not working.
+'''def analyse_tweets(list_of_tweets):
+    ''''''Will not be used! Only for testing. Not working.
     TODO: finish him!
-    calls an analyse method (in analyse) for each tweet.'''
+    calls an analyse method (in analyse) for each tweet.''''''
     mrb=MovieReviewBayes()
     l=[]
     h=[]
@@ -112,19 +114,19 @@ def analyse_tweets(list_of_tweets):
         (l2, h2) = mrb.analyse(tweet)#TODO: test
         l=l+l2
         h=h+h2
-    return (l,h)
+    return (l,h)'''
 
 def merge_lists(new_list,old_list):
     '''Convenience method. Tries to merge a new_list with an old_list. 
-    Raise: "TypeError: object of type 'NoneType' has no len()" if newlist is None
-    Returns a merged list of both if old_list are not None and len(old_list)>0
+    Raise exception: "TypeError: 'NoneType' object is not iterable" if new_list is None
+    Returns a merged list of both if both
     else returns new_list
     .'''
-    #if old_list != None and len(old_list) > 0 and new_list != None and len(new_list) > 0:
-    if (len(new_list) > 0 and old_list != None and len(old_list) > 0):
+    # merge the tuples in both lists 
+    if new_list != None and old_list != None:
         return merge_tuples(new_list + old_list)
     else: 
-        return new_list #if new_list != None else old_list
+        return merge_tuples(new_list) # raises exception if new_list == None
 
 def merge_tuples(list_of_only_love_or_only_hate_tuples):
     '''gets a list of love tuples or a list of hate tuple, it merges and adds the values
@@ -138,7 +140,8 @@ def merge_tuples(list_of_only_love_or_only_hate_tuples):
     #returns a list of all (key, value) tuples in the dictionary
     return myDict.items()
 
-# test
+def testAddalyse():
+    print addalyse("http://xantoz.failar.nu:8080/solr/","test", 0, True, 0)
 
 
         
