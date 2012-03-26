@@ -6,7 +6,7 @@ from storageHandler.Document import Document
 # FIXME: can schema be gotten from server directly with sunburnt (pydoc seemed to suggest this)
 # interface = sunburnt.SolrInterface("http://localhost:8080", "schema.xml")
 # interface = sunburnt.SolrInterface("http://localhost:8080/solr/", "schema.xml") 
-interface = sunburnt.SolrInterface("http://localhost:8080/solr/")
+interface = sunburnt.SolrInterface("http://xantoz.failar.nu:8080/solr/")
 
 asdf = []
 asdf.append(Document("potatismos", [("cat", 34), ("fishing", 22), ("bear grylls", 33)], [("dog", 123), ("bear hunting", 44)]))
