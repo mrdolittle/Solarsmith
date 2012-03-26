@@ -10,6 +10,8 @@ def analyse(tweets):
     (love, hate) = analyse(tweets)
     print love => [("cat", 34), ("fishing", 22), ("bear grylls", 33)]
     print hate => [("dog", 123), ("bear hunting", 44)]
+
+    THIS IS A MOCKUP OF A KNOCKUP OH LOL
     '''
 
     # TODO: IMPLEMENT (currently mocked up/skeletonish thingamabob)
