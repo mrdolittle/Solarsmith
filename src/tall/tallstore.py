@@ -75,7 +75,7 @@ def get_frienenmies_by_id(username):
         query = query | interface.Q(lovekeywords=keyword) ** weight
     for keyword, weight in userhatekeywords:
         query = query | interface.Q(hatekeywords=keyword) ** weight
-    friends = interface.query(query).field_limit(['id', 'lovekeywords_list', 'hatekeywords_list'], score=True).execute(constructor=SolrUser)
+    friends = interface.query(query).field_limit(['id', 'lovekeywords_list', 'hatekeywords_list'], score=True).paginate(rows=42).execute(constructor=SolrUser)
 #    print "Friends: "
 #    print friends
 
@@ -84,7 +84,7 @@ def get_frienenmies_by_id(username):
         query = query | interface.Q(hatekeywords=keyword) ** weight
     for keyword, weight in userhatekeywords:
         query = query | interface.Q(lovekeywords=keyword) ** weight
-    enemies = interface.query(query).field_limit(['id', 'lovekeywords_list', 'hatekeywords_list'], score=True).execute(constructor=SolrUser)
+    enemies = interface.query(query).field_limit(['id', 'lovekeywords_list', 'hatekeywords_list'], score=True).paginate(rows=42).execute(constructor=SolrUser)
 #    print "Emenies: "
 #    print enemies
     return friends, enemies
