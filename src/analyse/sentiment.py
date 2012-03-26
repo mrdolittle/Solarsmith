@@ -40,12 +40,16 @@ def analyse_sentence(sentence):
     keywordtuples = extract_keywords(sentence)
     return [(keyword,sentiment*weight) for (keyword,weight) in keywordtuples]
 
-def analyse_tweets(tweets):
-    ''' '''
+def analyse(tweets):
+    '''Do the whole analysis shebang and return the results as one lovekeyword list and one hatekeyword list.
+
+    Ex:
+    (love, hate) = analyse(tweets)
+    print love => [("cat", 34), ("fishing", 22), ("bear grylls", 33)]
+    print hate => [("dog", 123), ("bear hunting", 44)]'''
     
     sentences = reduce(lambda x,y: x.append(y), map(nltk.sent_tokenize, tweetlist))
-
-    return BLAH
+    return analyse_sentences(sentences)
 
     
 	
