@@ -123,4 +123,4 @@ def test_addalyse():
     print addalyse("http://xantoz.failar.nu:8080/solr/","test", 0, False, 0)
     print addalyse("http://xantoz.failar.nu:8080/solr/","jesperannebest", 0, True, 0)
     print addalyse("http://xantoz.failar.nu:8080/solr/","jesperannebest", 0, False, 0)
-test_addalyse()
+#test_addalyse()
