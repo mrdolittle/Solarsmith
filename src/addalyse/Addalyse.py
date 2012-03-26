@@ -20,28 +20,26 @@ from twitterHelp import *
 from storageHandler import *
 #from analyse import *
 
-def addalyse(solr_server, username, since_id=0, remake_profile=True, update_count=1):#,twitter_help=None,sunburnt_API=None):
-# this might be a better ordering of input arguments because then more of them can be optional
-#def addalyse(solr_server, username, remake_profile=True, since_id_from_database=0, update_count_from_database=0)
+def addalyse(solr_server, username, since_id=0, remake_profile=True, update_count=1):
     '''
     Description:
-    Directly returns false if the twitter user isn't on twitter.
+    Directly returns false if the Twitter user isn't on twitter.
     
-    if remakeProfile is true then it will disregard sinceID and analyse as many tweets as possible
-    and then replace the profile in solr.
+    If remakeProfile is true then it will disregard since_id and analyse as many tweets as possible
+    and then replace the profile in Solr.
     
-    if remakeProfile is false it will analyse tweets newer than sinceID and merge the result with the profile in solr
-    if it exists else add a new profile
+    If remakeProfile is false it will analyse tweets newer than since_id and merge the result with the profile in Solr.
+    If it exists else add a new profile.
     
     Returns: True if successful else False
-    Exceptions:
-    Input types:  addalyse(String solr_server, String username,int sinceID,boolean remakeProfile):
+    Exceptions: TODO: add them here
+    Input types:  addalyse(String solr_server, String username,int since_id,boolean remakeProfile,int update_count):
     Signature:  (boolean succesfull_add) addalyse(String username,int since_id,boolean remake_profile):
     
     Used by: 
     update, scrape and request
     
-    need to access via a connection to:
+    Need to access via a connection to:
     twitter_API, sunburnt_API
     '''
     th = TwitterHelp()
@@ -96,8 +94,6 @@ def addalyse(solr_server, username, since_id=0, remake_profile=True, update_coun
         # merge tuple lists
         lovemerge = merge_tuples(appender(lovekeywords, lovekeywords_old))# gives an exception if lovekeywords==None
         hatemerge = merge_tuples(appender(hatekeywords, hatekeywords_old))
-        #lovemerge = merge_tuples(lovekeywords + lovekeywords_old)
-        #hatemerge = merge_tuples(lovekeywords + lovekeywords_old)
         
         print "lagger in: " + str((lovemerge, hatemerge))
         
@@ -109,22 +105,6 @@ def addalyse(solr_server, username, since_id=0, remake_profile=True, update_coun
     # returns true if added to database   
     return True 
 
-# for haxing test, not working
-'''def analyse_tweets(list_of_tweets):
-    ''''''Will not be used! Only for testing. Not working.
-    TODO: finish him!
-    calls an analyse method (in analyse) for each tweet.''''''
-    mrb=MovieReviewBayes()
-    l=[]
-    h=[]
-    #test
-    for tweet in list_of_tweets:
-        #test, pretend all words are negative or positive
-        # maybe want (word,value)[] where negative values are hate and positive love
-        (l2, h2) = mrb.analyse(tweet)#TODO: test
-        l=l+l2
-        h=h+h2
-    return (l,h)'''
 
 def appender(list1,list2):
     tmp=[]
@@ -134,17 +114,6 @@ def appender(list1,list2):
         tmp.append(b)
     return tmp
 
-def merge_lists(new_list,old_list):
-    '''Convenience method. Tries to merge a new_list with an old_list. 
-    Raise exception: "TypeError: 'NoneType' object is not iterable" if new_list is None
-    Returns a merged list of both if both
-    else returns new_list
-    .'''
-    # merge the tuples in both lists 
-    if new_list != None and old_list != None:
-        return merge_tuples(new_list + old_list)
-    else: 
-        return merge_tuples(new_list) # raises exception if new_list == None
 
 def merge_tuples(list_of_only_love_or_only_hate_tuples):
     '''gets a list of love tuples or a list of hate tuple, it merges and adds the values
