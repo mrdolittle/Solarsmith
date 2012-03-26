@@ -31,6 +31,8 @@ class AddalyseError(Exception):
 
 class AddalyseUserNotOnTwitterError(AddalyseError): pass
 
+class AddalyseUnableToProcureTweetsError(AddalyseError): pass
+
 def addalyse(solr_server, username, since_id=0, remake_profile=True, update_count=1):
     '''
     Description:
@@ -86,8 +88,10 @@ def addalyse(solr_server, username, since_id=0, remake_profile=True, update_coun
     else:
         # get tweets newer than sinceID 
         tweets = th.get_all_statuses(username, since_id)
-        if tweets == None or len(tweets) == 0:
-            return False
+        if tweets == []:
+            raise AddalyseUnableToProcureTweetsError("I couldn't for the love of me extract some tweets for '" +
+                                                     username +
+                                                     "'. Maybe he just doesn't have any?")
         
         new_since_id = tweets[0].id
         
