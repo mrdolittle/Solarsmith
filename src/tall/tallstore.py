@@ -62,7 +62,7 @@ def get_frienenmies_by_id(username):
         print "Query executed, result: "
         print searchee
         
-    if "searchee" not in locals():
+    if "searchee" not in locals(): # KLUDGE: Det här är en sån konstig lösning att jag måste kommentera på svenska (/xantoz) fixa bättre (typ kolla om det kom tomlista från queryn e.dyl.)
         return False # User is not in Solr
     
     userlovekeywords = get_list_from_string(searchee.lovekeywords_list)
