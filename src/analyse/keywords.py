@@ -50,15 +50,15 @@ def get_hashtags(tweet):
     
     return filter(lambda x: x[0] == '#', tweet.split())
 
-def extract_keywords(tweet):
-    '''Extracts hashtags and keywords from a tweet, stores them in a neat little list. If a keyword
-    was present more than once simply return it more than once (later stages in the analysis will
-    have to compound them nicely).
+def extract_keywords(sentence):
+    '''Extracts hashtags and keywords from a tweet sentence, stores them in a neat little list. If a
+    keyword was present more than once simply return it more than once (later stages in the analysis
+    will have to compound them nicely).
 
     However the function returns them with a confidence factor (presently hardcoded to one, since
     there is currently no such thing)'''
     
-    return map(lambda a: (a,1.0) filter_keywords(extract_keywords_grammar(strip_tweet(tweet))) + get_hashtags(tweet))
+    return map(lambda a: (a,1.0) filter_keywords(extract_keywords_grammar(strip_tweet(sentence))) + get_hashtags(sentence))
                     
 #Initialize _POS_TAGGER
 nltk.data.load(_POS_TAGGER)
