@@ -40,6 +40,10 @@ def analyse_sentence(sentence):
     keywordtuples = extract_keywords(sentence)
     return [(keyword,sentiment*weight) for (keyword,weight) in keywordtuples]
 
+def analyse_sentences(sentences):
+    '''Does analysis of all sentences and returns a compilation of all
+    results in the form of two lists'''
+
 def analyse(tweets):
     '''Do the whole analysis shebang and return the results as one lovekeyword list and one hatekeyword list.
 
