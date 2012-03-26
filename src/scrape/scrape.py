@@ -51,10 +51,7 @@ def load_existing_users():
     '''
     #TODO: Implement a real solution, calling the storage handler.
     sh = storageHandler.StorageHandler(SOLR_SERVER)
-    tuples = sh.get_user_fields('*', 'id')
-    mset = set()
-    for s in tuples:
-        mset.add(s[0])
+    mset = set([a for (a,) in sh.get_user_fields('*', 'id')])
     print mset
     return mset
     
