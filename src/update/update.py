@@ -43,5 +43,6 @@ def main():
                          update_count + 1) 
             time.sleep(sleep_time) # sleep for ten seconds, to not make to many requests to twitter
     
+    
 if __name__ == "__main__":
     main()

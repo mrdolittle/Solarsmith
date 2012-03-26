@@ -20,7 +20,7 @@ from twitterHelp import *
 from storageHandler import *
 #from analyse import *
 
-def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,twitter_help=None,sunburnt_API=None):
+def addalyse(solr_server, username, since_id, remake_profile=True, update_count=0):#,twitter_help=None,sunburnt_API=None):
 # this might be a better ordering of input arguments because then more of them can be optional
 #def addalyse(solr_server, username, remake_profile=True, since_id_from_database=0, update_count_from_database=0)
     '''
@@ -122,7 +122,7 @@ def merge_lists(new_list,old_list):
     Returns a merged list of both if both
     else returns new_list
     .'''
-    # try to merge the tuples in both lists
+    # merge the tuples in both lists 
     if new_list != None and old_list != None:
         return merge_tuples(new_list + old_list)
     else: 
@@ -139,6 +139,10 @@ def merge_tuples(list_of_only_love_or_only_hate_tuples):
         myDict [ keyword ] = myDict.get(keyword, 0) + value
     #returns a list of all (key, value) tuples in the dictionary
     return myDict.items()
+
+def testAddalyse():
+    print addalyse("http://xantoz.failar.nu:8080/solr/","test", 0, True, 0)
+
 
         
     
