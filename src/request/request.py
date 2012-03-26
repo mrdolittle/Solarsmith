@@ -199,10 +199,10 @@ class UsernameHandler(threading.Thread):
                 sys.stdout.write("Processing username: " + data[0] + "\n")
                 #TODO: Send to addalyse
                 #On response:
-                    #If user_added response = "User added"
-                    #elif user_does_not_exist response = "User does not exist"
-                    #elif timeout response = "Timeout occured"
-                    #else response = "An unknown error has occured"
+                    #If user_added response = 1 #User added
+                    #elif user_does_not_exist response = 2 #User does not exist
+                    #elif timeout response = 3 #Timeout occured
+                    #else response = 4 #An unknown error has occured
                     #sent = data[1].self.client.send(response)
                     #if sent == 0:
                         #raise RuntimeError("socket connection broken")

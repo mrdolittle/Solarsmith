@@ -53,18 +53,28 @@ class TwitterHelp:
         tweets = self.get_public_tweets()
         return set(tweets.keys())
     
-    def get_all_tweets(self, username, since_id=None, as_pure=False):
+    def get_all_statuses(self, username, since_id = None):
+        '''Retrieves all tweets from a twitter user and returns them as statuses
+        @param  username: The username of which to find tweets, either ID or aliases is accepted
+        @param since_id: [optional] The ID of the earliest tweet that will be included
+        @return: A list of status objects'''
+        try:
+            return self.twitter_API.GetUserTimeline(username, 1000000, since_id, None)
+        except twitter.TwitterError:
+            raise #Skickar vidare felet. Kan skicka eget exception om man vill.
+        except urllib2.HTTPError:
+            raise twitter.TwitterError("Fel i get_all_statuses")
+        
+    def get_all_tweets(self, username, since_id=None):
         all_added_users = {}
         '''Retrieves all tweets from a twitter user.
-        @param username: The username of which to find tweets, either ID or alies is accepted.
+        @param username: The username of which to find tweets, either ID or aliases is accepted.
         @param since_id: [optional] The ID of the earliest tweet that will be included. 
         @return: A dictionary containing the tweet IDs mapped to their corresponding tweets in string 
         form. None if the user was not found'''
         status_dic = {}
         try:
-            statuses = self.twitter_API.GetUserTimeline(username, 1000000, since_id, None)
-            if as_pure: 
-                return statuses
+            statuses = self.twitter_API.GetUserTimeline(username, 1000000, since_id, None)            
         except twitter.TwitterError:
             return None
         except urllib2.HTTPError:
