@@ -18,16 +18,17 @@ from Keywords import extract_keywords
 
 CORPUS="sentiment.csv"
 
-def analyse_sentiment(tweet):
-    ''' '''
-    
+def analyse_sentiment(sentence):
+    '''Analyses sentence sentiment. Returns a number of size
+    representing sentiment with negative numbers meaning negative
+    sentiment.'''
     global CLASSIFIER
     
-    classification = CLASSIFIER.classify(tweet_features.make_tweet_dict(tweet))
+    classification = CLASSIFIER.classify(tweet_features.make_tweet_dict(sentence))
     if classification == 'negative':
-        return -1 # byts mot en riktig relevansmetod
+        return -1.0 # byts mot en riktig relevansmetod
     if classification == 'positive':
-        return 1 # byts mot en riktig relevansmetod
+        return 1.0 # byts mot en riktig relevansmetod
     else:
         return 0.5 # byts mot en riktig relevansmetod
 
