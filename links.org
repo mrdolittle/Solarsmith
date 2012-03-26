@@ -17,7 +17,6 @@
 
 
 * Om python:
-  
   + main-funktion i python :: http://www.artima.com/weblogs/viewpost.jsp?thread=4829
   + organisera paketen :: http://stackoverflow.com/questions/391879/organising-my-python-project  
 ** Exceptions
