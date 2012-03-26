@@ -43,6 +43,11 @@ def addalyse(solr_server, username, since_id=0, remake_profile=True, update_coun
     twitter_API, sunburnt_API
     '''
     th = TwitterHelp()
+    
+    # Does not user up a twitter API call.
+    if( not th.twitter_contains(username)):
+        return False
+    
     sh = StorageHandler(solr_server)
     
     #remake if not in solr
