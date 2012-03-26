@@ -6,8 +6,8 @@ and weight).
 This is what implements the actual analyse function that we export in __init__.py 
 '''
 
-from Keywords import extract_keywords
-from 
+from keywords import extract_keywords
+from sentiment import analyse_sentiment
 
 def analyse_sentence(sentence):
     '''Takes a tweet and performs sentimentanalysis on the given tweet, 

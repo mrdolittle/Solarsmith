@@ -10,7 +10,7 @@ Includes methods: extract_keywords
 import nltk
 from nltk.tag import _POS_TAGGER
 import operator
-from Stopwords import filter_keywords, strip_tweet
+from stopwords import filter_keywords, strip_tweet
 
 def extract_keywords(string):
     '''Receives a string and returns a list of extracts keywords'''

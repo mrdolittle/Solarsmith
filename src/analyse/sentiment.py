@@ -14,7 +14,7 @@ the influence of covariant features.
 import csv, random
 import nltk
 import tweet_features, tweet_pca
-from Keywords import extract_keywords
+from keywords import extract_keywords
 
 CORPUS="sentiment.csv"
 
@@ -32,28 +32,6 @@ def analyse_sentiment(sentence):
     else:
         return 0.5 # byts mot en riktig relevansmetod
 
-def analyse_sentence(sentence):
-    ''' takes a tweet and performs sentimentanalysis on the given tweet, 
-    then gives the weight that returns from the sentiment analysis'''
-    
-    sentiment=analyse_sentiment(sentence)
-    keywordtuples = extract_keywords(sentence)
-    return [(keyword,sentiment*weight) for (keyword,weight) in keywordtuples]
-
-def analyse_sentences(sentences):
-    '''Does analysis of all sentences and returns a compilation of all
-    results in the form of two lists'''
-
-def analyse(tweets):
-    '''Do the whole analysis shebang and return the results as one lovekeyword list and one hatekeyword list.
-
-    Ex:
-    (love, hate) = analyse(tweets)
-    print love => [("cat", 34), ("fishing", 22), ("bear grylls", 33)]
-    print hate => [("dog", 123), ("bear hunting", 44)]'''
-    
-    sentences = reduce(lambda x,y: x.append(y), map(nltk.sent_tokenize, tweetlist))
-    return analyse_sentences(sentences)
 
     
 	
