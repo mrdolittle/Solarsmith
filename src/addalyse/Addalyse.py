@@ -20,7 +20,7 @@ from twitterHelp import *
 from storageHandler import *
 #from analyse import *
 
-def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,twitter_help=None,sunburnt_API=None):
+def addalyse(solr_server, username, since_id, remake_profile=True, update_count=0):#,twitter_help=None,sunburnt_API=None):
 # this might be a better ordering of input arguments because then more of them can be optional
 #def addalyse(solr_server, username, remake_profile=True, since_id_from_database=0, update_count_from_database=0)
     '''
@@ -48,8 +48,9 @@ def addalyse(solr_server, username, since_id, remake_profile, update_count=0):#,
     sh = StorageHandler(solr_server)
     
     # maybe check if the user exists on twitter, but this check might be done in get_all_tweets
-    #if not th.twitter_contains(username):
-    #    return False
+    if not th.twitter_contains(username):
+        return False
+
     
     print "addalyse test indata: " + str(tuple([solr_server, username, since_id, remake_profile, update_count]))
     
