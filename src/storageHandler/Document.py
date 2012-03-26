@@ -55,8 +55,8 @@ class Document:
         self.id = id
 
         # Parse the args if they are strings (otherwise they would normally be lists of tuples etc.etc.)
-        self.lovekeywords_pylist = ast.literal_eval(lovekeywords_list) if isinstance(lovekeywords_list, str) else lovekeywords_list
-        self.hatekeywords_pylist = ast.literal_eval(hatekeywords_list) if isinstance(hatekeywords_list, str) else hatekeywords_list
+        self.lovekeywords_pylist = ast.literal_eval(lovekeywords_list) if isinstance(lovekeywords_list, basestring) else lovekeywords_list
+        self.hatekeywords_pylist = ast.literal_eval(hatekeywords_list) if isinstance(hatekeywords_list, basestring) else hatekeywords_list
         
         self.since_id = since_id
         self.updatecount = updatecount
