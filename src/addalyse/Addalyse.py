@@ -140,5 +140,9 @@ def merge_tuples(list_of_only_love_or_only_hate_tuples):
     #returns a list of all (key, value) tuples in the dictionary
     return myDict.items()
 
+def testAddalyse():
+    print addalyse("http://xantoz.failar.nu:8080/solr/","test", "0", True, 0)
+
+
         
     
