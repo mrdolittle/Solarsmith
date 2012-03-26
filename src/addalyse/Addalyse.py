@@ -47,10 +47,10 @@ def addalyse(solr_server, username, since_id, remake_profile=True, update_count=
     th = TwitterHelp()
     sh = StorageHandler(solr_server)
     
-    # maybe check if the user exists on twitter, but this check might be done in get_all_tweets
-    if not th.twitter_contains(username):
-        return False
-
+    #remake if not in solr
+    remake_profile = remake_profile or not sh.contains(username)
+    
+    print "addalyse test indata: " + str(tuple([solr_server, username, since_id, remake_profile, update_count]))
     
     if remake_profile:
         # get all tweeets from twitter API 
@@ -71,7 +71,7 @@ def addalyse(solr_server, username, since_id, remake_profile=True, update_count=
         tweets = th.get_all_tweets(username, since_id, True)
         if tweets == None or len(tweets) == 0:
             return False
-
+        
         new_since_id = tweets[0].id
         
         # merging
@@ -81,15 +81,20 @@ def addalyse(solr_server, username, since_id, remake_profile=True, update_count=
         #(lovekeywords, hatekeywords) = analyse.analyse(tweets)# TODO:implement in analyse
         
         # get a users old hatekeywords_list and lovekeywords_list
-        doc = sh.get_user_documents(username, 'lovekeywords_list', 'hatekeywords_list')
+        doc = sh.get_user_documents(username, 'lovekeywords_list', 'hatekeywords_list')[0]
+        
         lovekeywords_old = doc.lovekeywords_pylist
         hatekeywords_old = doc.hatekeywords_pylist
         
+        print "tar fran solr: " + str(lovekeywords_old) + str(hatekeywords_old)
+        
         # merge tuple lists, 
-        lovemerge = merge_lists(lovekeywords, lovekeywords_old)# gives an exception if lovekeywords==None
-        hatemerge = merge_lists(hatekeywords, hatekeywords_old)
+        lovemerge = merge_tuples(lovekeywords + lovekeywords_old)# gives an exception if lovekeywords==None
+        hatemerge = merge_tuples(hatekeywords + hatekeywords_old)
         #lovemerge = merge_tuples(lovekeywords + lovekeywords_old)
         #hatemerge = merge_tuples(lovekeywords + lovekeywords_old)
+        
+        print "lagger in: " + str((lovemerge, hatemerge))
         
         # add merged result to database
         sh.add_profile(username, lovemerge, hatemerge, new_since_id, update_count)
@@ -116,6 +121,14 @@ def addalyse(solr_server, username, since_id, remake_profile=True, update_count=
         h=h+h2
     return (l,h)'''
 
+def appender(list1,list2):
+    tmp=[]
+    for a in list1:
+        tmp.append(a)
+    for b in list2:
+        tmp.append(b)
+    return tmp
+
 def merge_lists(new_list,old_list):
     '''Convenience method. Tries to merge a new_list with an old_list. 
     Raise exception: "TypeError: 'NoneType' object is not iterable" if new_list is None
@@ -140,9 +153,9 @@ def merge_tuples(list_of_only_love_or_only_hate_tuples):
     #returns a list of all (key, value) tuples in the dictionary
     return myDict.items()
 
-def testAddalyse():
+def test_addalyse():
     print addalyse("http://xantoz.failar.nu:8080/solr/","test", 0, True, 0)
-
-
-        
-    
+    print addalyse("http://xantoz.failar.nu:8080/solr/","test", 0, False, 0)
+    print addalyse("http://xantoz.failar.nu:8080/solr/","jesperannebest", 0, True, 0)
+    print addalyse("http://xantoz.failar.nu:8080/solr/","jesperannebest", 0, False, 0)
+test_addalyse()
