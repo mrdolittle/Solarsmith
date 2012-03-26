@@ -92,8 +92,8 @@ def addalyse(solr_server, username, since_id=0, remake_profile=True, update_coun
         print "tar fran solr: " + str(lovekeywords_old) + str(hatekeywords_old)
         
         # merge tuple lists
-        lovemerge = merge_tuples(appender(lovekeywords, lovekeywords_old))# gives an exception if lovekeywords==None
-        hatemerge = merge_tuples(appender(hatekeywords, hatekeywords_old))
+        lovemerge = merge_tuples(lovekeywords + lovekeywords_old)# gives an exception if lovekeywords==None
+        hatemerge = merge_tuples(hatekeywords + hatekeywords_old)
         
         print "lagger in: " + str((lovemerge, hatemerge))
         
@@ -104,16 +104,6 @@ def addalyse(solr_server, username, since_id=0, remake_profile=True, update_coun
         
     # returns true if added to database   
     return True 
-
-
-def appender(list1,list2):
-    tmp=[]
-    for a in list1:
-        tmp.append(a)
-    for b in list2:
-        tmp.append(b)
-    return tmp
-
 
 def merge_tuples(list_of_only_love_or_only_hate_tuples):
     '''gets a list of love tuples or a list of hate tuple, it merges and adds the values
