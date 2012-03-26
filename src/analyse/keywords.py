@@ -9,19 +9,19 @@ Includes methods: extract_keywords
 
 import nltk
 from nltk.tag import _POS_TAGGER
-import operator
 from stopwords import filter_keywords, strip_tweet
 
 def extract_keywords_grammar(text):
     '''Uses chunks matching to identify keywords in a tweet. The code looks much nicer this way :P'''
-
+    
     sequence = nltk.pos_tag(nltk.word_tokenize(text))
+    print sequence
     words = []
-    grammar=''' Noun: {<DT>?<JJ>+(<NN>|<NNS>|<VBG>)+}
+    grammar=''' Noun: {<DT>?<JJ>*(<NN>|<NNS>|<VBG>)+}
                 ToVerb: {<TO><VB>}
-                Name:{<NNP>+}                
+                Name:{<NNP><NNP>+}                
             '''
-    grammarSingular='''Noun:{(<NN>|<NNS>|<VBG>)}
+    grammarSingular='''Noun: {(<NN>|<NNS>|<VBG>)}
                         Name: {<NNP>}
                     '''
     chunks = nltk.RegexpParser(grammar)
@@ -29,11 +29,11 @@ def extract_keywords_grammar(text):
     
     for t in chunks.parse(sequence).subtrees():
         if t.node == "Noun":
-            words.append(reduce(lambda (x,_1),(y,_2): x+" "+y, t))          
+            words.append(reduce(lambda x,y: x + " " + y, map(lambda (x,_1): x, t)))         
         elif t.node == "ToVerb":
             words.append(t[1][0])
         elif t.node == "Name":
-            words.append(reduce(lambda (x,_1),(y,_2): x+" "+y, t))  
+            words.append(reduce(lambda x,y: x + " " + y, map(lambda (x,_1): x, t))) 
                 
     for s in chunksSingular.parse(sequence).subtrees():
         if s.node == "Noun":
@@ -43,6 +43,10 @@ def extract_keywords_grammar(text):
                     
     return words
 
+# def extract(text,words):
+#     hashtagreturn = strip_hashtags(text,words)
+#     return extract_keywords_grammar(hashtagreturn[0], hashtagreturn[1])
+
 def get_hashtags(tweet):
     '''Splits tweet on whitespace (this is ok, since hashtags are rarely combined together with
     punctuation in scary ways that other words might be... I think... (TODO: investigate this)) and
@@ -50,20 +54,14 @@ def get_hashtags(tweet):
     
     return filter(lambda x: x[0] == '#', tweet.split())
 
-def extract_keywords(sentence):
-    '''Extracts hashtags and keywords from a tweet sentence, stores them in a neat little list. If a
-    keyword was present more than once simply return it more than once (later stages in the analysis
-    will have to compound them nicely).
-
-    However the function returns them with a confidence factor (presently hardcoded to one, since
-    there is currently no such thing)'''
+def extract_keywords(tweet):
+    '''Extracts hashtags and keywords from a tweet, stores them in a neat little list. Wee'''
     
-    return map(lambda a: (a,1.0) filter_keywords(extract_keywords_grammar(strip_tweet(sentence))) + get_hashtags(sentence))
+    return filter_keywords(extract_keywords_grammar(strip_tweet(tweet))) + get_hashtags(tweet)
                     
 #Initialize _POS_TAGGER
 nltk.data.load(_POS_TAGGER)
 
 if __name__ == '__main__':
-    text = "Bear Grylls likes to go spear fishing #fishing"
+    text = "The dog likes to go spear fishing with the red cat #fishing"
     print extract_keywords(text)
-    print extract(text)
