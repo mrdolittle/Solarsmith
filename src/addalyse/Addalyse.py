@@ -111,15 +111,16 @@ def addalyse(solr_server, username, since_id=0, remake_profile=True, update_coun
     return True 
 
 def merge_tuples(list_of_only_love_or_only_hate_tuples):
-    '''gets a list of love tuples or a list of hate tuple, it merges and adds the values
-    of all tuples with the same name. 
-    ex [('tjoo',-1),('hi',3),('hi',2),('tjoo',3)] gives [('hi',5),('tjoo',2)]'''
+    '''gets a list of love tuples or a list of hate tuple, it merges
+    and adds the values of all tuples with the same name.
     
-    myDict={}
+    ex [('tjoo',1),('hi',3),('hi',2),('tjoo',3)] gives [('hi',5),('tjoo',2)]'''
+    
+    myDict = {}
     # merge all tuples with the same keyword and sum the values
     for (keyword,value) in list_of_only_love_or_only_hate_tuples:
         # if exist increment by value  else add (keyword, value)
-        myDict [ keyword ] = myDict.get(keyword, 0) + value
+        myDict[keyword] = myDict.get(keyword, 0.0) + value
     #returns a list of all (key, value) tuples in the dictionary
     return myDict.items()
 
