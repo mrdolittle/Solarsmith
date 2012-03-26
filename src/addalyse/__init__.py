@@ -1,1 +1,1 @@
-from .Addalyse import addalyse
+from .Addalyse import addalyse, AddalyseError, AddalyseUserNotOnTwitterError, AddalyseUnableToProcureTweetsError

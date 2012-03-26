@@ -18,14 +18,15 @@ class SolrUser:
     '''
     A class representing a User retrieved from Solr.
     '''
-    def __init__(self, id, lovekeywords_list, hatekeywords_list, **other_kwargs):
-        self.lovekeywords_list = lovekeywords_list
+    def __init__(self, id, score, lovekeywords_list, hatekeywords_list, **other_kwargs):
         self.id = id
+        self.score = score
+        self.lovekeywords_list = lovekeywords_list
         self.hatekeywords_list = hatekeywords_list
         self.other_kwargs = other_kwargs
 
     def __repr__(self):
-        return 'Id: %s Lovekeywords: %s Hatekeywords: %s' % (self.id, self.lovekeywords_list, self.hatekeywords_list)
+        return 'Id: %s Score: %s Lovekeywords: %s Hatekeywords: %s' % (self.id, self.score, self.lovekeywords_list, self.hatekeywords_list)
 
     def getKeywords(self):
         '''
@@ -56,8 +57,8 @@ def get_frienenmies_by_id(username):
     global SOLR_SERVER
     
     interface = sunburnt.SolrInterface(SOLR_SERVER)
-    ans = interface.query(id=username)
-    for searchee in ans.execute(constructor=SolrUser):
+    query = interface.query(id=username).field_limit(score=True)
+    for searchee in query.execute(constructor=SolrUser):
         print "Query executed, result: "
         print searchee
         
@@ -66,27 +67,27 @@ def get_frienenmies_by_id(username):
     
     userlovekeywords = get_list_from_string(searchee.lovekeywords_list)
     userhatekeywords = get_list_from_string(searchee.hatekeywords_list)
-    print userlovekeywords
-    print userhatekeywords
-    q = interface.Q
-    for key, weight in userlovekeywords:
-        q = q | interface.Q(lovekeywords=key) ** int(weight)
-    query = interface.query(q)
-    for friends in query.execute(constructor=SolrUser):
-        print friends
-  #  si.query(si.Q(lovekeywords='cat') ** 2.3 | si.Q(lovekeywords='fish') ** 1.2)
+#    print userlovekeywords
+#    print userhatekeywords
+    
+    query = interface.Q(lovekeywords=userlovekeywords[0][0]) ** userlovekeywords[0][1]
+    for keyword, weight in userlovekeywords[1:]:
+        query = query | interface.Q(lovekeywords=keyword) ** weight
+    for keyword, weight in userhatekeywords:
+        query = query | interface.Q(hatekeywords=keyword) ** weight
+    friends = interface.query(query).field_limit(['id', 'lovekeywords_list', 'hatekeywords_list'], score=True).execute(constructor=SolrUser)
+#    print "Friends: "
+#    print friends
 
-#    ans = interface.query(lovekeywords=lovekeywords[0]) # Ska fixas så den inte bara söker på första keyworden
-#    loveresult = []
-#    for friends in ans.execute(constructor=SolrUser):
-#        loveresult = loveresult + [friends]
-#    # print loveresult
-#    
-#    ans = interface.query(lovekeywords=hatekeywords[0])
-#    hateresult = []
-#    for foes in ans.execute(constructor=SolrUser):
-#        hateresult = hateresult + [foes]
-#    return (loveresult, hateresult)
+    query = interface.Q(hatekeywords=userlovekeywords[0][0]) ** userlovekeywords[0][1]
+    for keyword, weight in userlovekeywords[1:]:
+        query = query | interface.Q(hatekeywords=keyword) ** weight
+    for keyword, weight in userhatekeywords:
+        query = query | interface.Q(lovekeywords=keyword) ** weight
+    enemies = interface.query(query).field_limit(['id', 'lovekeywords_list', 'hatekeywords_list'], score=True).execute(constructor=SolrUser)
+#    print "Emenies: "
+#    print enemies
+    return friends, enemies
 
 
 #getUserid("xantestuser2")

@@ -10,7 +10,7 @@ Uses: analysis, storageHandler
 
 Used by: request, update, scrape 
 
-@author: mbernt, anneback
+@author: mbernt, anneback, Xantoz
 '''
 
 #from twitterHelp import twitter_help_global
@@ -18,7 +18,20 @@ Used by: request, update, scrape
 
 from twitterHelp import *
 from storageHandler import *
+from exception import Exception
 #from analyse import *
+
+class AddalyseError(Exception):
+    '''Base class for all variants of errors Addalyse wants to raise.'''
+    
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
+class AddalyseUserNotOnTwitterError(AddalyseError): pass
+
+class AddalyseUnableToProcureTweetsError(AddalyseError): pass
 
 def addalyse(solr_server, username, since_id=0, remake_profile=True, update_count=1):
     '''
@@ -43,18 +56,28 @@ def addalyse(solr_server, username, since_id=0, remake_profile=True, update_coun
     twitter_API, sunburnt_API
     '''
     th = TwitterHelp()
-    sh = StorageHandler(solr_server)
     
+    # Does not user up a twitter API call.
+    if not th.twitter_contains(username):
+        raise AddalyseUserNotOnTwitterError("Couldn't find any trace of '" + username + "'")
+    
+    sh = StorageHandler(solr_server)
+
     #remake if not in solr
     remake_profile = remake_profile or not sh.contains(username)
     
-    print "addalyse test indata: " + str(tuple([solr_server, username, since_id, remake_profile, update_count]))
+    print "DBG: addalyse indata: " + str((solr_server, username, since_id, remake_profile, update_count))
     
     if remake_profile:
         # get all tweeets from twitter API 
         tweets = th.get_all_statuses(username, None)
-        if tweets == None or len(tweets) == 0:
-            return False
+        if tweets == []:
+            e = AddalyseUnableToProcureTweetsError("I couldn't for the love of me extract some tweets for '" +
+                                                   username +
+                                                   "'. Maybe he just doesn't have any new ones?")
+            e.remake_profile = True
+            raise e
+        
         # latest tweet is first in list
         new_since_id = tweets[0].id # assumes that the 
         
@@ -70,8 +93,14 @@ def addalyse(solr_server, username, since_id=0, remake_profile=True, update_coun
     else:
         # get tweets newer than sinceID 
         tweets = th.get_all_statuses(username, since_id)
-        if tweets == None or len(tweets) == 0:
-            return False
+        if tweets == []:
+            e = AddalyseUnableToProcureTweetsError("I couldn't for the love of me extract some tweets for '" +
+                                                   username +
+                                                   "'. Maybe he just doesn't have any?")
+            e.remake_profile = False
+            raise e
+        
+        
         
         new_since_id = tweets[0].id
         
@@ -106,15 +135,16 @@ def addalyse(solr_server, username, since_id=0, remake_profile=True, update_coun
     return True 
 
 def merge_tuples(list_of_only_love_or_only_hate_tuples):
-    '''gets a list of love tuples or a list of hate tuple, it merges and adds the values
-    of all tuples with the same name. 
-    ex [('tjoo',-1),('hi',3),('hi',2),('tjoo',3)] gives [('hi',5),('tjoo',2)]'''
+    '''gets a list of love tuples or a list of hate tuple, it merges
+    and adds the values of all tuples with the same name.
     
-    myDict={}
+    ex [('tjoo',1),('hi',3),('hi',2),('tjoo',3)] gives [('hi',5),('tjoo',2)]'''
+    
+    myDict = {}
     # merge all tuples with the same keyword and sum the values
     for (keyword,value) in list_of_only_love_or_only_hate_tuples:
         # if exist increment by value  else add (keyword, value)
-        myDict [ keyword ] = myDict.get(keyword, 0) + value
+        myDict[keyword] = myDict.get(keyword, 0.0) + value
     #returns a list of all (key, value) tuples in the dictionary
     return myDict.items()
 

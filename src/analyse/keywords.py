@@ -54,10 +54,12 @@ def get_hashtags(tweet):
     
     return filter(lambda x: x[0] == '#', tweet.split())
 
-def extract_keywords(tweet):
-    '''Extracts hashtags and keywords from a tweet, stores them in a neat little list. Wee'''
+def extract_keywords(sentence):
+    '''Extracts hashtags and keywords from a tweet, stores them in a neat little list of tuples of
+    keyword and a confidence factor of some sort (currently hard-coded to 1.0. But might change in
+    future, or might not and just be really stupid). '''
     
-    return filter_keywords(extract_keywords_grammar(strip_tweet(tweet))) + get_hashtags(tweet)
+    return map(lambda a: (a,1.0), filter_keywords(extract_keywords_grammar(strip_tweet(sentence))) + get_hashtags(sentence))
                     
 #Initialize _POS_TAGGER
 nltk.data.load(_POS_TAGGER)

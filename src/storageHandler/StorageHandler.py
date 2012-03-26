@@ -9,6 +9,12 @@ TODO: WRITE A GOOD DESCRIPTION SDJFJFKJDFKJFDKJDF
 import sunburnt
 from Document import Document
 
+# This is the number of rows we say we want from Solr to somewhat
+# approximate "GET ALL THE THINGS" This might be very stupid and we
+# might want to instead globally adopt a design (even in the backend
+# stuff) that can work using pagination. Be wary of having the
+# MAD_LIMIT be too mad and cause the query to explode.
+MAD_LIMIT = 1000000000
 
 class StorageHandler:
     '''TODO: WRITE ME A DESCRIPTION'''
@@ -19,10 +25,14 @@ class StorageHandler:
         self.si = sunburnt.SolrInterface(solr_server, schema)
         
     def get_user_fields(self, username, *fields):
-        """Gets fields on all documents matching the username wildcard.
-        username may be either a full username or a wildcard containing: *.
-        e.g.: '_xantoz_' '_xan*' or '*'.
-        The latter would return all users in Solr.
+        """Gets fields on all documents matching the username
+        wildcard.  username may be either a full username or a
+        wildcard containing: *.  However no leading wildcards are
+        allowed (refer to sunburnt documentation for instance).
+        
+        e.g.: '_xantoz_', '_x*z_', '_xan*' or '*'.
+              The latter would return all users in Solr.
+              However '*toz_' is not a valid wildcard query
 
         Returns the specified fields in a tuple in the same orders as specified.
 
@@ -38,7 +48,8 @@ class StorageHandler:
                 blah
         """
 
-        return [tuple(map(lambda a: x[a], fields)) for x in self.si.query(id=username).field_limit(fields).execute()]
+        return [tuple(map(lambda a: x[a], fields))
+                for x in self.si.query(id=username).field_limit(fields).paginate(rows=MAD_LIMIT).execute()]
 
     def get_user_documents(self, username, *rst):
         """Gets list of documents, represented as Document objects, matching the username wildcard.
@@ -59,7 +70,7 @@ class StorageHandler:
                                       x['hatekeywords_list'] if 'hatekeywords_list' in fields else None,
                                       x['since_id']          if 'since_id'          in fields else None,
                                       x['updatecount']       if 'updatecount'       in fields else None),
-                   self.si.query(id=username).field_limit(fields).execute())
+                   self.si.query(id=username).field_limit(fields).paginate(rows=MAD_LIMIT).execute())
 
 
     def add_profile(self, id, lovekeywords, hatekeywords, since_id, updatecount):

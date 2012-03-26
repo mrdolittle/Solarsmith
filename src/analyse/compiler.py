@@ -29,19 +29,36 @@ def analyse_sentences_var_1(sentences):
     for sentence in sentences:
         sentiment = analyse_sentiment(sentence)
         for (keyword, weight) = extract_keywords(sentence):
-            a = lovekeywords if sentiment > 0.0 else hatekeywords
-            a[keyword] = a.get(keyword, 0.0)*weight*abs(sentiment)
+            a = lovekeywords if sentiment > 0.0 else hatekeywords  # choose where to put keyword
+            a[keyword] = a.get(keyword, 0.0)*weight*abs(sentiment) # only positive weights in end result
 
-    return (list(lovekeywords), list(hatekeywords))
+    return (lovekeywords.items(), hatekeywords.items())
 
-def analyse_sentences_var_2(sentences):
+def analyse_sentences_var_2_helper(sentences):
     '''Does analysis of all sentences and returns a compilation of all results in the form of one
     list of tuples where the weight might be negative or positive depending on the overall sentiment
     around the keyword.'''
 
-    # TODO
-    pass
+    keywords = {}
+    for sentence in sentences: 
+        for (keyword, weight) in analyse_sentence(sentence)
+        keywords[keyword] = keywords.get(keyword, 0.0) + weight
 
+    return keywords.items()
+
+def splittify(keywords):
+    '''It's magical!'''
+    # Homework for the ones interested in the perversions of lists and functional
+    # programming. (This just might be the Haskell way to do it..., or Lisp for that matter).
+
+    return map(lambda x: filter(lambda a: a != None, x), apply(zip, [((k,w), None) if w > 0.0 else (None, (k,-w)) for (k,w) in keywords]))
+
+def analyse_sentences_var_2(sentences):
+    '''This doesn't count love and hate separately but tries to, for each keyword, get only one
+    value which is the total amount of love minus the total amount of hate (typing this felt kind of
+    wierd...).'''
+    
+    return splittify(analyse_sentences_var_2_helper(sentences))
 
 def analyse(tweets):
     '''Do the whole analysis shebang and return the results as one lovekeyword list and one
