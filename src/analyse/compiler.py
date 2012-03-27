@@ -7,6 +7,7 @@ This is what implements the actual analyse function that we export in __init__.p
 import nltk
 from keywords import extract_keywords
 from sentiment import analyse_sentiment
+from nltk.corpus import wordnet
 
 
 def isenglish(tweet):
