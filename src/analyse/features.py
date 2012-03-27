@@ -1,13 +1,15 @@
 import nltk
 from nltk.tag import _POS_TAGGER
+from stopwords import strip_tweet
 
 def extract_features(text):
     sequence = nltk.pos_tag(nltk.word_tokenize(text))
+    text = strip_tweet(text)
     grammar='''Adjective: {<RBR>*(<JJ>|<JJS>|<JJT>|<JJR>)+}
                RbVerb: {(<RB>*(<VBN>|<VB>|<VBP>|<VBG>))+}'''
     chunks = nltk.RegexpParser(grammar)
     feat = []
-    print chunks.parse(sequence)
+    #print chunks.parse(sequence)
     for t in chunks.parse(sequence).subtrees():
         if t.node == "Adjective":
             if len(t)>1:
