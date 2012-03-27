@@ -17,7 +17,7 @@ def extract_keywords_grammar(text):
     sequence = nltk.pos_tag(nltk.word_tokenize(text))
     print sequence
     words = []
-    grammar=''' Noun: {<DT>?<JJ>*(<NN>|<NNS>|<VBG>)+}
+    grammar=''' Noun: {<DT>?<JJ>+(<NN>|<NNS>|<VBG>)+}
                 ToVerb: {<TO><VB>}
                 Name:{<NNP><NNP>+}                
             '''
@@ -65,5 +65,5 @@ def extract_keywords(sentence):
 nltk.data.load(_POS_TAGGER)
 
 if __name__ == '__main__':
-    text = "The dog likes to go spear fishing with the red cat #fishing"
+    text = "I like apples and big bananas"
     print extract_keywords(text)

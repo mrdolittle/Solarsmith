@@ -18,7 +18,6 @@ Used by: request, update, scrape
 
 from twitterHelp import *
 from storageHandler import *
-from exception import Exception
 #from analyse import *
 
 class AddalyseError(Exception):
