@@ -20,14 +20,16 @@ class TwitterHelp:
         '''checks if a username exists on Twitter.
         This method is rather slow, but does _not_ user up any API calls.
         @return: True if the user exists, else False'''
-        #self.twitter_API.SetCredentials("SSAccount", "ssapiapi")
         try:
             urllib2.urlopen("http://www.twitter.com/" + username)
             # Url was found, the username exists
             return True
-        except urllib2.HTTPError:
-            # Page loading failed
-            return False
+        except urllib2.HTTPError as err:
+            # Page loading failed            
+            if err.code == 404:
+                return False
+            else:
+                raise
         except urllib2.URLError:
             # Connection failed
             return None
@@ -108,3 +110,4 @@ class TwitterHelp:
         for u in users:
             user_set.add(u.GetScreenName()) 
         return user_set
+            
