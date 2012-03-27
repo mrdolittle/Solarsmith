@@ -15,6 +15,7 @@ def extract_keywords_grammar(text):
     '''Uses chunks matching to identify keywords in a tweet. The code looks much nicer this way :P'''
     
     sequence = nltk.pos_tag(nltk.word_tokenize(text))
+    print sequence
     words = []
     grammar=''' Noun: {<DT>?<JJ>+(<NN>|<NNS>|<VBG>)+}
                 ToVerb: {<TO><VB>}
@@ -58,11 +59,10 @@ def extract_keywords(sentence):
     keyword and a confidence factor of some sort (currently hard-coded to 1.0. But might change in
     future, or might not and just be really stupid). '''
     
-    return map(lambda a: (a,1.0), filter_keywords(extract_keywords_grammar(strip_tweet(sentence))) + get_hashtags(sentence))
-                    
+    return map(lambda a: (a,1.0), filter_keywords(extract_keywords_grammar(strip_tweet(sentence))) + get_hashtags(sentence))                
 #Initialize _POS_TAGGER
 nltk.data.load(_POS_TAGGER)
 
 if __name__ == '__main__':
     text = "I like apples and big bananas"
-    print extract_keywords(text)
+    print extract_keywords("Google is great, fun, smart, awesome, and everything else that makes life jolly and dandy")
