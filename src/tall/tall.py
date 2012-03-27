@@ -213,25 +213,24 @@ class RequestHandler(BaseHTTPRequestHandler):
         command, data = get_arguments(self.path)
         print "Command: " + command
         print "Data: " + data
-        frienemy_result = tallstore.get_frienenmies_by_id(data) # Ska ersättas med anrop till storage handler
-        if frienemy_result == False:
-            self.send_result('User not found, attempting to add')
-            succeeded, message = send_to_request(data)
-            if succeeded == True:
-                self.send_result(message)
-                # Hämta från storage
-                frienemy_result = tallstore.get_frienenmies_by_id(data)
-                if frienemy_result == False:
-                    return # Bör ersättas med felkod. Kommer vi hit är något allvarligt fel
-            else:
-                self.send_result(message)
-                return
+        if command == "username":
+            frienemy_result = tallstore.get_frienemies_by_id(data) # Ska ersättas med anrop till storage handler
+            if frienemy_result == False:
+                self.send_result('User not found, attempting to add')
+                succeeded, message = send_to_request(data)
+                if succeeded == True:
+                    self.send_result(message)
+                    # Hämta från storage
+                    frienemy_result = tallstore.get_frienemies_by_id(data)
+                    if frienemy_result == False:
+                        return # Bör ersättas med felkod. Kommer vi hit är något allvarligt fel
+                else:
+                    self.send_result(message)
+                    return
+        elif command == "keywords":
+            keys = data.split(",")
+            frienemy_result = tallstore.get_frienemies_by_keywords(keys)
         self.send_result(create_xml(frienemy_result))
-#        result = send_to_storage(command, data)
-#        if result == False:
-#            send_to_request(data)
-#        else:
-#            self.send_result("this is our xmlfile")
 
 
 '''

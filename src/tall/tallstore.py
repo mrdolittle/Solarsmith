@@ -52,7 +52,7 @@ class SolrUser:
         return self.id
 
 
-def get_frienenmies_by_id(username):
+def get_frienemies_by_id(username):
     '''Retrieves a users friends and enemies from Solr.'''
     global SOLR_SERVER
     
@@ -90,8 +90,20 @@ def get_frienenmies_by_id(username):
 #    print enemies
     return friends, enemies
 
+def get_frienemies_by_keywords(keywords):
+    '''Retrieves a users friends and enemies from Solr.'''
+    global SOLR_SERVER
+    
+    interface = sunburnt.SolrInterface(SOLR_SERVER)
+    
+    query = interface.Q(lovekeywords=keywords[0])
+    for keyword in keywords[1:]:
+        query = query | interface.Q(lovekeywords=keyword)
+    friends = interface.query(query).field_limit(['id', 'lovekeywords_list', 'hatekeywords_list'], score=True).paginate(rows=42).execute(constructor=SolrUser)
 
-#getUserid("xantestuser2")
-#friends = interface.query(lovekeywords='Fear')
-#for fres in friends.execute(constructor=SolrUser):
-#    print fres
+    query = interface.Q(hatekeywords=keywords[0])
+    for keyword in keywords[1:]:
+        query = query | interface.Q(hatekeywords=keyword)
+    enemies = interface.query(query).field_limit(['id', 'lovekeywords_list', 'hatekeywords_list'], score=True).paginate(rows=42).execute(constructor=SolrUser)
+
+    return friends, enemies
