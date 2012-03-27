@@ -4,8 +4,9 @@ Stopwords
 Defines a list of words that could be seen as keywords but are too vague
 Includes methods: filter_keyword
 
-@author: 0tchii
+@author: 0tchii, Xantoz
 '''
+
 import re
 
 STOPWORDS = set(["something",
@@ -32,17 +33,17 @@ TWEET_STOPSMILEYS = set([":)", ":(", ":<", ":>", ":-)", ":-(", ":-<", ";-)", ";)
  
                           
 
+URL_REGEX = re.compile(r'https?:(?:(//)|(\\\\))+[!\w\d:#@%/;$()~_?\+\-=\\\.,&]*', re.I)
 def strip_tweet(tweet):
     '''Strips tweet of scary features like hashtags at the start or
     end of a tweet as well as some smileys etc.
 
     TODO: test whether this approach to hashtags is not insane etc.
           More words to transform?'''
-    global TWEET_STOPSMILEYS
-    
-    
-    
-    words = tweet.split()
+    global TWEET_STOPSMILEYS, URL_REGEX
+
+    urlless_tweet = URL_REGEX.sub("", tweet)
+    words = urlless_tweet.split()
 
     # strip leading hashtags
     while words[0][0] == '#':

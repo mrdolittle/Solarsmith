@@ -16,6 +16,7 @@ from storageHandler import *
 from twitterHelp import *
 from mx import DateTime as mxDateTime
 import time
+from logger import logger
 
 # TODO: read this from some configuration file in a smart way?
 SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"
@@ -46,12 +47,14 @@ def main():
                              (update_count % UPDATE_N) == 0,
                              update_count + 1)
                 except Addalyse.AddalyseUserNotOnTwitterError as err:
+                    #sh.delete(username)
                     print err
                 except Addalyse.AddalyseUnableToProcureTweetsError as err:
                     print err
-                time.sleep(sleep_time) # sleep for ten seconds, to not make to many requests to twitter
+                time.sleep(sleep_time) # sleep for ten seconds, to not make to many requests to twitter                
             else:
                 print("This user has recently been updated ( " + str(diff.minutes) + " minutes ago).")
+                
 
 if __name__ == "__main__":
     main()

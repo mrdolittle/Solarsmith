@@ -11,6 +11,9 @@ import urlparse
 import tallstore
 
 
+def get_pic_link(username):
+    return "https://api.twitter.com/1/users/profile_image/" + str(username)
+
 def create_socket(address):
     '''
     Creates a socket for communicating with either storage handler or request.
@@ -72,23 +75,24 @@ def create_xml(result):
     '''
     friendresult, foeresult = result
     # All xml-flags
-    xml = "<?xml version 1.0?>"
     searchtag = "<searchResult>"
     friendtag = "<friends>"
-    foestag = "<foes>"
+    enemiestag = "<enemies>"
     entrytag = "<entry>"
     nametag = "<name>"
+    piclinktag = "<piclink>"
     lovekeywordstag = "<lovekeywords>"
     hatekeywordstag = "<hatekeywords>"
+    endpiclinktag = "</picklink>"
     endlovekeywordstag = "</lovekeywords>"
     endhatekeywordstag = "</hatekeywords>"
     endsearchtag = "</searchResult>"
     endfriendstag = "</friends>"
-    endfoestag = "</foes>"
+    endenemiestag = "</enemies>"
     endentrytag = "</entry>"
     endnametag = "</name>"
     # Add xml
-    tosend = xml + searchtag
+    tosend = searchtag
     # Add friends
     tosend = tosend + friendtag
 
@@ -97,6 +101,7 @@ def create_xml(result):
         friendusername = friends.getId()
         # Start of friends
         tosend = tosend + entrytag + nametag + friendusername + endnametag
+        tosend = tosend + piclinktag + get_pic_link(friendusername) + endpiclinktag
         tosend = tosend + lovekeywordstag
         
         # Add friend's lovekeywords
@@ -115,13 +120,15 @@ def create_xml(result):
     tosend = tosend + endfriendstag
 
     # Start of foes
-    tosend = tosend + foestag
+    tosend = tosend + enemiestag
 
-    for foes in foeresult:
-        lovekeywords, hatekeywords = foes.getKeywords()
-        foeusername = foes.getId()
+    for enemies in foeresult:
+        lovekeywords, hatekeywords = enemies.getKeywords()
+        enemyusername = enemies.getId()
         # Add a foe
-        tosend = tosend + entrytag + nametag + foeusername + endnametag
+        tosend = tosend + entrytag + nametag + enemyusername + endnametag
+        tosend = tosend + piclinktag + get_pic_link(enemyusername) + endpiclinktag
+
         tosend = tosend + lovekeywordstag
         # Add foe's lovekeywords
         for keyword in lovekeywords:
@@ -135,7 +142,7 @@ def create_xml(result):
         tosend = tosend + endhatekeywordstag + endentrytag
 
     # End of foes
-    tosend = tosend + endfoestag
+    tosend = tosend + endenemiestag
     # End of Search result
     tosend = tosend + endsearchtag
     print "Response: " + tosend
@@ -206,25 +213,24 @@ class RequestHandler(BaseHTTPRequestHandler):
         command, data = get_arguments(self.path)
         print "Command: " + command
         print "Data: " + data
-        frienemy_result = tallstore.get_frienenmies_by_id(data) # Ska ersättas med anrop till storage handler
-        if frienemy_result == False:
-            self.send_result('User not found, attempting to add')
-            succeeded, message = send_to_request(data)
-            if succeeded == True:
-                self.send_result(message)
-                # Hämta från storage
-                frienemy_result = tallstore.get_frienenmies_by_id(data)
-                if frienemy_result == False:
-                    return # Bör ersättas med felkod. Kommer vi hit är något allvarligt fel
-            else:
-                self.send_result(message)
-                return
+        if command == "username":
+            frienemy_result = tallstore.get_frienemies_by_id(data) # Ska ersättas med anrop till storage handler
+            if frienemy_result == False:
+                self.send_result('User not found, attempting to add')
+                succeeded, message = send_to_request(data)
+                if succeeded == True:
+                    self.send_result(message)
+                    # Hämta från storage
+                    frienemy_result = tallstore.get_frienemies_by_id(data)
+                    if frienemy_result == False:
+                        return # Bör ersättas med felkod. Kommer vi hit är något allvarligt fel
+                else:
+                    self.send_result(message)
+                    return
+        elif command == "keywords":
+            keys = data.split(",")
+            frienemy_result = tallstore.get_frienemies_by_keywords(keys)
         self.send_result(create_xml(frienemy_result))
-#        result = send_to_storage(command, data)
-#        if result == False:
-#            send_to_request(data)
-#        else:
-#            self.send_result("this is our xmlfile")
 
 
 '''
