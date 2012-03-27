@@ -70,7 +70,7 @@ def addalyse(solr_server, username, since_id=0, remake_profile=True, update_coun
     
     if remake_profile:
         # get all tweeets from twitter API 
-        tweets = th.get_all_statuses(username, None)
+        tweets = th.get_all_statuses(username)
         if tweets == []:
             e = AddalyseUnableToProcureTweetsError("I couldn't for the love of me extract some tweets for '" +
                                                    username +
@@ -91,8 +91,7 @@ def addalyse(solr_server, username, since_id=0, remake_profile=True, update_coun
         print "add_profile: "+str(sh.get_user_fields(username,'id','since_id','updatecount','lovekeywords_list', 'hatekeywords_list')[0])
         
     else:
-        # get tweets newer than sinceID 
-        tweets = th.get_all_statuses(username, since_id)
+        tweets = th.get_all_statuses(username, since_id) # get all tweets since since_id
         if tweets == []:
             e = AddalyseUnableToProcureTweetsError("I couldn't for the love of me extract some tweets for '" +
                                                    username +
