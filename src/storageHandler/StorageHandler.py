@@ -90,14 +90,14 @@ class StorageHandler:
         enemies are a list of usernames sorted on how hate'''
         return ([],[])
 
-    def delete(id_or_list_of_id):
+    def delete(self, id_or_list_of_id):
         '''Deletes a single document with id id_or_list_of_id if a
         single id is passed. If a list is passed deletes all documents
         with ids in the list id_or_list_of_id.'''
 
         self.si.delete(id_or_list_of_id)
 
-    def delete_all():
+    def delete_all(self):
         '''BLOWS. UP. EVERYTHING!!!'''
 
         self.si.delete_all()
