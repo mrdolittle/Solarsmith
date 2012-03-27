@@ -16,15 +16,12 @@ from nltk.corpus import wordnet
 def isenglish(tweet):
     # wordlist=tweet.split(" ")
     wordlist = tweet.split()
-    englishfactor=0
+    englishfactor = 0
     for word in wordlist: 
         if wordnet.synsets(word):
-            englishfactor=englishfactor+1
+            englishfactor = englishfactor + 1
             #  a english word
-    if ((englishfactor+0.0)/len(wordlist))> 0.4:
-        return True
-    else:
-        return False
+    return True if (englishfactor + 0.0)/len(wordlist) > 0.4 else False
 
 def analyse_sentence(sentence):
     '''Takes a tweet and performs sentimentanalysis on the given tweet, then gives the weight that
