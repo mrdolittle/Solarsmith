@@ -16,6 +16,12 @@ STOPWORDS = set(["something",
                  "everything",
                  "fun",
                  "lol",
+                 "LOL",
+                 "ROFL",
+                 "ROFLMAO",
+                 "ROLFMAO",     # rolling on lava fucking my ass of. The variant ROLF, rolling on laughing floor, is not added since it is a name
+                 "rolfmao",
+                 "roflmao",
                  "URLYBURLYSMURLYPURLY" # this one is inserted for URL's by word_tokenize, so we filter it (it tends to be tagged as NNP and considered a keyword)
                  ])
 
