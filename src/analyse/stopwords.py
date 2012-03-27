@@ -4,8 +4,10 @@ Stopwords
 Defines a list of words that could be seen as keywords but are too vague
 Includes methods: filter_keyword
 
-@author: 0tchii
+@author: 0tchii, Xantoz
 '''
+
+import re
 
 STOPWORDS = set(["something",
                  "nothing",
@@ -31,22 +33,30 @@ TWEET_STOPSMILEYS = set([":)", ":(", ":<", ":>", ":-)", ":-(", ":-<", ";-)", ";)
  
                           
 
+URL_REGEX = re.compile(r'https?:(?:(//)|(\\\\))+[!\w\d:#@%/;$()~_?\+\-=\\\.,&]*', re.I)
 def strip_tweet(tweet):
     '''Strips tweet of scary features like hashtags at the start or
     end of a tweet as well as some smileys etc.
 
-    TODO: test whether this approach to hashtags is not insane etc.
-          More words to transform?'''
-    global TWEET_STOPSMILEYS
+    TODO: * test whether this approach to hashtags is not insane etc.
+          * More words to transform?
+          * keep eventual punctation (or any non-alnum chars really)
+            at the end of hashtag when removing it, instead of completely nuking it.
+          * strip at-sign and maybe even split those names at camelCase
+          (seems common) (maybe be wholly crazy and get fullname from twitter?)
+'''
+    global TWEET_STOPSMILEYS, URL_REGEX
 
-    words = tweet.split()
+    urlless_tweet = URL_REGEX.sub("", tweet)
+    words = urlless_tweet.split()
 
-    # strip leading hashtags
-    while words[0][0] == '#':
-        del words[0]
+    # # strip leading hashtags
+    # while words != [] and words[0][0] == '#':
+    #     del words[0]
 
+    
     # strip trailing hashtags
-    while words[-1][0] == '#':
+    while words != [] and words[-1][0] == '#':
         del words[-1]
 
     words = map(lambda x: x[1:] if x[0] == '#' else x, words) # strip the hashes out of hashtags in the middle

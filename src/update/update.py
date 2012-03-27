@@ -47,7 +47,7 @@ def main():
                              (update_count % UPDATE_N) == 0,
                              update_count + 1)
                 except Addalyse.AddalyseUserNotOnTwitterError as err:
-                    #sh.delete(username)
+                    sh.delete(username)
                     print err
                 except Addalyse.AddalyseUnableToProcureTweetsError as err:
                     print err

@@ -16,7 +16,7 @@ import nltk
 import tweet_features, tweet_pca
 from keywords import extract_keywords
 
-CORPUS="sentiment.csv"
+CORPUS="../analyse/sentiment.csv"
 
 def analyse_sentiment(sentence):
     '''Analyses sentence sentiment. Returns a number of size
@@ -67,7 +67,7 @@ v_test  = fvecs[2000:]
 
 ## train CLASSIFIER
 #print "TRAINING NAIVESBAYESCLASSIFIER"
-CLASSIFIER = nltk.NaiveBayesCLASSIFIER.train(v_train);
+CLASSIFIER = nltk.NaiveBayesClassifier.train(v_train);
 #CLASSIFIER = nltk.classify.maxent.train_maxent_CLASSIFIER_with_gis(v_train);
 
 ## classify and dump results for interpretation

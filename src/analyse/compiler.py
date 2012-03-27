@@ -30,7 +30,7 @@ def analyse_sentences_var_1(sentences):
         sentiment = analyse_sentiment(sentence)
         for (keyword, weight) in extract_keywords(sentence):
             a = lovekeywords if sentiment > 0.0 else hatekeywords  # choose where to put keyword
-            a[keyword] = a.get(keyword, 0.0)*weight*abs(sentiment) # only positive weights in end result
+            a[keyword] = a.get(keyword, 0.0) + weight*abs(sentiment) # only positive weights in end result
 
     return (lovekeywords.items(), hatekeywords.items())
 
@@ -63,12 +63,15 @@ def analyse_sentences_var_2(sentences):
 def analyse(tweets):
     '''Do the whole analysis shebang and return the results as one lovekeyword list and one
     hatekeyword list.
-
     Ex:
     (love, hate) = analyse(tweets)
     print love => [("cat", 34), ("fishing", 22), ("bear grylls", 33)]
     print hate => [("dog", 123), ("bear hunting", 44)]'''
+   # print tweets
+   # print map(nltk.sent_tokenize,tweets)
+   # print reduce(lambda x,y: x+y,[['tweetlist'], ['lol dont like apples'], ['like reading books']])
+    #reduce(lambda x,y: x+y,map(nltk.sent_tokenize, tweets))
 
     # split the list of tweets to a list of sentences and send it to analyse_sentences
-    return analyse_sentences_var_1(reduce(lambda x,y: x.append(y),
+    return analyse_sentences_var_1(reduce(lambda x,y: x+y,
                                           map(nltk.sent_tokenize, tweets)))
