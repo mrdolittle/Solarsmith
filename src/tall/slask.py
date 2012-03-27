@@ -3,50 +3,15 @@ Created on Mar 21, 2012
 
 @author: jonas
 '''
-xml = "<?xml version 1.0?>"
-searchtag = "<searchResult>"
-friendtag = "<friends>"
-foestag = "<foes>"
-entrytag = "<entry>"
-nametag = "<name>"
-endsearchtag = "</searchResult>"
-endfriendstag = "</friends>"
-endfoestag = "</foes>"
-endentrytag = "</entry>"
-endnametag = "</name>"
 
-tosend = ""
-tosend = tosend.join((xml, searchtag, friendtag))
-print tosend
-#from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
-#from SocketServer import ThreadingMixIn
-#
-#
-#class ThreadingServer(ThreadingMixIn, HTTPServer):
-#    # Ctrl-C will cleanly kill all spawned threads
-#    daemon_threads = True
-#    # much faster rebinding
-#    allow_reuse_address = True
-#
-#
-#class RequestHandler(BaseHTTPRequestHandler):
-#    def _writeheaders(self):
-#        self.send_response(200)
-#        self.send_header('Content-type', 'text/html')
-#        self.end_headers()
-#
-#    def do_HEAD(self):
-#        self._writeheaders()
-#
-#    def do_GET(self):
-#        self._writeheaders()
-#        self.wfile.write("""<HTML><HEAD><TITLE>Sample Page</TITLE></HEAD>
-#        <BODY>This is a sample HTML page.</BODY></HTML>""")
-#
-#
-## main
-#serveraddr = ('', 8001)
-#srvr = ThreadingServer(serveraddr, RequestHandler)
-#srvr.serve_forever()
+def get_common_keywords(userskeywords, otherkeywords):
+    commonkeywords = []
+    for key in otherkeywords:
+        if key in userskeywords:
+            commonkeywords = commonkeywords + [key]
+    return commonkeywords
 
-
+first = ["hej", "da","knasboll"]
+sec = ["jag", "heter", "knasboll", "da"]
+test = get_common_keywords(first, sec)
+print test

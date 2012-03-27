@@ -14,6 +14,7 @@ import tallstore
 def get_pic_link(username):
     return "https://api.twitter.com/1/users/profile_image/" + str(username)
 
+
 def create_socket(address):
     '''
     Creates a socket for communicating with either storage handler or request.
@@ -47,12 +48,12 @@ def send_to_request(username):
     soc = create_socket(("130.229.128.185", 1337))
     soc.sendall(username)
     response = soc.recv(1024) # Recieves a response of at most 1kB
-    
+
     if response == 1:
 #        print response
         return (True, "User added, retrieving frienemies.")
         # Anropa storage igen med användarnamnet
-    
+
     elif response == 2:
 #        print response
         return (False, "User does not exist.")
@@ -69,11 +70,25 @@ def send_to_request(username):
     # 4 = unknown error
 
 
+def get_common_keywords(userskeywords, otherkeywords):
+    commonkeywords = []
+    for key in otherkeywords:
+        if key in userskeywords:
+            commonkeywords = commonkeywords + [key]
+    return commonkeywords
+
+
 def create_xml(result):
     '''
     Creates the xml-string that will be sent to the GUI.
     '''
-    friendresult, foeresult = result
+    friendresult = result[0]
+    foeresult = result[1]
+    userlovekeywords = result[2]
+    if len(result) == 4:
+        userhatekeywords = result[3]
+    else:
+        userhatekeywords = userlovekeywords
     # All xml-flags
     searchtag = "<searchResult>"
     friendtag = "<friends>"
@@ -83,7 +98,7 @@ def create_xml(result):
     piclinktag = "<piclink>"
     lovekeywordstag = "<lovekeywords>"
     hatekeywordstag = "<hatekeywords>"
-    endpiclinktag = "</picklink>"
+    endpiclinktag = "</piclink>"
     endlovekeywordstag = "</lovekeywords>"
     endhatekeywordstag = "</hatekeywords>"
     endsearchtag = "</searchResult>"
@@ -97,19 +112,23 @@ def create_xml(result):
     tosend = tosend + friendtag
 
     for friends in friendresult:
-        lovekeywords, hatekeywords = friends.getKeywords()
+        lovekeywords, hatekeywords = friends.get_keywords()
         friendusername = friends.getId()
         # Start of friends
         tosend = tosend + entrytag + nametag + friendusername + endnametag
         tosend = tosend + piclinktag + get_pic_link(friendusername) + endpiclinktag
         tosend = tosend + lovekeywordstag
-        
+
+        lovekeywords = get_common_keywords(userlovekeywords, lovekeywords)
+
         # Add friend's lovekeywords
         for keyword in lovekeywords:
             tosend = tosend + keyword + ","
         tosend = tosend.rstrip(",")
         tosend = tosend + endlovekeywordstag + hatekeywordstag
-        
+
+        hatekeywords = get_common_keywords(userhatekeywords, hatekeywords)
+
         # Add friend's hatekeywords
         for keyword in hatekeywords:
             tosend = tosend + keyword + ","
@@ -123,18 +142,19 @@ def create_xml(result):
     tosend = tosend + enemiestag
 
     for enemies in foeresult:
-        lovekeywords, hatekeywords = enemies.getKeywords()
+        lovekeywords, hatekeywords = enemies.get_keywords()
         enemyusername = enemies.getId()
         # Add a foe
         tosend = tosend + entrytag + nametag + enemyusername + endnametag
         tosend = tosend + piclinktag + get_pic_link(enemyusername) + endpiclinktag
-
+        lovekeywords = get_common_keywords(userlovekeywords, lovekeywords)
         tosend = tosend + lovekeywordstag
         # Add foe's lovekeywords
         for keyword in lovekeywords:
             tosend = tosend + keyword + ","
         tosend = tosend.rstrip(",")
         tosend = tosend + endlovekeywordstag + hatekeywordstag
+        hatekeywords = get_common_keywords(userhatekeywords, hatekeywords)
         # add foe's hatekeywords
         for keyword in hatekeywords:
             tosend = tosend + keyword + ","
@@ -172,9 +192,10 @@ def get_arguments(path):
     if len(fromgui) > 1:
         command = fromgui[0]
         data = fromgui[1]
+        return command, data
+    return "error", "error in arguments"
 #    print command
 #    print data
-        return command, data
 
 
 class ThreadingServer(ThreadingMixIn, HTTPServer):
@@ -229,7 +250,10 @@ class RequestHandler(BaseHTTPRequestHandler):
                     return
         elif command == "keywords":
             keys = data.split(",")
-            frienemy_result = tallstore.get_frienemies_by_keywords(keys)
+            frienemy_result = tallstore.get_frienemies_by_keywords(keys) + [keys]
+        else:
+            self.send_result("Error: bad argument") 
+            return
         self.send_result(create_xml(frienemy_result))
 
 
