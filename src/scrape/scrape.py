@@ -10,6 +10,9 @@ TODO: handle exceptions (like when we've been making too many twitter requests s
 '''
 
 import random
+import addalyse
+import storageHandler
+import urllib2
 from twitterHelp import *
 #from addalyse import *
 import time
@@ -29,6 +32,7 @@ def load_followers(users, requests_per_hour=30):
     @return: A unique set of users that follows the input users, none that was found in the input set.
     '''
     th = TwitterHelp()
+    sh = storageHandler.StorageHandler(SOLR_SERVER)
     
     users = set(users);
     new_users = set([]);
@@ -46,77 +50,48 @@ def load_existing_users():
     @return: Set containing twitter usernames.
     '''
     #TODO: Implement a real solution, calling the storage handler.
-    return set(['SSDummy_Faye','SSDummy_Burt','SSDummy_Gustavo'])
+    sh = storageHandler.StorageHandler(SOLR_SERVER)
+    mset = set([a for (a,) in sh.get_user_fields('*', 'id')])
+    print mset
+    return mset
     
-def gather_data_loop(request_per_hour = 30):
+def gather_data_loop(request_per_hour = 3600, users_to_add = 21):
     '''Gathers data about twitter IDs, and sends the data to the storage handler.
     '''
     # TODO: Change for real implementation!
-    sleep_time = 0 #3600 / request_per_hour
-    
-    # Defines how many iterations should pass between calls to the storage handler.
-    storage_ratio = 10
+    sleep_time = 3600 / request_per_hour
     
     th = TwitterHelp()
+    sh = storageHandler.StorageHandler(SOLR_SERVER)
     
-    # Initiates the sets which will be used for the searches.
+    added_users = 0
     
-    # Adds a dummy set, won't be used in the real implementation.
-    set_of_dummies = set(['SSDummy_Janet', 'SSDummy_Henry', 'SSDummy_Hoot', 'SSDummy_Faye', 'SSDummy_Burt', 'SSDummy_Gustavo', 'SSDummy_Amanda', 'SSDummy_Duke', 'SSDummy_Ian', 'SSDummy_Ellen', 'SSDummy_Chrissy'])
+    # Creates a set for all the users that will be added successfully
+    users_added = set()
     
-    # Adds a set from the recent public twitters.
-    set_of_publics = th.get_public_twitters()
-    
-    # Might add the followers of something later...
-    #set_of_followers = load_followers(set_of_something)
-    
-    # Initiates the set that will be used for the main loop.
-    set_to_add = set([])
-    
-    # Adds the dummies
-    set_to_add.update(set_of_dummies)
-    # Adds the publics
-    set_to_add.update(set_of_publics)
-    
-    
-    # Might add the followers of something later...
-    time.sleep(sleep_time)
-    
-    # Might add the followers of something later...
-    for s in set_of_publics:
-        print s
-    
-    all_added_users = {}    
-    set_to_ignore = load_existing_users()
-    set_to_add.difference_update(set_to_ignore)
-    
-    # Numbers of loops, to track storage ratio.
-    loops = 0
-    
-    # Creates a dictionary for all the users
-    user_dict = {}
-    for user in set_to_add:
-        loops += 1
-        data = th.get_all_tweets(user)
-        time.sleep(sleep_time)
-        print "Adding userdata for " + str(user) + "."
-        if not data == None: # Only adds the data if tweets were found.
-            user_dict[user] = data
-            all_added_users[user] = data
-            print "Adding tweets."
+    while(added_users < users_to_add):
+        # The set of users which will be added.
+        set_to_add = th.get_public_twitters()
         
-        if storage_ratio % loops == 0:
-            # TODO: Fix!
-            # Sends data of the gathered users to the storage handler.
-            # addalyse(user_dict)
-            # Clears the current dictionary.
-            user_dict.clear()
-            
-    # Foro debugging purposes, displays all users found in this session.
-    for key in all_added_users:
-        print key + ": "
-        for kkey in all_added_users[key]:
-            print str(kkey) + ": " + all_added_users[key][kkey]
+        print "These will be added:"
+        for s in set_to_add:
+            print s
+        
+        for user in set_to_add:
+            if(not sh.contains(user)):
+                time.sleep(sleep_time)
+                try:
+                    if addalyse.addalyse(SOLR_SERVER, user):
+                        users_added.add(user)
+                        added_users += 1
+                except urllib2.HTTPError:
+                    'do nothing'
+                
+    # For debugging purposes, displays all users found in this session.
+    for key in users_added:
+        print key + " was added"
+        #for kkey in all_added_users[key]:
+        #   print str(kkey) + ": " + all_added_users[key][kkey]
     
 
 if __name__ == "__main__":

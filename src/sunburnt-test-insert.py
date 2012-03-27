@@ -12,19 +12,19 @@ asdf = []
 asdf.append(Document("potatismos", [("cat", 34), ("fishing", 22), ("bear grylls", 33)], [("dog", 123), ("bear hunting", 44)]))
 asdf.append(Document("motatispos", [("cat", 44), ("bear hunting", 22), ("dog", 33)], [("fishing", 55), ("bear grylls", 33)]))
 
-asdf.append(Document("xantestuser1", [("Fear", 1.0*1000), 
-                                      ("Penguin",0.3*1000),
-                                      ("Cheese",0.5*1000),
-                                      ("Catastrophe",0.5*1000),
-                                      ("Mortal",0.5*1000),
-                                      ("Lethality",0.5*1000)]))
+asdf.append(Document("xantestuser1", [("fear", 1.0*1000), 
+                                      ("penguin",0.3*1000),
+                                      ("cheese",0.5*1000),
+                                      ("catastrophe",0.5*1000),
+                                      ("mortal",0.5*1000),
+                                      ("lethality",0.5*1000)]))
          
-asdf.append(Document("xantestuser2", [("Fear",0.3*1000),
-                                      ("Penguin",0.8*1000),
-                                      ("Cheese",0.5*1000),
-                                      ("Catastrophe",0.5*1000),
-                                      ("Mortal",0.5*1000),
-                                      ("Lethality",0.5*1000)]))
+asdf.append(Document("xantestuser2", [("fear",0.3*1000),
+                                      ("penguin",0.8*1000),
+                                      ("cheese",0.5*1000),
+                                      ("catastrophe",0.5*1000),
+                                      ("mortal",0.5*1000),
+                                      ("lethality",0.5*1000)]))
 
 interface.add(asdf)
 interface.commit()

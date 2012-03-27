@@ -1,0 +1,7 @@
+Skicka bara:
+https://api.twitter.com/1/users/profile_image/ + str(username)
+
+så typ nåt i stil med:
+
+def get_profile_picture(username):
+	return "https://api.twitter.com/1/users/profile_image/" + str(username)
