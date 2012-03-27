@@ -46,11 +46,11 @@ def strip_tweet(tweet):
     words = urlless_tweet.split()
 
     # strip leading hashtags
-    while words[0][0] == '#':
+    while words != [] and words[0][0] == '#':
         del words[0]
 
     # strip trailing hashtags
-    while words[-1][0] == '#':
+    while words != [] and words[-1][0] == '#':
         del words[-1]
 
     words = map(lambda x: x[1:] if x[0] == '#' else x, words) # strip the hashes out of hashtags in the middle
