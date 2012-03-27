@@ -9,4 +9,4 @@ Kanske ska vi stopwordsa redan inuti extract_keywords_grammar så att multi-ord-
 
 Kanske vill vi att "hate apples" eller "hating apples" som det också torde bli stemmat till (i alla fall internt i solr nu)
 
-På keywords vikta upp fullständiga namn alt. vikta ner (kanske bättre) delnamn innan de mosas ut (nu får vi användning av att extract_keywords förväntas mosa ut vikter)  
+På keywords vikta upp fullständiga namn alt. vikta ner (kanske bättre) delnamn innan de mosas ut (nu får vi användning av att extract_keywords förväntas mosa ut vikter)
