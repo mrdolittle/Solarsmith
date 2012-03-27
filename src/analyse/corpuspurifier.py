@@ -2,8 +2,8 @@ import nltk
 from nltk.corpus import wordnet
 from features import extract_features
 
-corpus = open('corpus', 'r')
-sentimentcorpus = open('sentimentcorpus', 'w')
+corpus = open('RealCorpus', 'r')
+sentimentcorpus = open('sentimentcorpus.csv', 'w')
 features = open('features', 'w')
 englishCorpus = open('englishtweets', 'w')
 
@@ -22,17 +22,22 @@ def isenglish(tweet):
         return True
     else:
         return False
-            
-
+set=set()
 for line in corpus:
-    featurelist=[]
+    set.add(line)
+                    
+
+
+for line in set:
+    #featurelist=[]
     line=line.rstrip("\n")
     sentences=nltk.sent_tokenize(line)
     
+    
     for sentence in sentences:
         words=sentence.split()
-        featurelist.append(extract_features(sentence))
-        features.write(featurelist+'\n')
+        #featurelist.append(extract_features(sentence))
+        #features.write(featurelist.__str__()+'\n')
         
         if isenglish(sentence):
             englishCorpus.write(sentence+'\n')
