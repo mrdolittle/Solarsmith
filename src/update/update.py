@@ -39,15 +39,16 @@ def main():
             diff = current_datetime - timestamp
             if diff.hours > update_time:     #Continue if it was more than 1 hour ago since the document was updated
                 print("Updating...")
-                if since_id != th.get_latest_tweet_id(username): # check if need updating
+                try:
                     addalyse(SOLR_SERVER,
                              username,
                              since_id,
                              (update_count % UPDATE_N) == 0,
                              update_count + 1)
-                    print("Done")
-                else:
-                    print("No new posts")
+                except Addalyse.AddalyseUserNotOnTwitterError as err:
+                    print err
+                except Addalyse.AddalyseUnableToProcureTweetsError as err:
+                    print err
                 time.sleep(sleep_time) # sleep for ten seconds, to not make to many requests to twitter
             else:
                 print("This user has recently been updated ( " + str(diff.minutes) + " minutes ago).")
