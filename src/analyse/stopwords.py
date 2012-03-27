@@ -38,17 +38,21 @@ def strip_tweet(tweet):
     '''Strips tweet of scary features like hashtags at the start or
     end of a tweet as well as some smileys etc.
 
-    TODO: test whether this approach to hashtags is not insane etc.
-          More words to transform?'''
+    TODO: * test whether this approach to hashtags is not insane etc.
+          * More words to transform?
+          * keep eventual punctation (or any non-alnum chars really)
+            at the end of hashtag when removing it, instead of completely nuking it.
+'''
     global TWEET_STOPSMILEYS, URL_REGEX
 
     urlless_tweet = URL_REGEX.sub("", tweet)
     words = urlless_tweet.split()
 
-    # strip leading hashtags
-    while words != [] and words[0][0] == '#':
-        del words[0]
+    # # strip leading hashtags
+    # while words != [] and words[0][0] == '#':
+    #     del words[0]
 
+    
     # strip trailing hashtags
     while words != [] and words[-1][0] == '#':
         del words[-1]
