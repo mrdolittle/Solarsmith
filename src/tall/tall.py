@@ -11,6 +11,9 @@ import urlparse
 import tallstore
 
 
+def get_pic_link(username):
+    return "https://api.twitter.com/1/users/profile_image/" + str(username)
+
 def create_socket(address):
     '''
     Creates a socket for communicating with either storage handler or request.
@@ -72,23 +75,24 @@ def create_xml(result):
     '''
     friendresult, foeresult = result
     # All xml-flags
-    xml = "<?xml version 1.0?>"
     searchtag = "<searchResult>"
     friendtag = "<friends>"
-    foestag = "<foes>"
+    enemiestag = "<enemies>"
     entrytag = "<entry>"
     nametag = "<name>"
+    piclinktag = "<piclink>"
     lovekeywordstag = "<lovekeywords>"
     hatekeywordstag = "<hatekeywords>"
+    endpiclinktag = "</picklink>"
     endlovekeywordstag = "</lovekeywords>"
     endhatekeywordstag = "</hatekeywords>"
     endsearchtag = "</searchResult>"
     endfriendstag = "</friends>"
-    endfoestag = "</foes>"
+    endenemiestag = "</enemies>"
     endentrytag = "</entry>"
     endnametag = "</name>"
     # Add xml
-    tosend = xml + searchtag
+    tosend = searchtag
     # Add friends
     tosend = tosend + friendtag
 
@@ -97,6 +101,7 @@ def create_xml(result):
         friendusername = friends.getId()
         # Start of friends
         tosend = tosend + entrytag + nametag + friendusername + endnametag
+        tosend = tosend + piclinktag + get_pic_link(friendusername) + endpiclinktag
         tosend = tosend + lovekeywordstag
         
         # Add friend's lovekeywords
@@ -115,13 +120,15 @@ def create_xml(result):
     tosend = tosend + endfriendstag
 
     # Start of foes
-    tosend = tosend + foestag
+    tosend = tosend + enemiestag
 
-    for foes in foeresult:
-        lovekeywords, hatekeywords = foes.getKeywords()
-        foeusername = foes.getId()
+    for enemies in foeresult:
+        lovekeywords, hatekeywords = enemies.getKeywords()
+        enemyusername = enemies.getId()
         # Add a foe
-        tosend = tosend + entrytag + nametag + foeusername + endnametag
+        tosend = tosend + entrytag + nametag + enemyusername + endnametag
+        tosend = tosend + piclinktag + get_pic_link(enemyusername) + endpiclinktag
+
         tosend = tosend + lovekeywordstag
         # Add foe's lovekeywords
         for keyword in lovekeywords:
@@ -135,7 +142,7 @@ def create_xml(result):
         tosend = tosend + endhatekeywordstag + endentrytag
 
     # End of foes
-    tosend = tosend + endfoestag
+    tosend = tosend + endenemiestag
     # End of Search result
     tosend = tosend + endsearchtag
     print "Response: " + tosend
