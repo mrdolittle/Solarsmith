@@ -12,7 +12,10 @@ import re
 STOPWORDS = set(["something",
                  "nothing",
                  "loving",       # ex: "just got my iphone in the mail, loving it!". This might somehow be appropriate as a keyword though...
-                 "hating"        # same as above applies. Strange idea: extract_keywords without filtering then use some extracted keywords for sentiment analysis?
+                 "hating",        # same as above applies. Strange idea: extract_keywords without filtering then use some extracted keywords for sentiment analysis?
+                 "everything",
+                 "fun",
+                 "URLYBURLYSMURLYPURLY" # this one is inserted for URL's by word_tokenize, so we filter it (it tends to be tagged as NNP and considered a keyword)
                  ])
 
 def filter_keywords(keywords):
@@ -29,9 +32,25 @@ TWEET_STOPSMILEYS = set([":)", ":(", ":<", ":>", ":-)", ":-(", ":-<", ";-)", ";)
                          ":3",   # cat
                          ">:3",  # lion
                          "}:3"]) # elk
-                         
- 
-                          
+
+def split_tweet(text):
+    '''Splits tweets neater than regular splitting at whitespace (for
+    instance whenever we encounter a hashtag or @-notation we split
+    away any punctuation at the end. Doesn't split punctuation from
+    words outside of hashtags/@-notation however.'''
+
+    def split_tag(tag):
+        [(a, b)] = re.findall(r'([#@]\w+)(.*)', tag) # this will blow up if more than one match (but it won't due to the regex...)
+        return [a] if b == '' else [a,b]
+
+    wordsplit = text.split()
+    result = []
+    for i in wordsplit:
+        if i[0] in ('#','@'):
+            result = result + split_tag(i)
+        else:
+            result.append(i)
+    return result
 
 URL_REGEX = re.compile(r'https?:(?:(//)|(\\\\))+[!\w\d:#@%/;$()~_?\+\-=\\\.,&]*', re.I)
 def strip_tweet(tweet):
@@ -40,30 +59,35 @@ def strip_tweet(tweet):
 
     TODO: * test whether this approach to hashtags is not insane etc.
           * More words to transform?
-          * keep eventual punctation (or any non-alnum chars really)
+          * DONE keep eventual punctation (or any non-alnum chars really)
             at the end of hashtag when removing it, instead of completely nuking it.
-          * strip at-sign and maybe even split those names at camelCase
+          * DONE? strip at-sign and maybe even split those names at camelCase
           (seems common) (maybe be wholly crazy and get fullname from twitter?)
-'''
+          * Strip URLS at the very end or so (like hashtags)
+          '''
     global TWEET_STOPSMILEYS, URL_REGEX
 
-    urlless_tweet = URL_REGEX.sub("", tweet)
-    words = urlless_tweet.split()
+
+    def transform(a):
+        if a[0:2] == '<3':
+            # convert hearts to: love 
+            return "love " + a[2:]
+        else:
+            return a
+
+    urlless_tweet = URL_REGEX.sub("URLYBURLYSMURLYPURLY", tweet)
+    words = split_tweet(urlless_tweet)
 
     # # strip leading hashtags
     # while words != [] and words[0][0] == '#':
     #     del words[0]
 
-    
     # strip trailing hashtags
     while words != [] and words[-1][0] == '#':
         del words[-1]
 
-    words = map(lambda x: x[1:] if x[0] == '#' else x, words) # strip the hashes out of hashtags in the middle
-    words = map(lambda x: "love" if x == "<3" else x, words) # convert hearts to: love (is this really really stupid? Or perhaps
-                                                             # should be the focus of another function than this one) (kinda
-                                                             # stupid since "sdf adf <3." the last word (when splitting on
-                                                             # whitespace) will be "<3.". Maybe just strip these things always?
+    words = map(lambda x: x[1:] if x[0] in ('#','@')  else x, words) # strip the hashes out of hashtags in the middle, as well as stripping @
+    words = map(transform, words) 
     words = filter(lambda x: x not in TWEET_STOPSMILEYS, words) # strip the smileys etc. out of the tweet
 
     return ' '.join(words)
