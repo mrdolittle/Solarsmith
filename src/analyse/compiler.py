@@ -30,7 +30,7 @@ def analyse_sentences_var_1(sentences):
         sentiment = analyse_sentiment(sentence)
         for (keyword, weight) in extract_keywords(sentence):
             a = lovekeywords if sentiment > 0.0 else hatekeywords  # choose where to put keyword
-            a[keyword] = a.get(keyword, 0.0)*weight*abs(sentiment) # only positive weights in end result
+            a[keyword] = a.get(keyword, 0.0) + weight*abs(sentiment) # only positive weights in end result
 
     return (lovekeywords.items(), hatekeywords.items())
 
