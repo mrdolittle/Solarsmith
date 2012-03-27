@@ -7,6 +7,7 @@ def extract_features(text):
                RbVerb: {(<RB>*(<VBN>|<VB>|<VBP>|<VBG>))+}'''
     chunks = nltk.RegexpParser(grammar)
     feat = []
+    print chunks.parse(sequence)
     for t in chunks.parse(sequence).subtrees():
         if t.node == "Adjective":
             if len(t)>1:
@@ -29,5 +30,5 @@ def extract_features(text):
 #Initialize _POS_TAGGER
 nltk.data.load(_POS_TAGGER)
 if __name__ == '__main__':
-    print extract_features("The mobile web is more important than mobile apps")
+    print extract_features("Disarming The Playground: Training Video One [VHS]: Disarming the Playground presents a movement-based curriculu... http://t.co/rc9qLCfg")
 
