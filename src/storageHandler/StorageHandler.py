@@ -96,8 +96,10 @@ class StorageHandler:
         with ids in the list id_or_list_of_id.'''
 
         self.si.delete(id_or_list_of_id)
+        self.si.commit()
 
     def delete_all(self):
         '''BLOWS. UP. EVERYTHING!!!'''
 
         self.si.delete_all()
+        self.si.commit()
