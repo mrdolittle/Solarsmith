@@ -15,6 +15,7 @@ STOPWORDS = set(["something",
                  "hating",        # same as above applies. Strange idea: extract_keywords without filtering then use some extracted keywords for sentiment analysis?
                  "everything",
                  "fun",
+                 "lol",
                  "URLYBURLYSMURLYPURLY" # this one is inserted for URL's by word_tokenize, so we filter it (it tends to be tagged as NNP and considered a keyword)
                  ])
 
