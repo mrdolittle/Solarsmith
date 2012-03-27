@@ -91,5 +91,4 @@ def analyse(tweets):
     #reduce(lambda x,y: x+y,map(nltk.sent_tokenize, tweets))
 
     # split the list of tweets to a list of sentences and send it to analyse_sentences
-    return analyse_sentences_var_1(reduce(lambda x,y: x+y,
-                                          map(nltk.sent_tokenize, tweets)))
+    return analyse_sentences_var_1(reduce(lambda x,y: x+y, map(nltk.sent_tokenize, filter(isenglish, tweets))))
