@@ -40,7 +40,7 @@ def split_tweet(text):
     words outside of hashtags/@-notation however.'''
 
     def split_tag(tag):
-        [(a, b)] = re.findall(r'([#@]\w+)(.*)', tag)
+        [(a, b)] = re.findall(r'([#@]\w+)(.*)', tag) # this will blow up if more than one match (but it won't due to the regex...)
         return [a] if b == '' else [a,b]
 
     wordsplit = text.split()
