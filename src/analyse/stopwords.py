@@ -71,7 +71,7 @@ def strip_tweet(tweet):
     def transform(a):
         if a[0:2] == '<3':
             # convert hearts to: love 
-            return "love "  + a[2:]
+            return "love " + a[2:]
         else:
             return a
 
