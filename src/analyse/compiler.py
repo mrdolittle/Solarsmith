@@ -3,6 +3,9 @@ the format that the result that the rest of the project is expecting (two keywor
 of keyword and weight).
 
 This is what implements the actual analyse function that we export in __init__.py
+
+TODO: Do some sort of stemming somewhere around here (at least stem
+      away plurals!) or alternatively at the end of extract_keywords
 '''
 import nltk
 from keywords import extract_keywords

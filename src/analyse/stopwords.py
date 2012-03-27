@@ -26,7 +26,10 @@ STOPWORDS = set(["something",
                  ])
 
 def filter_keywords(keywords):
-    """Receives the keywords and filters out words from the set 'words'"""
+    """Receives the keywords and filters out words from the set 'words'
+
+    FIXME?: Should we do lowercase matching or something like that
+    """
     global STOPWORDS
     
     #return filter(lambda x: x not in words, keywords)
