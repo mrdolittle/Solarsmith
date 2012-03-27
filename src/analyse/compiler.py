@@ -4,7 +4,7 @@ of keyword and weight).
 
 This is what implements the actual analyse function that we export in __init__.py
 '''
-
+import nltk
 from keywords import extract_keywords
 from sentiment import analyse_sentiment
 
@@ -28,7 +28,7 @@ def analyse_sentences_var_1(sentences):
     lovekeywords = {}
     for sentence in sentences:
         sentiment = analyse_sentiment(sentence)
-        for (keyword, weight) = extract_keywords(sentence):
+        for (keyword, weight) in extract_keywords(sentence):
             a = lovekeywords if sentiment > 0.0 else hatekeywords  # choose where to put keyword
             a[keyword] = a.get(keyword, 0.0)*weight*abs(sentiment) # only positive weights in end result
 
@@ -41,8 +41,8 @@ def analyse_sentences_var_2_helper(sentences):
 
     keywords = {}
     for sentence in sentences: 
-        for (keyword, weight) in analyse_sentence(sentence)
-        keywords[keyword] = keywords.get(keyword, 0.0) + weight
+        for (keyword, weight) in analyse_sentence(sentence):
+            keywords[keyword] = keywords.get(keyword, 0.0) + weight
 
     return keywords.items()
 
@@ -71,4 +71,4 @@ def analyse(tweets):
 
     # split the list of tweets to a list of sentences and send it to analyse_sentences
     return analyse_sentences_var_1(reduce(lambda x,y: x.append(y),
-                                          map(nltk.sent_tokenize, tweetlist)))
+                                          map(nltk.sent_tokenize, tweets)))
