@@ -14,7 +14,7 @@ def scale_keyword_list(lst):
     be scaled to the interval 0.0 to 1.0 inclusive, that is the
     weights will be relative.'''
 
-    if lst == []:
+    if not lst:
         return []
     
     scale = weight_total(lst)
@@ -26,7 +26,7 @@ def keyword_list_to_text(lst):
     Solr in a way which makes the term frequency of the keywords
     correspond with the keyword weight'''
 
-    if lst == []:
+    if not lst:
         return ""
 
     newlst = map(lambda (a,b): (a, int(round(b*1000))), lst)
