@@ -65,4 +65,4 @@ nltk.data.load(_POS_TAGGER)
 
 if __name__ == '__main__':
     text = "I like apples and big bananas"
-    print extract_keywords("Google is great, fun, smart, awesome, and everything else that makes life jolly and dandy")
+    print extract_keywords("")
