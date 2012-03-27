@@ -6,6 +6,7 @@ Includes methods: filter_keyword
 
 @author: 0tchii
 '''
+import re
 
 STOPWORDS = set(["something",
                  "nothing",
@@ -38,7 +39,9 @@ def strip_tweet(tweet):
     TODO: test whether this approach to hashtags is not insane etc.
           More words to transform?'''
     global TWEET_STOPSMILEYS
-
+    
+    
+    
     words = tweet.split()
 
     # strip leading hashtags
