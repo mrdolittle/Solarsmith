@@ -60,6 +60,7 @@ testFeatures = \
      ('hasUnhappy',    ('unhapp',)), \
      ('hasWin',        (' win ','winner','winning')), \
      ('hasWinky',      (';)',)), \
+     ('hasWorse',      ('worse','worst')), \
      ('hasWow',        ('wow','omg')) ]
 
 
