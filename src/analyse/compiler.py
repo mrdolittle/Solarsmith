@@ -8,6 +8,19 @@ import nltk
 from keywords import extract_keywords
 from sentiment import analyse_sentiment
 
+
+def isenglish(tweet):
+    wordlist=tweet.split(" ")
+    englishfactor=0
+    for word in wordlist: 
+        if wordnet.synsets(word):
+            englishfactor=englishfactor+1
+            #  a english word
+    if ((englishfactor+0.0)/len(wordlist))> 0.4:
+        return True
+    else:
+        return False
+
 def analyse_sentence(sentence):
     '''Takes a tweet and performs sentimentanalysis on the given tweet, then gives the weight that
     was returned from the sentiment analysis
