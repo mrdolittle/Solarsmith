@@ -82,7 +82,8 @@ def addalyse(solr_server, username, since_id=0, remake_profile=True, update_coun
         
         # send to analysis
         #(lovekeywords, hatekeywords) = ([("cat", 44), ("bear hunting", 22), ("dog", 33)], [("fishing", 55), ("bear grylls", 33)])
-        (lovekeywords, hatekeywords) = compiler.analyse(tweets)# TODO:implement in analyse
+        
+        (lovekeywords, hatekeywords) = compiler.analyse(map(lambda x: x.GetText(), tweets))# TODO:implement in analyse
         
         # store result in sunburnt
         sh.add_profile(username, lovekeywords, hatekeywords, new_since_id, update_count)
@@ -106,7 +107,11 @@ def addalyse(solr_server, username, since_id=0, remake_profile=True, update_coun
 
         # send to analysis
         #(lovekeywords, hatekeywords) = ([("cat", 44), ("bear hunting", 22), ("dog", 33)], [("fishing", 55), ("bear grylls", 33)])
+<<<<<<< HEAD
         (lovekeywords, hatekeywords) = compiler.analyse(tweets)# TODO:implement in analyse
+=======
+        (lovekeywords, hatekeywords) = compiler.analyse(map(lambda x: x.GetText(), tweets))
+>>>>>>> 92ef1bb5a6d82cfb4d04a680437342e1e79037ae
         
         # get a users old hatekeywords_list and lovekeywords_list
         doc = sh.get_user_documents(username, 'lovekeywords_list', 'hatekeywords_list')[0]
