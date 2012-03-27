@@ -42,6 +42,8 @@ def strip_tweet(tweet):
           * More words to transform?
           * keep eventual punctation (or any non-alnum chars really)
             at the end of hashtag when removing it, instead of completely nuking it.
+          * strip at-sign and maybe even split those names at camelCase
+          (seems common) (maybe be wholly crazy and get fullname from twitter?)
 '''
     global TWEET_STOPSMILEYS, URL_REGEX
 
