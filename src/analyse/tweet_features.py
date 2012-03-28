@@ -30,7 +30,7 @@ testFeatures = \
      ('hasFast',       (' fast',)), \
      ('hasFix',        (' fix',)), \
      ('hasFree',       (' free',)), \
-     ('hasFrowny',     (':(', '):')), \
+     #('hasFrowny',     (':(', '):')), \
      ('hasFuck',       ('fuck',)), \
      ('hasGood',       ('good','great')), \
      ('hasHappy',      (' happy',' happi')), \
@@ -52,14 +52,14 @@ testFeatures = \
      ('hasSerious',    ('serious',)), \
      ('hasShit',       ('shit',)), \
      ('hasSlow',       (' slow',)), \
-     ('hasSmiley',     (':)', ':D', '(:')), \
+     #('hasSmiley',     (':)', ':D', '(:')), \
      ('hasSuck',       ('suck',)), \
      ('hasTerrible',   ('terrible',)), \
      ('hasThanks',     ('thank',)), \
      ('hasTrouble',    ('trouble',)), \
      ('hasUnhappy',    ('unhapp',)), \
      ('hasWin',        (' win ','winner','winning')), \
-     ('hasWinky',      (';)',)), \
+     #('hasWinky',      (';)',)), \
      ('hasWorse',      ('worse','worst')), \
      ('hasWow',        ('wow','omg')) ]
 
