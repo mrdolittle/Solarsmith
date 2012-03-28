@@ -13,8 +13,10 @@ import socket
 import tallstore
 import urlparse
 import xml.dom.minidom
+from configHandler import configuration
 
-REQUEST_SERVER = "130.229.128.185"
+CONFIG = configuration.Config()
+REQUEST_SERVER = CONFIG.get_request_server()
 REQUEST_SERVER_PORT = 1337
 
 
@@ -52,11 +54,13 @@ def send_to_request(username):
     '''Sends a username to Request and awaits an answer. Returns different values depending on the 
     answer from Request.'''
     global REQUEST_SERVER, REQUEST_SERVER_PORT
-
+    print "Trying to connect to request"
     soc = create_socket((REQUEST_SERVER, REQUEST_SERVER_PORT))
+    print "Connected"
     soc.sendall(username)
-    response = soc.recv(1024) # Recieves a response of at most 1kB
-
+    print "username sent: " + username
+    response = soc.recv(1024) # Recieves a response of at most 1k
+    print "response from request: " + response
     if response == 1:
 #        print response
         return (True, "User added, retrieving frienemies.")
@@ -247,13 +251,14 @@ class RequestHandler(BaseHTTPRequestHandler):
         if self.path == '/':
             return
         command, data = get_arguments(self.path)
+        data = data.lower()
         print "Command: " + command
         print "Data: " + data
         if command == "username":
             frienemy_result = tallstore.get_frienemies_by_id(data) # Ska ersättas med anrop till storage handler
             if frienemy_result == False:
                 self.send_result('User not found, attempting to add')
-             #   succeeded, message = send_to_request(data)
+#                succeeded, message = send_to_request(data)
                 succeeded = False
                 message = "Request is not online. Cannot retrieve new users from Twitter."
                 if succeeded == True:
