@@ -6,9 +6,13 @@ Created on Mar 21, 2012
 '''
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from SocketServer import ThreadingMixIn
+from xml.dom.minidom import getDOMImplementation
+import re
+import string
 import socket
-import urlparse
 import tallstore
+import urlparse
+import xml.dom.minidom
 
 REQUEST_SERVER = "130.229.128.185"
 REQUEST_SERVER_PORT = 1337
@@ -169,7 +173,12 @@ def create_xml(result):
     tosend = tosend + endenemiestag
     # End of Search result
     tosend = tosend + endsearchtag
+    # Kanske inte bästa lösningen men den funkar, tar bort tecken som inte gui klarar av
+    # Detta är vår blacklist
     tosend = tosend.replace('"', '')
+    tosend = tosend.replace('&', '')
+    
+   
     print "Response: " + tosend
 
     return tosend.encode('UTF-8')
