@@ -39,9 +39,9 @@ def add_to_solr(username):
     try:
         addalyse(SOLR_SERVER, username)
         return "UserAdded"
-    except Addalyse.AddalyseUserNotOnTwitterError:
+    except addalyse.AddalyseUserNotOnTwitterError:
         return "UserNotOnTwitter"
-    except Addalyse.AddalyseUnableToProcureTweetsError:
+    except addalyse.AddalyseUnableToProcureTweetsError:
         return "OtherError"
     return "OtherError"
 
