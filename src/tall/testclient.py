@@ -6,7 +6,10 @@ Created on Mar 21, 2012
 import httplib
 import socket
 import urllib
+from configHandler import configuration
 
+CONFIG = configuration.Config()
+REQUEST_HANDLER = CONFIG.get_request_server()
 
 def create_socket(address):
     '''
@@ -17,4 +20,4 @@ def create_socket(address):
     soc.sendall('_xantoz_')
     print soc.recv(1024)
     
-create_socket(("130.229.178.204", 1337))
+create_socket((REQUEST_HANDLER, 1337))
