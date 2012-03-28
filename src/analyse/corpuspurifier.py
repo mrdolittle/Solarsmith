@@ -1,11 +1,11 @@
 import nltk
 from nltk.corpus import wordnet
 from features import extract_features
+import ast
 
 corpus = open('RealCorpus', 'r')
-sentimentcorpus = open('sentimentcorpus.csv', 'w')
+sentimentcorpus = open('corpusnew', 'w')
 features = open('features', 'w')
-englishCorpus = open('englishtweets', 'w')
 
 positive =[':-)', ':)',':)', ':D', '=D', '=)', 'C:', ':]',':>', ';)', ';D', ';-)','^^', '^.^', 'xD','XD', '(:', '(-:', '(=', '^.~', '<3', 'c"']
 negative =[':-(', ':(', '=(', ":'(", 'D:', 'DX', 'D=', '-.-', "-.-'", ':<', ':[', 'X(', 'x(', '><', '>.<', '>_<', '<.<', '>.>']
@@ -29,22 +29,27 @@ for line in corpus:
 
 
 for line in set:
-    #featurelist=[]
+    featurelist=[]
     line=line.rstrip("\n")
     sentences=nltk.sent_tokenize(line)
     
     
     for sentence in sentences:
         words=sentence.split()
-        #featurelist.append(extract_features(sentence))
-        #features.write(featurelist.__str__()+'\n')
+        featurelist.append(extract_features(sentence))
+        features.write(featurelist.__str__()+'\n')
         
         if isenglish(sentence):
-            englishCorpus.write(sentence+'\n')
             if any(x in negative for x in words):
-                sentimentcorpus.write('"'+sentence+'"'+','+'"'+ "negative" +"'"+'\n')
+                #sentimentcorpus.write('"'+sentence+'"'+','+'"'+ "negative" +'"'+'\n')
+                tuple=(sentence,"negative");
+                sentimentcorpus.write(repr(tuple))
+                sentimentcorpus.write('\n')
                 
             if any(x in positive for x in words):
-                sentimentcorpus.write('"'+sentence+'"'+','+'"'+ "positive" +"'"+'\n')
+                #sentimentcorpus.write('"'+sentence+'"'+','+'"'+ "positive" +'"'+'\n')
+                tuple=(sentence,"positive");
+                sentimentcorpus.write(repr(tuple))
+                sentimentcorpus.write('\n')
             
         

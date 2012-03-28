@@ -70,7 +70,7 @@ def addalyse(solr_server, username, since_id=0, remake_profile=True, update_coun
     if remake_profile:
         # get all tweeets from twitter API 
         tweets = th.get_all_statuses(username)
-        if tweets == []:
+        if not tweets: 
             e = AddalyseUnableToProcureTweetsError("I couldn't for the love of me extract some tweets for '" +
                                                    username +
                                                    "'. Maybe he just doesn't have any new ones?")
@@ -82,7 +82,6 @@ def addalyse(solr_server, username, since_id=0, remake_profile=True, update_coun
         
         # send to analysis
         #(lovekeywords, hatekeywords) = ([("cat", 44), ("bear hunting", 22), ("dog", 33)], [("fishing", 55), ("bear grylls", 33)])
-        
         (lovekeywords, hatekeywords) = compiler.analyse(map(lambda x: x.GetText(), tweets))# TODO:implement in analyse
         
         # store result in sunburnt
@@ -92,7 +91,7 @@ def addalyse(solr_server, username, since_id=0, remake_profile=True, update_coun
         
     else:
         tweets = th.get_all_statuses(username, since_id) # get all tweets since since_id
-        if tweets == []:
+        if not tweets:
             e = AddalyseUnableToProcureTweetsError("I couldn't for the love of me extract some tweets for '" +
                                                    username +
                                                    "'. Maybe he just doesn't have any?")
@@ -108,6 +107,7 @@ def addalyse(solr_server, username, since_id=0, remake_profile=True, update_coun
         # send to analysis
         #(lovekeywords, hatekeywords) = ([("cat", 44), ("bear hunting", 22), ("dog", 33)], [("fishing", 55), ("bear grylls", 33)])
         (lovekeywords, hatekeywords) = compiler.analyse(map(lambda x: x.GetText(), tweets))
+
         
         # get a users old hatekeywords_list and lovekeywords_list
         doc = sh.get_user_documents(username, 'lovekeywords_list', 'hatekeywords_list')[0]

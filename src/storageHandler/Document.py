@@ -4,6 +4,7 @@ Module for the eminent class Document
 
 import ast
 
+REPETITUDE = 10000
 
 def weight_total(lst):
     '''Returns the total weight of a list of (keyword, weight) tuples.'''
@@ -14,7 +15,7 @@ def scale_keyword_list(lst):
     be scaled to the interval 0.0 to 1.0 inclusive, that is the
     weights will be relative.'''
 
-    if lst == []:
+    if not lst:
         return []
     
     scale = weight_total(lst)
@@ -25,11 +26,12 @@ def keyword_list_to_text(lst):
     according to their weight so that the string can be indexed in
     Solr in a way which makes the term frequency of the keywords
     correspond with the keyword weight'''
+    global REPETITUDE
 
-    if lst == []:
+    if not lst:
         return ""
 
-    newlst = map(lambda (a,b): (a, int(round(b*1000))), lst)
+    newlst = map(lambda (a,b): (a, int(round(b*REPETITUDE))), lst)
     
     stringsies = []
     for (a,b) in newlst:
