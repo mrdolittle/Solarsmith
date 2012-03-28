@@ -1,9 +1,8 @@
 import twitter
 import time
 api=twitter.Api()
-cph=600
 hour=3600
-timetosleep=3600/125
+timetosleep=3600/60
 f = open('corpus6', 'w')
 while 1:
     statuses=api.GetPublicTimeline()

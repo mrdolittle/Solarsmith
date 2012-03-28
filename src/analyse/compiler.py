@@ -3,10 +3,25 @@ the format that the result that the rest of the project is expecting (two keywor
 of keyword and weight).
 
 This is what implements the actual analyse function that we export in __init__.py
+
+TODO: Do some sort of stemming somewhere around here (at least stem
+      away plurals!) or alternatively at the end of extract_keywords
 '''
 import nltk
 from keywords import extract_keywords
 from sentiment import analyse_sentiment
+from nltk.corpus import wordnet
+
+
+def isenglish(tweet):
+    # wordlist=tweet.split(" ")
+    wordlist = tweet.split()
+    englishfactor = 0
+    for word in wordlist: 
+        if wordnet.synsets(word):
+            englishfactor = englishfactor + 1
+            #  a english word
+    return True if (englishfactor + 0.0)/len(wordlist) > 0.4 else False
 
 def analyse_sentence(sentence):
     '''Takes a tweet and performs sentimentanalysis on the given tweet, then gives the weight that
@@ -73,5 +88,4 @@ def analyse(tweets):
     #reduce(lambda x,y: x+y,map(nltk.sent_tokenize, tweets))
 
     # split the list of tweets to a list of sentences and send it to analyse_sentences
-    return analyse_sentences_var_1(reduce(lambda x,y: x+y,
-                                          map(nltk.sent_tokenize, tweets)))
+    return analyse_sentences_var_1(reduce(lambda x,y: x+y, map(nltk.sent_tokenize, filter(isenglish, tweets))))
