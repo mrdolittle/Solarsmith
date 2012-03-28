@@ -2,7 +2,7 @@ import twitter
 
 writefile = open('manual', 'a')
 api = twitter.Api()
-option = raw_input("What would you like to search for? \n")
+option = raw_input("What would you like to search for? To stop, press enter\n")
 while option !="":
     searchresults = api.GetSearch(option)
  
