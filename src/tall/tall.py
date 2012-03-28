@@ -168,7 +168,7 @@ def create_xml(result):
     tosend = tosend.replace('"', '')
     print "Response: " + tosend
 
-    return tosend
+    return tosend.encode('UTF-8')
 
 
 def get_arguments(path):
