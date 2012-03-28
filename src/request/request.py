@@ -35,8 +35,11 @@ def add_to_solr(username):
     @return: A boolean set to true if the user has been added, otherwise false.'''
     try:
         addalyse(SOLR_SERVER, username)
+        return "UserAdded"
+    except Addalyse.AddalyseUserNotOnTwitterError:
+        return "UserNotOnTwitter"
     except Addalyse.AddalyseUnableToProcureTweetsError:
-        return None
+        return "OtherError"
 
     
 def main():
@@ -199,9 +202,9 @@ class UsernameHandler(threading.Thread):
                 sys.stdout.write("Processing username: " + data[0] + "\n")
                 res = add_to_solr(data[0])
                 #On response:
-                if res == True:
+                if res == "UserAdded":
                     sent = data[1].send(1)      #1 = User added
-                if res == "":
+                if res == "UserNotOnTwitter":
                     sent = data[1].send(2)      #2 = User does not exist on Twitter
                 else:
                     sent = res[1].send(3)       #3 = Other error
