@@ -28,17 +28,18 @@ def extract_keywords_grammar(text):
     
     for t in chunks.parse(sequence).subtrees():
         if t.node == "Noun":
-            words.append(reduce(lambda x,y: x + " " + y, map(lambda (x,_1): x, t)))         
+            keys = reduce(lambda x,y: x + " " + y, map(lambda (x,_1): x, t)).lower()            
+            words.append(keys)         
         elif t.node == "ToVerb":
-            words.append(t[1][0])
+            words.append(t[1][0].lower())
         elif t.node == "Name":
-            words.append(reduce(lambda x,y: x + " " + y, map(lambda (x,_1): x, t))) 
+            words.append(reduce(lambda x,y: x + " " + y, map(lambda (x,_1): x, t)).lower()) 
                 
     for s in chunksSingular.parse(sequence).subtrees():
         if s.node == "Noun":
-            words.append(s[0][0])
+            words.append(s[0][0].lower())
         elif s.node == "Name":
-            words.append(s[0][0])
+            words.append(s[0][0].lower())
                     
     return words
 
@@ -63,5 +64,5 @@ def extract_keywords(sentence):
 nltk.data.load(_POS_TAGGER)
 
 if __name__ == '__main__':
-    text = "I like apples and big bananas"
-    print extract_keywords("")
+    text = ""
+    #print extract_keywords(text)
