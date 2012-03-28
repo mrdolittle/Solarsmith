@@ -26,8 +26,11 @@ from sys import *
 import threading
 import socket
 import sys
+from configHandler import configuration
 
-SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"
+CONFIG = configuration.Config()
+SOLR_SERVER = CONFIG.get_solr_server()
+
         
 def add_to_solr(username):
     '''Requests a certain Twitter username to be added. 
