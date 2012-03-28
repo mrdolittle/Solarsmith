@@ -1,20 +1,23 @@
-readfile = open('manualtagging', 'r')
 writefile = open('manual', 'w')
-
+import twitter
+api = twitter.Api()
+var = raw_input("What would you like to search for?")
+searchresults = a.GetSearch(var)
  
-for line in readfile:
+for line in searchresults:
+    line = line.text()
     print line + "\n"
     var = raw_input("Enter an option: [Positive: '+', Negative: '-', Neutral: '0', Skip: 's']")
     if var == '+':
-        par = (var, "positive")
+        par = (line, "positive")
         writefile.write(repr(par))
         writefile.write("\n")
     if var == '-':
-        par = (var, "negative")
+        par = (line, "negative")
         writefile.write(repr(par))
         writefile.write("\n")
     if var == '0':
-        par = (var, "neutral")
+        par = (line, "neutral")
         writefile.write(repr(par))
         writefile.write("\n")
 
