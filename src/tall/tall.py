@@ -27,20 +27,21 @@ def create_socket(address):
     return soc
 
 
-def send_to_storage(command, data):
-    '''
-    Sends requests to the Storage Handler. What kind of request it is is determined by 'command'.
-    If command is 'username' it requests a list of keywords connected to that username, if it is
-    'keywords' it requests a list of users and the keywords connected to them.
-    '''
-    # TODO: write method to send commands to storage handler
-    print "Command: " + command + " Data: " + data
-    soc = create_socket("localhost:8002")
-    soc.sendall(command)
-    soc.sendall(data)
-    line = soc.recv
-    print line
-    return line
+## What was this supposed to become? seems irrelevant now /xantoz 
+# def send_to_storage(command, data):
+#     '''
+#     Sends requests to the Storage Handler. What kind of request it is is determined by 'command'.
+#     If command is 'username' it requests a list of keywords connected to that username, if it is
+#     'keywords' it requests a list of users and the keywords connected to them.
+#     '''
+#     # TODO: write method to send commands to storage handler
+#     print "Command: " + command + " Data: " + data
+#     soc = create_socket("localhost:8002")
+#     soc.sendall(command)
+#     soc.sendall(data)
+#     line = soc.recv
+#     print line
+#     return line
 
 
 def send_to_request(username):
