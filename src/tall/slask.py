@@ -4,6 +4,7 @@ Created on Mar 21, 2012
 @author: jonas
 '''
 
+
 def get_common_keywords(userskeywords, otherkeywords):
     commonkeywords = []
     for key in otherkeywords:
