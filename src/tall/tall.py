@@ -60,6 +60,7 @@ def send_to_request(username):
     soc.sendall(username)
     print "username sent: " + username
     response = soc.recv(1024) # Recieves a response of at most 1k
+    soc.close()
     print "response from request: " + response
     if response == 1:
 #        print response
