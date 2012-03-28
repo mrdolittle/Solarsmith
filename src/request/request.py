@@ -33,8 +33,10 @@ def add_to_solr(username):
     '''Requests a certain Twitter username to be added. 
     @argument username: A string containing the username of a Twitter user.
     @return: A boolean set to true if the user has been added, otherwise false.'''
-    
-    return addalyse(SOLR_SERVER, username)
+    try:
+        addalyse(SOLR_SERVER, username)
+    except Addalyse.AddalyseUnableToProcureTweetsError:
+        return None
 
     
 def main():
@@ -51,9 +53,6 @@ def main():
     
     #Start listening:
     server_instance.run()
-    
-    #Terminate
-    #TODO: Terminate in console should stop the while loop in the userhandler too (when list is empty).
     
 class Server():
     '''The server class that handles the incomming connections
@@ -131,7 +130,6 @@ class Server():
                         sys.stdout.write(str(len(self.threads)) + " connection(s) has been made untill now!\n")
                     if server_input == "Connections\n" and self.threads == []:
                         sys.stdout.write("Currently there are no threads \n")
-                    
         
         #Close down all the threads
         self.server.close()
@@ -200,15 +198,17 @@ class UsernameHandler(threading.Thread):
                 data = self.request_list.pop()
                 sys.stdout.write("Processing username: " + data[0] + "\n")
                 res = add_to_solr(data[0])
-                data[1].close()
                 #On response:
-                    #If user_added response = 1 #User added
-                    #elif user_does_not_exist response = 2 #User does not exist
-                    #elif timeout response = 3 #Timeout occured ##SKA GORAS I TALL
-                    #else response = 4 #An unknown error has occured
-                    #sent = data[1].self.client.send(response)
-                    #if sent == 0:
-                        #raise RuntimeError("socket connection broken")
-                        
+                if res == True:
+                    sent = data[1].send(1)      #1 = User added
+                if res == "":
+                    sent = data[1].send(2)      #2 = User does not exist on Twitter
+                else:
+                    sent = res[1].send(3)       #3 = Other error
+                if sent == 0:
+                    raise RuntimeError("Socket connection broken")
+                else:
+                    data[1].close()
+                
 if __name__ == "__main__":
     main()
