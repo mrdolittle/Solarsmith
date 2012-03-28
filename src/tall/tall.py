@@ -10,8 +10,8 @@ import socket
 import urlparse
 import tallstore
 
-REQUEST_SERVER="130.229.128.185"
-REQUEST_SERVER_PORT=1337
+REQUEST_SERVER = "130.229.128.185"
+REQUEST_SERVER_PORT = 1337
 
 
 def get_pic_link(username):
@@ -48,7 +48,7 @@ def send_to_request(username):
     '''Sends a username to Request and awaits an answer. Returns different values depending on the 
     answer from Request.'''
     global REQUEST_SERVER, REQUEST_SERVER_PORT
-    
+
     soc = create_socket((REQUEST_SERVER, REQUEST_SERVER_PORT))
     soc.sendall(username)
     response = soc.recv(1024) # Recieves a response of at most 1kB
