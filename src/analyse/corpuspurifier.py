@@ -5,7 +5,7 @@ import ast
 
 corpus = open('RealCorpus', 'r')
 sentimentcorpus = open('corpusnew', 'w')
-features = open('features', 'w')
+
 
 positive =[':-)', ':)',':)', ':D', '=D', '=)', 'C:', ':]',':>', ';)', ';D', ';-)','^^', '^.^', 'xD','XD', '(:', '(-:', '(=', '^.~', '<3', 'c"']
 negative =[':-(', ':(', '=(', ":'(", 'D:', 'DX', 'D=', '-.-', "-.-'", ':<', ':[', 'X(', 'x(', '><', '>.<', '>_<', '<.<', '>.>']
@@ -36,8 +36,6 @@ for line in set:
     
     for sentence in sentences:
         words=sentence.split()
-        featurelist.append(extract_features(sentence))
-        features.write(featurelist.__str__()+'\n')
         
         if isenglish(sentence):
             if any(x in negative for x in words):
