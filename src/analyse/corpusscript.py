@@ -1,8 +1,6 @@
 import twitter
 import time
 
-import ast
-
     
 api=twitter.Api()
 positive =[':-)', ':)',':)', ':D', '=D', '=)', 'C:', ':]',':>', ';)', ';D', ';-)','^^', '^.^', 'xD','XD', '(:', '(-:', '(=', '^.~', '<3', 'c"']
