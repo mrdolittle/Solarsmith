@@ -197,10 +197,10 @@ class UsernameHandler(threading.Thread):
                 res = add_to_solr(data[0])
                 #On response:
                 if res == "UserAdded":
-                    print "Recieved UserAdded"
+                    print "UserAdded"
                     data[1].send("1")      #1 = User added
                 elif res == "UserNotOnTwitter":
-                    print "Recieved UserNotOnTwitter"
+                    print "UserNotOnTwitter"
                     data[1].send("2")      #2 = User does not exist on Twitter
                 else:
                     print "OtherError"

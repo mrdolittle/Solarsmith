@@ -259,7 +259,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             frienemy_result = tallstore.get_frienemies_by_id(data) # Ska ersättas med anrop till storage handler
             if frienemy_result == False:
                 self.send_result('User not found, attempting to add')
-#                succeeded, message = send_to_request(data)
+                succeeded, message = send_to_request(data)
                 succeeded = False
                 message = "Request is not online. Cannot retrieve new users from Twitter."
                 if succeeded == True:
