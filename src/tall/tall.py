@@ -10,6 +10,9 @@ import socket
 import urlparse
 import tallstore
 
+REQUEST_SERVER="130.229.128.185"
+REQUEST_SERVER_PORT=1337
+
 
 def get_pic_link(username):
     return "https://api.twitter.com/1/users/profile_image/" + str(username)
@@ -41,11 +44,11 @@ def send_to_storage(command, data):
 
 
 def send_to_request(username):
-    '''
-    Sends a username to Request and awaits an answer. Returns different values depending on the 
-    answer from Request.
-    '''
-    soc = create_socket(("130.229.128.185", 1337))
+    '''Sends a username to Request and awaits an answer. Returns different values depending on the 
+    answer from Request.'''
+    global REQUEST_SERVER, REQUEST_SERVER_PORT
+    
+    soc = create_socket((REQUEST_SERVER, REQUEST_SERVER_PORT))
     soc.sendall(username)
     response = soc.recv(1024) # Recieves a response of at most 1kB
 
