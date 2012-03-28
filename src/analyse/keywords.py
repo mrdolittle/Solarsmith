@@ -15,7 +15,6 @@ def extract_keywords_grammar(text):
     '''Uses chunks matching to identify keywords in a tweet. The code looks much nicer this way :P'''
     
     sequence = nltk.pos_tag(nltk.word_tokenize(text))
-    print sequence
     words = []
     grammar=''' Noun: {<DT>?<JJ>+(<NN>|<NNS>|<VBG>)+}
                 ToVerb: {<TO><VB>}
