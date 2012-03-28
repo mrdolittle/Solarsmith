@@ -42,10 +42,10 @@ with open(CORPUS2, 'rb') as fp:
         #print row
         tweets.append(ast.literal_eval(row))
   #      tweets.append([row[4], row[1]])
-with open(CORPUS1, 'rb') as fp:
-    reader = csv.reader(fp, delimiter=',', quotechar='"', escapechar='\\')
-    for row in reader:
-        tweets.append([row[4], row[1]])
+#with open(CORPUS1, 'rb') as fp:
+#    reader = csv.reader(fp, delimiter=',', quotechar='"', escapechar='\\')
+#    for row in reader:
+#        tweets.append([row[4], row[1]])
 
     
 ## treat neutral and irrelevant the same
