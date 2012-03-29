@@ -67,12 +67,10 @@ class SolrUser:
         Return the username.
         '''
         return self.id
-    
-    
+
     def set_lovekeywords(self, lovekeywords):
         self.lovekeywords_list = lovekeywords
-        
-    
+
     def set_hatekeywords(self, hatekeywords):
         self.hatekeywords_list = hatekeywords
 
@@ -119,13 +117,13 @@ def get_frienemies_by_id(username):
         return "Error: Connection to Solr lost."
 #    print "Enemies: "
 #    print enemies
-
-
+    
     for single_friend in friends:
-        common_friend_keywords = get_common_keywords(userlovekeywords, single_friend.lovekeywords_list)
-        single_friend.set_lovekeywords(common_friend_keywords) # Set and sort friend lovekeywords to common keywords
-        common_friend_keywords = get_common_keywords(userhatekeywords, single_friend.hatekeywords_list)
-        single_friend.set_hatekeywords(common_friend_keywords) # Set and sort friend hatekeywords to common keywords
+        common_friend_lovekeywords = get_common_keywords(userlovekeywords, single_friend.lovekeywords_list)
+        single_friend.set_lovekeywords(common_friend_lovekeywords) # Set and sort friend lovekeywords to common keywords
+        common_friend_hatekeywords = get_common_keywords(userhatekeywords, single_friend.hatekeywords_list)
+        single_friend.set_hatekeywords(common_friend_hatekeywords) # Set and sort friend hatekeywords to common keywords
+
     for single_enemy in enemies:
         common_enemy_keywords = get_common_keywords(userhatekeywords, single_enemy.lovekeywords_list)
         single_enemy.set_lovekeywords(common_enemy_keywords) # Set and sort enemy lovekeywords to common keywords
