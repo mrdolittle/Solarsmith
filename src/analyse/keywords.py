@@ -59,7 +59,7 @@ def get_hashtags(tweet):
     TODO: use split_tweets
     '''
     
-    return filter(lambda x: x[0] == '#', tweet.split())
+    return filter(lambda x: x[0] == '#', split_tweet(tweet))
 
 
 def non_aggresive_stemmer(word):
