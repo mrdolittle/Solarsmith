@@ -373,7 +373,7 @@
 
     <fieldType name="keyword_text" class="solr.TextField" positionIncrementGap="100">
       <analyzer type="index">
-        <tokenizer class="solr.PatternTokenizeFactory" pattern="\n" />
+        <tokenizer class="solr.PatternTokenizerFactory" pattern="\n" />
 
         <!-- commonsy stuff -->
         <filter class="solr.LowerCaseFilterFactory" />
@@ -385,6 +385,8 @@
 	-->
       </analyzer>
       <analyzer type="query">
+        <tokenizer class="KeywordTokenizerFactory" />
+        
         <filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true" />
 
         <!-- commonsy stuff -->
@@ -534,7 +536,8 @@
        when adding a document.
    -->
 
-   <field name="id"                       type="string_ci"            indexed="true"  stored="true"  required="true" />
+   <field name="id"                       type="string"            indexed="true"  stored="true"  required="true" />
+   <field name="id_ci"                    type="string_ci"         indexed="true"  stored="true"  required="true" />
    <field name="lovekeywords_list"        type="string"            indexed="false" stored="true"  required="true" />
    <field name="hatekeywords_list"        type="string"            indexed="false" stored="true"  required="true" />
    <field name="lovekeywords_list_scaled" type="string"            indexed="false" stored="true"  required="true" />
@@ -625,6 +628,8 @@
 	  copyField also supports a maxChars to copy setting.  -->
 	   
    <!-- <copyField source="*_t" dest="text" maxChars="3000"/> -->
+
+   <copyField source="id" dest="id_ci" />
 
    <!-- copy name to alphaNameSort, a field designed for sorting by name -->
    <!-- <copyField source="name" dest="alphaNameSort"/> -->

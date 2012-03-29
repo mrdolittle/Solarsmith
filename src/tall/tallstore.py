@@ -78,7 +78,7 @@ class SolrUser:
 def get_frienemies_by_id(username):
     '''Retrieves a users friends and enemies from Solr.'''
 
-    query = SOLR_INTERFACE.query(id=username).field_limit(score=True)
+    query = SOLR_INTERFACE.query(id_ci=username).field_limit(score=True)
     searchee = ''
     try:
         for searchee in query.execute(constructor=SolrUser):
