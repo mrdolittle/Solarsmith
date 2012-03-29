@@ -477,7 +477,9 @@ STOPWORDS = set(["something",
                  "lot",
                  "anymore",
                  "look",
-                 "'ve" # stupid keyword coming from whatever
+                 "'ve", # stupid keyword coming from whatever
+                 "disgusting",
+                 "cause"
                  ])
 
 def nop(a):
