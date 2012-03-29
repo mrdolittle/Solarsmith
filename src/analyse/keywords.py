@@ -10,6 +10,7 @@ Includes methods: extract_keywords
 import nltk
 from nltk.tag import _POS_TAGGER
 from stopwords import filter_keywords, strip_tweet
+from common import *
 
 def extract_keywords_grammar(text):
     '''Uses chunks matching to identify keywords in a tweet. The code looks much nicer this way :P'''
@@ -53,7 +54,10 @@ def extract_keywords_grammar(text):
 def get_hashtags(tweet):
     '''Splits tweet on whitespace (this is ok, since hashtags are rarely combined together with
     punctuation in scary ways that other words might be... I think... (TODO: investigate this)) and
-    finds hashtags in it.'''
+    finds hashtags in it.
+
+    TODO: use split_tweets
+    '''
     
     return filter(lambda x: x[0] == '#', tweet.split())
 

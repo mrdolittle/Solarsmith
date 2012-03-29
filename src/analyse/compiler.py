@@ -11,22 +11,7 @@ import nltk
 from keywords import extract_keywords
 from sentiment import analyse_sentiment
 from nltk.corpus import wordnet
-
-
-def isenglish(tweet):
-    '''Ascertains the englishness of the tweet. I say!'''
-    
-    wordlist = tweet.split()
-    
-    if len(wordlist) == 0:
-        return False
-    
-    englishfactor = 0
-    for word in wordlist: 
-        if wordnet.synsets(word):
-            englishfactor = englishfactor + 1
-            #  a english word
-    return True if (englishfactor + 0.0)/len(wordlist) > 0.4 else False
+from common import *
 
 def analyse_sentence(sentence):
     '''Takes a tweet and performs sentimentanalysis on the given tweet, then gives the weight that

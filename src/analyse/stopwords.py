@@ -9,6 +9,7 @@ Includes methods: filter_keyword
 '''
 
 import re
+from common import *
 
 STOPWORDS = set(["something",
                  "nothing",
@@ -482,11 +483,6 @@ STOPWORDS = set(["something",
                  "cause"
                  ])
 
-def nop(a):
-    '''The identity function'''
-    
-    return a
-
 def filter_keywords(keywords, key=nop):
     """Receives the keywords and filters out words from the set 'words'.
 
@@ -504,27 +500,6 @@ TWEET_STOPSMILEYS = set([":)", ":(", ":<", ":>", ":-)", ":-(", ":-<", ";-)", ";)
                          ":3",   # cat
                          ">:3",  # lion
                          "}:3"]) # elk
-
-def split_tweet(text):
-    '''Splits tweets neater than regular splitting at whitespace (for
-    instance whenever we encounter a hashtag or @-notation we split
-    away any punctuation at the end. Doesn't split punctuation from
-    words outside of hashtags/@-notation however.'''
-
-    def split_tag(tag):
-        if len(tag) < 2:        # avoid blowing up 
-            return [" "]
-        [(a, b)] = re.findall(r'([#@]\w+)(.*)', tag) # this will blow up if more than one match (but it won't due to the regex...)
-        return [a] if b == '' else [a,b]
-
-    wordsplit = text.split()
-    result = []
-    for i in wordsplit:
-        if i[0] in ('#','@'):
-            result = result + split_tag(i)
-        else:
-            result.append(i)
-    return result
 
 URL_REGEX = re.compile(r'https?:(?:(//)|(\\\\))+[!\w\d:#@%/;$()~_?\+\-=\\\.,&]*', re.I)
 def strip_tweet(tweet):
