@@ -66,7 +66,11 @@ def addalyse(solr_server, username, since_id=0, remake_profile=True, update_coun
     if not th.twitter_contains(username):
         raise AddalyseUserNotOnTwitterError("Couldn't find any trace of '" + username + "'")
     
-    sh = StorageHandler(solr_server)
+    # solr_server can now optionally be a StorageHandler object
+    if isinstance(solr_server, StorageHandler):
+        sh=solr_server
+    else: 
+        sh = StorageHandler(solr_server)
 
     # remake if not in Solr
     remake_profile = remake_profile or not sh.contains(username)
