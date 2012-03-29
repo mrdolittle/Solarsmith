@@ -218,10 +218,9 @@ class ThreadingServer(ThreadingMixIn, HTTPServer):
     '''
     A class for making the server use threads.
     '''
-    # Ctrl-C will cleanly kill all spawned threads
-    daemon_threads = True
-    # much faster rebinding
-    allow_reuse_address = True
+    daemon_threads = True       # Ctrl-C will cleanly kill all spawned threads
+    allow_reuse_address = True  # much faster rebinding
+
 
 
 class RequestHandler(BaseHTTPRequestHandler):
