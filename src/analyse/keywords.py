@@ -29,7 +29,6 @@ def extract_keywords_grammar(text):
     for t in chunks.parse(sequence).subtrees():
         if t.node == "Noun":
             if len(t[0][0])>2:
-                print t[0][0]
                 keys = reduce(lambda x,y: x + " " + y, map(lambda (x,_1): x, t)).lower()            
                 words.append((keys,1.0))         
         elif t.node == "ToVerb":
