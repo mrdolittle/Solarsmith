@@ -12,9 +12,9 @@ import urlparse
 from configHandler import configuration
 from xml.sax.saxutils import escape
 
-# CONFIG = configuration.Config()
-# REQUEST_SERVER = CONFIG.get_request_server()
-# REQUEST_SERVER_PORT = 1337
+CONFIG = configuration.Config()
+REQUEST_SERVER = CONFIG.get_request_server()
+REQUEST_SERVER_PORT = 1337
 
 
 def get_pic_link(username):
