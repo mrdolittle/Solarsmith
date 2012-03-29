@@ -125,25 +125,27 @@ def create_xml(result):
         lovekeywords, hatekeywords = friends.get_keywords()
         friendusername = friends.getId()
         # Start of friends
-        tosend = tosend + entrytag + nametag + friendusername + endnametag
-        tosend = tosend + piclinktag + get_pic_link(friendusername) + endpiclinktag
+        tosend = tosend + entrytag + nametag + escape(friendusername) + endnametag
+        tosend = tosend + piclinktag + escape(get_pic_link(friendusername)) + endpiclinktag
         tosend = tosend + lovekeywordstag
 
         lovekeywords = get_common_keywords(userlovekeywords, lovekeywords)
 
         # Add friend's lovekeywords
+        lkw_str = ""
         for keyword in lovekeywords:
-            tosend = tosend + keyword + ","
-        tosend = tosend.rstrip(",")
-        tosend = tosend + endlovekeywordstag + hatekeywordstag
+            lkw_str = lkw_str + keyword + ","
+        lkw_str = escape(lkw_str.rstrip(","))
+        tosend = tosend + lkw_str + endlovekeywordstag + hatekeywordstag
 
         hatekeywords = get_common_keywords(userhatekeywords, hatekeywords)
 
         # Add friend's hatekeywords
+        hkw_str = ""
         for keyword in hatekeywords:
-            tosend = tosend + keyword + ","
-        tosend = tosend.rstrip(",")
-        tosend = tosend + endhatekeywordstag + endentrytag
+            hkw_str = hkw_str + keyword + ","
+        hkw_str = escape(hkw_str.rstrip(","))
+        tosend = tosend + hkw_str + endhatekeywordstag + endentrytag
 
     # End of friends
     tosend = tosend + endfriendstag
@@ -155,8 +157,8 @@ def create_xml(result):
         lovekeywords, hatekeywords = enemies.get_keywords()
         enemyusername = enemies.getId()
         # Add a foe
-        tosend = tosend + entrytag + nametag + enemyusername + endnametag
-        tosend = tosend + piclinktag + get_pic_link(enemyusername) + endpiclinktag
+        tosend = tosend + entrytag + nametag + escape(enemyusername) + endnametag
+        tosend = tosend + piclinktag + escape(get_pic_link(enemyusername)) + endpiclinktag
         lovekeywords = get_common_keywords(userlovekeywords, lovekeywords)
         tosend = tosend + lovekeywordstag
         # Add foe's lovekeywords
