@@ -65,8 +65,10 @@ def extract_keywords(sentence):
     keyword and a confidence factor of some sort (currently hard-coded to 1.0. But might change in
     future, or might not and just be really stupid). '''
     
-    return filter_keywords(extract_keywords_grammar(strip_tweet(sentence)),
-                                                    key = lambda a: a[0]) + map(lambda x: (x, 2.0), get_hashtags(sentence))
+    return map(lambda x: x.lower(),
+               filter_keywords(extract_keywords_grammar(strip_tweet(sentence)),
+                               key = lambda a: a[0])) + map(lambda x: (x, 2.0), get_hashtags(sentence))
+
 #Initialize _POS_TAGGER
 nltk.data.load(_POS_TAGGER)
 
