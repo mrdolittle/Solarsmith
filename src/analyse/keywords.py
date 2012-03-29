@@ -28,18 +28,23 @@ def extract_keywords_grammar(text):
     
     for t in chunks.parse(sequence).subtrees():
         if t.node == "Noun":
-            keys = reduce(lambda x,y: x + " " + y, map(lambda (x,_1): x, t)).lower()            
-            words.append(keys)         
+            if len(t[0][0])>1:
+                keys = reduce(lambda x,y: x + " " + y, map(lambda (x,_1): x, t)).lower()            
+                words.append(keys)         
         elif t.node == "ToVerb":
-            words.append(t[1][0].lower())
+            if len(t[0][0])>1:
+                words.append(t[1][0].lower())
         elif t.node == "Name":
-            words.append(reduce(lambda x,y: x + " " + y, map(lambda (x,_1): x, t)).lower()) 
+            if len(t[0][0])>1:
+                words.append(reduce(lambda x,y: x + " " + y, map(lambda (x,_1): x, t)).lower()) 
                 
     for s in chunksSingular.parse(sequence).subtrees():
         if s.node == "Noun":
-            words.append(s[0][0].lower())
+            if len(t[0][0])>1:
+                words.append(s[0][0].lower())
         elif s.node == "Name":
-            words.append(s[0][0].lower())
+            if len(t[0][0])>1:
+                words.append(s[0][0].lower())
                     
     return words
 
@@ -64,6 +69,6 @@ def extract_keywords(sentence):
 nltk.data.load(_POS_TAGGER)
 
 if __name__ == '__main__':
-    text = "Google Chrome is by far the most secure browser I've used"
+    text = "Let's be honest, folks. Google Chrome is amazingly superior to IE"
     print extract_keywords(text)
     

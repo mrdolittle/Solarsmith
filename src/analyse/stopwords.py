@@ -25,7 +25,9 @@ STOPWORDS = set(["something",
                  "roflmao",
                  "URLYBURLYSMURLYPURLY," # this one is inserted for URL's by word_tokenize, so we filter it (it tends to be tagged as NNP and considered a keyword)
                  "ve",                  # weird keyword when using "I've"
-                 "t"])                  # Weird keyword when using "can't"
+                 "t",                   # weird keyword when using "can't"
+                 "s",                  # weird keyword when using "let's"
+                 "let"])
 
 def filter_keywords(keywords):
     """Receives the keywords and filters out words from the set 'words'
