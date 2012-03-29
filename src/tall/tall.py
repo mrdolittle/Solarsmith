@@ -85,7 +85,7 @@ def send_to_request(username):
     # 4 = unknown error
 
 
-def get_common_keywords(userskeywords, otherkeywords):
+def get_and_sort_common_keywords(userskeywords, otherkeywords):
     commonkeywords = []
     for key in otherkeywords:
         if key in userskeywords:
@@ -97,13 +97,7 @@ def create_xml(result):
     '''
     Creates the xml-string that will be sent to the GUI.
     '''
-    friendresult = result[0]
-    foeresult = result[1]
-    userlovekeywords = result[2]
-    if len(result) == 4:
-        userhatekeywords = result[3]
-    else:
-        userhatekeywords = userlovekeywords
+    friendresult, foeresult = result
     # All xml-flags
     searchtag = "<searchResult>"
     friendtag = "<friends>"
@@ -271,7 +265,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                     return
         elif command == "keywords":
             keys = data.split(",")
-            frienemy_result = tallstore.get_frienemies_by_keywords(keys) + [keys]                
+            frienemy_result = tallstore.get_frienemies_by_keywords(keys)                
         else:
             self.send_result("Error: bad argument") 
             return
