@@ -460,7 +460,7 @@ STOPWORDS = set(["something",
                   # weird keyword when using "let's"
                  "let"])
 
-def filter_keywords(keywords):
+def filter_keywords(keywords, key=id):
     """Receives the keywords and filters out words from the set 'words'
 
     FIXME?: Should we do lowercase matching or something like that
@@ -468,7 +468,7 @@ def filter_keywords(keywords):
     global STOPWORDS
     
     #return filter(lambda x: x not in words, keywords)
-    return [x for x in keywords if x not in STOPWORDS]
+    return [x for x in keywords if key(x) not in STOPWORDS]
 
 # smileys and other words that shouldn't be left intact as to not confuse the keyword-exrctracty shit
 # TODO: generate this in some function or something instead, so many combinations!
