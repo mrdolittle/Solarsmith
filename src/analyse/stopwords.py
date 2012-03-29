@@ -466,7 +466,12 @@ STOPWORDS = set(["something",
                 "amazing",
                 "warming"])
 
-def filter_keywords(keywords, key=id):
+def nop(a):
+    '''The identity function'''
+    
+    return a
+
+def filter_keywords(keywords, key=nop):
     """Receives the keywords and filters out words from the set 'words'.
 
     Takes an optional key argument for usage like:
