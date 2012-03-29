@@ -10,6 +10,7 @@ import socket
 import tallstore
 import urlparse
 from configHandler import configuration
+from xml.sax.saxutils import escape
 
 CONFIG = configuration.Config()
 REQUEST_SERVER = CONFIG.get_request_server()
@@ -29,31 +30,20 @@ def create_socket(address):
     return soc
 
 
-## What was this supposed to become? seems irrelevant now /xantoz 
-# def send_to_storage(command, data):
-#     '''
-#     Sends requests to the Storage Handler. What kind of request it is is determined by 'command'.
-#     If command is 'username' it requests a list of keywords connected to that username, if it is
-#     'keywords' it requests a list of users and the keywords connected to them.
-#     '''
-#     # TODO: write method to send commands to storage handler
-#     print "Command: " + command + " Data: " + data
-#     soc = create_socket("localhost:8002")
-#     soc.sendall(command)
-#     soc.sendall(data)
-#     line = soc.recv
-#     print line
-#     return line
-
-
 def send_to_request(username):
     '''Sends a username to Request and awaits an answer. Returns different values depending on the 
     answer from Request.'''
     global REQUEST_SERVER, REQUEST_SERVER_PORT
     print "Trying to connect to request"
-    soc = create_socket((REQUEST_SERVER, REQUEST_SERVER_PORT))
+    try:
+        soc = create_socket((REQUEST_SERVER, REQUEST_SERVER_PORT))
+    except:
+        return "Error: Cannot connect to request."
     print "Connected"
-    soc.sendall(username)
+    try:
+        soc.sendall(username)
+    except:
+        return "Error: Could not send to request"
     print "username sent: " + username
     response = soc.recv(1024) # Recieves a response of at most 1k
     soc.close()
@@ -124,25 +114,27 @@ def create_xml(result):
         lovekeywords, hatekeywords = friends.get_keywords()
         friendusername = friends.getId()
         # Start of friends
-        tosend = tosend + entrytag + nametag + friendusername + endnametag
-        tosend = tosend + piclinktag + get_pic_link(friendusername) + endpiclinktag
+        tosend = tosend + entrytag + nametag + escape(friendusername) + endnametag
+        tosend = tosend + piclinktag + escape(get_pic_link(friendusername)) + endpiclinktag
         tosend = tosend + lovekeywordstag
 
         lovekeywords = get_common_keywords(userlovekeywords, lovekeywords)
 
         # Add friend's lovekeywords
+        lkw_str = ""
         for keyword in lovekeywords:
-            tosend = tosend + keyword + ","
-        tosend = tosend.rstrip(",")
-        tosend = tosend + endlovekeywordstag + hatekeywordstag
+            lkw_str = lkw_str + keyword + ","
+        lkw_str = escape(lkw_str.rstrip(","))
+        tosend = tosend + lkw_str + endlovekeywordstag + hatekeywordstag
 
         hatekeywords = get_common_keywords(userhatekeywords, hatekeywords)
 
         # Add friend's hatekeywords
+        hkw_str = ""
         for keyword in hatekeywords:
-            tosend = tosend + keyword + ","
-        tosend = tosend.rstrip(",")
-        tosend = tosend + endhatekeywordstag + endentrytag
+            hkw_str = hkw_str + keyword + ","
+        hkw_str = escape(hkw_str.rstrip(","))
+        tosend = tosend + hkw_str + endhatekeywordstag + endentrytag
 
     # End of friends
     tosend = tosend + endfriendstag
@@ -154,31 +146,28 @@ def create_xml(result):
         lovekeywords, hatekeywords = enemies.get_keywords()
         enemyusername = enemies.getId()
         # Add a foe
-        tosend = tosend + entrytag + nametag + enemyusername + endnametag
-        tosend = tosend + piclinktag + get_pic_link(enemyusername) + endpiclinktag
+        tosend = tosend + entrytag + nametag + escape(enemyusername) + endnametag
+        tosend = tosend + piclinktag + escape(get_pic_link(enemyusername)) + endpiclinktag
         lovekeywords = get_common_keywords(userlovekeywords, lovekeywords)
         tosend = tosend + lovekeywordstag
         # Add foe's lovekeywords
+        lkw_str = ""
         for keyword in lovekeywords:
-            tosend = tosend + keyword + ","
-        tosend = tosend.rstrip(",")
-        tosend = tosend + endlovekeywordstag + hatekeywordstag
+            lkw_str = lkw_str + keyword + ","
+        lkw_str = escape(lkw_str.rstrip(","))
+        tosend = tosend + lkw_str + endlovekeywordstag + hatekeywordstag
         hatekeywords = get_common_keywords(userhatekeywords, hatekeywords)
         # add foe's hatekeywords
+        hkw_str = ""
         for keyword in hatekeywords:
-            tosend = tosend + keyword + ","
-        tosend = tosend.rstrip(",")
-        tosend = tosend + endhatekeywordstag + endentrytag
+            hkw_str = hkw_str + keyword + ","
+        hkw_str = escape(hkw_str.rstrip(","))
+        tosend = tosend + hkw_str + endhatekeywordstag + endentrytag
 
     # End of foes
     tosend = tosend + endenemiestag
     # End of Search result
     tosend = tosend + endsearchtag
-    # Kanske inte bästa lösningen men den funkar, tar bort tecken som inte gui klarar av
-    # Detta är vår blacklist
-    tosend = tosend.replace('"', '')
-    tosend = tosend.replace('&', '')
-    
    
     print "Response: " + tosend
 
@@ -218,10 +207,8 @@ class ThreadingServer(ThreadingMixIn, HTTPServer):
     '''
     A class for making the server use threads.
     '''
-    # Ctrl-C will cleanly kill all spawned threads
-    daemon_threads = True
-    # much faster rebinding
-    allow_reuse_address = True
+    daemon_threads = True       # Ctrl-C will cleanly kill all spawned threads
+    allow_reuse_address = True  # much faster rebinding
 
 
 class RequestHandler(BaseHTTPRequestHandler):
@@ -269,9 +256,12 @@ class RequestHandler(BaseHTTPRequestHandler):
                     return
         elif command == "keywords":
             keys = data.split(",")
-            frienemy_result = tallstore.get_frienemies_by_keywords(keys) + [keys]
+            frienemy_result = tallstore.get_frienemies_by_keywords(keys) + [keys]                
         else:
             self.send_result("Error: bad argument") 
+            return
+        if frienemy_result == "Error: Connection to Solr lost.":
+            self.send_result("Error: Connection to Solr lost.")
             return
         self.send_result(create_xml(frienemy_result))
 

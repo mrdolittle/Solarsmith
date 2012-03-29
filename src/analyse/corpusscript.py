@@ -8,7 +8,7 @@ negative =[':-(', ':(', '=(', ":'(", 'D:', 'DX', 'D=', '-.-', "-.-'", ':<', ':['
 hour=3600
 timetosleep=hour/6
 
-sentimentcorpus = open('corpusnew2', 'a')
+sentimentcorpus = open('corpusnew3', 'a')
 page=1
 while 1:
     posstatuses=api.GetSearch(term=":-)",per_page=100,lang="en")
