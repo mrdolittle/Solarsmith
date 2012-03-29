@@ -87,9 +87,9 @@ def analyse(tweets):
     (love, hate) = analyse(tweets)
     print love => [("cat", 34), ("fishing", 22), ("bear grylls", 33)]
     print hate => [("dog", 123), ("bear hunting", 44)]'''
-   # print tweets
-   # print map(nltk.sent_tokenize,tweets)
-   # print reduce(lambda x,y: x+y,[['tweetlist'], ['lol dont like apples'], ['like reading books']])
+    # print tweets
+    # print map(nltk.sent_tokenize,tweets)
+    # print reduce(lambda x,y: x+y,[['tweetlist'], ['lol dont like apples'], ['like reading books']])
     #reduce(lambda x,y: x+y,map(nltk.sent_tokenize, tweets))
 
     # split the list of tweets to a list of sentences and send it to analyse_sentences
