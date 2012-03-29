@@ -18,7 +18,7 @@ def extract_keywords_grammar(text):
     words = []
     grammar=''' Noun: {<DT>?<JJ>+(<NN>|<NNS>|<VBG>)+}
                 ToVerb: {<TO><VB>}
-                Name:{<NNP><NNP>+}                
+                Name:{<NNP>*}                
             '''
     grammarSingular='''Noun: {(<NN>|<NNS>|<VBG>)}
                         Name: {<NNP>}
@@ -30,22 +30,24 @@ def extract_keywords_grammar(text):
         if t.node == "Noun":
             if len(t[0][0])>1:
                 keys = reduce(lambda x,y: x + " " + y, map(lambda (x,_1): x, t)).lower()            
-                words.append(keys)         
+                words.append((keys,1.0))         
         elif t.node == "ToVerb":
             if len(t[0][0])>1:
-                words.append(t[1][0].lower())
+                words.append((t[1][0].lower(),1.0))
         elif t.node == "Name":
             if len(t[0][0])>1:
-                words.append(reduce(lambda x,y: x + " " + y, map(lambda (x,_1): x, t)).lower()) 
+                print t[0][0]
+                if len(t)>1:
+                    words.append((reduce(lambda x,y: x + " " + y, map(lambda (x,_1): x, t)).lower(), 1.0))
+                    for x in t:
+                        words.append((x[0].lower(),0.5))   
+                else:
+                    words.append((t[0][0],1.0))
                 
     for s in chunksSingular.parse(sequence).subtrees():
         if s.node == "Noun":
             if len(t[0][0])>1:
-                words.append(s[0][0].lower())
-        elif s.node == "Name":
-            if len(t[0][0])>1:
-                words.append(s[0][0].lower())
-                    
+                words.append((s[0][0].lower(),1.0))                    
     return words
 
 # def extract(text,words):
@@ -64,11 +66,12 @@ def extract_keywords(sentence):
     keyword and a confidence factor of some sort (currently hard-coded to 1.0. But might change in
     future, or might not and just be really stupid). '''
     
-    return map(lambda a: (a,1.0), filter_keywords(extract_keywords_grammar(strip_tweet(sentence))) + get_hashtags(sentence))                
+    return filter_keywords(extract_keywords_grammar(strip_tweet(sentence)),
+                                                    key = lambda a: a[0]) + get_hashtags(sentence)                
 #Initialize _POS_TAGGER
 nltk.data.load(_POS_TAGGER)
 
 if __name__ == '__main__':
-    text = "Let's be honest, folks. Google Chrome is amazingly superior to IE"
-    print extract_keywords(text)
+    text = "Google Chrome is by far the most secure browser I've used."
+    print extract_keywords_grammar(text)
     
