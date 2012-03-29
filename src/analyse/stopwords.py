@@ -479,7 +479,7 @@ def filter_keywords(keywords, key=nop):
     global STOPWORDS
     
     # matches lowercaseish
-    return [x for x in keywords if len(x)>2 and key(x).lower() not in STOPWORDS]
+    return [x for x in keywords if len(key(x)) > 2 and key(x).lower() not in STOPWORDS]
 
 # smileys and other words that shouldn't be left intact as to not confuse the keyword-exrctracty shit
 # TODO: generate this in some function or something instead, so many combinations!
