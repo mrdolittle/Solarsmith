@@ -62,9 +62,6 @@ def addalyse(solr_server, username, since_id=0, remake_profile=True, update_coun
     '''
     th = TwitterHelp()
     
-    #since Solr is case sensitive and Twitter is not
-    username = username.lower()
-    
     # does not use a Twitter API call
     if not th.twitter_contains(username):
         raise AddalyseUserNotOnTwitterError("Couldn't find any trace of '" + username + "'")

@@ -66,6 +66,15 @@
        org.apache.solr.analysis package.
     -->
 
+    <fieldType name="string_ci" class="solr.TextField" sortMissingLast="true" omitNorms="true">
+        <analyzer>
+            <tokenizer class="solr.KeywordTokenizerFactory"/>           
+            <filter class="solr.LowerCaseFilterFactory" />
+        </analyzer>
+    </fieldType> 
+
+    
+
     <!-- The StrField type is not analyzed, but indexed/stored verbatim. -->
     <fieldType name="string" class="solr.StrField" sortMissingLast="true" omitNorms="true"/>
 
@@ -525,7 +534,7 @@
        when adding a document.
    -->
 
-   <field name="id"                       type="string"            indexed="true"  stored="true"  required="true" />
+   <field name="id"                       type="string_ci"            indexed="true"  stored="true"  required="true" />
    <field name="lovekeywords_list"        type="string"            indexed="false" stored="true"  required="true" />
    <field name="hatekeywords_list"        type="string"            indexed="false" stored="true"  required="true" />
    <field name="lovekeywords_list_scaled" type="string"            indexed="false" stored="true"  required="true" />
@@ -618,7 +627,7 @@
    <!-- <copyField source="*_t" dest="text" maxChars="3000"/> -->
 
    <!-- copy name to alphaNameSort, a field designed for sorting by name -->
-   <!-- <copyField source="name" dest="alphaNameSort"/> -->
+p   <!-- <copyField source="name" dest="alphaNameSort"/> -->
  
 
  <!-- Similarity is the scoring routine for each document vs. a query.
