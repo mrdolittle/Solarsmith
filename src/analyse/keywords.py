@@ -89,7 +89,7 @@ def extract_keywords(sentence):
                       concat(explicit_keywords(map(non_aggresive_stemmer, nltk.word_tokenize(sentence))),
                              map(non_aggresive_stemmer, filter_keywords(extract_keywords_grammar(strip_tweet(sentence)),
                                                                         key = lambda a: a[0])))),
-                  map(lambda x: (x, 2.0),
+                  map(lambda x: (x, 5.0),
                       get_hashtags(sentence)))
 
 #Initialize _POS_TAGGER
