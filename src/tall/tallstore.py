@@ -88,7 +88,7 @@ def get_frienemies_by_id(username):
     for keyword, weight in userhatekeywords:
         query = query | SOLR_INTERFACE.Q(lovekeywords=keyword) ** weight
     enemies = SOLR_INTERFACE.query(query).field_limit(['id', 'lovekeywords_list', 'hatekeywords_list'], score=True).paginate(rows=30).execute(constructor=SolrUser)
-#    print "Emenies: "
+#    print "Enemies: "
 #    print enemies
     userlovekeywords, userhatekeywords = searchee.get_keywords()
     return [friends, enemies, userlovekeywords, userhatekeywords]
