@@ -54,6 +54,20 @@ def main():
                 time.sleep(sleep_time) # sleep for ten seconds, to not make to many requests to twitter                
             else:
                 print("This user has recently been updated ( " + str(diff.minutes) + " minutes ago).")
+
+def clear_database_and_add_users(usernames=["SSDummy_Janet", "SSDummy_Henry", "SSDummy_Hoot", "SSDummy_Faye"
+                                            ,"SSDummy_Burt", "SSDummy_Gustavo", "SSDummy_Amanda"
+                                            ,"SSDummy_Duke", "SSDummy_Ian", "SSDummy_Ellen" , "SSDummy_Chrissy"]):
+    
+    '''Used by analyse team to test their accuracy! 
+    Removes all users from the database and then adds the ones in the usernames list.
+    TODO: test it'''
+    sh = StorageHandler(SOLR_SERVER)
+    sh.delete_all()
+    for username in usernames:
+        addalyse(SOLR_SERVER,username)
+    
+    
                 
 
 if __name__ == "__main__":
