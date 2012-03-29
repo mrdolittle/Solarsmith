@@ -211,7 +211,6 @@ class ThreadingServer(ThreadingMixIn, HTTPServer):
     allow_reuse_address = True  # much faster rebinding
 
 
-
 class RequestHandler(BaseHTTPRequestHandler):
     '''
     This Handler defines what to do with incoming HTTP requests.
@@ -257,9 +256,12 @@ class RequestHandler(BaseHTTPRequestHandler):
                     return
         elif command == "keywords":
             keys = data.split(",")
-            frienemy_result = tallstore.get_frienemies_by_keywords(keys) + [keys]
+            frienemy_result = tallstore.get_frienemies_by_keywords(keys) + [keys]                
         else:
             self.send_result("Error: bad argument") 
+            return
+        if frienemy_result == "Error: Connection to Solr lost.":
+            self.send_result("Error: Connection to Solr lost.")
             return
         self.send_result(create_xml(frienemy_result))
 
