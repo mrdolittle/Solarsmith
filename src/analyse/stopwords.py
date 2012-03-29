@@ -466,7 +466,8 @@ STOPWORDS = set(["something",
                 "amazing",
                 "warming",
                 "week",
-                "quote"])
+                "quote",
+                "awesome"])
 
 def nop(a):
     '''The identity function'''
