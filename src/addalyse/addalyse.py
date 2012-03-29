@@ -65,6 +65,8 @@ def addalyse(solr_server, username, since_id=0, remake_profile=True, update_coun
     # does not use a Twitter API call
     if not th.twitter_contains(username):
         raise AddalyseUserNotOnTwitterError("Couldn't find any trace of '" + username + "'")
+
+    username = th.get_screen_name(username) # canonicalize the name like a bawz  (in the future, though, th.twitter_contains(sdf) might just return this canonical stuffs)
     
     # solr_server can now optionally be a StorageHandler object
     if isinstance(solr_server, StorageHandler):
