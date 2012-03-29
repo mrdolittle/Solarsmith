@@ -77,7 +77,7 @@ def explicit_keywords(words):
 
     # TODO: more?
     keywords = set(['google', 'microsoft', 'apple', 'adobe', 'flash', 'internet', 'TV'])
-    return map(lambda x: (x, 1.1), filter(lambda x: x in keywords, words))
+    return map(lambda x: (x, 1.1), filter(lambda x: x.lower() in keywords, words))
     
 
 def extract_keywords(sentence):
