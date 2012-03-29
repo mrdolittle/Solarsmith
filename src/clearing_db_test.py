@@ -21,9 +21,9 @@ def clear_database_and_add_users(usernames=["SSDummy_Janet", "ssdummy_henry", "s
     
     sh = StorageHandler(SOLR_SERVER)
     if clear:
+        print "CLEARING DATABASE!"
         sh.delete_all()
     users_left_to_add = len(usernames)
-    print "CLEARING DATABASE!"
     for username in usernames:
         print "Adding: " + username + " Left to add: " +str(users_left_to_add)
         try:
