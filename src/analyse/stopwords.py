@@ -458,7 +458,13 @@ STOPWORDS = set(["something",
                 "yours",
                 "z",
                   # weird keyword when using "let's"
-                 "let"])
+                 "let",
+                 "stunning",
+                 "half",
+                 "annoying",
+                 "inspiring",
+                 "amazing",
+                 "warming"])
 
 def filter_keywords(keywords, key=id):
     """Receives the keywords and filters out words from the set 'words'
