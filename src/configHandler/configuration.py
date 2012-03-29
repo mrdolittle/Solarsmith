@@ -11,10 +11,10 @@ class Config():
     def __init__(self, conf_file="../../configuration_file.conf"):
         #Global variables
         self.READ_FROM_FILE = conf_file
-        self.SOLR_SERVER = ""
-        self.REQUEST_SERVER = ""
-        self.TALL_SERVER = ""
-        self.set_locations()
+        self.SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/" 
+        self.REQUEST_SERVER = "130.229.142.114"
+        self.TALL_SERVER = "130.229.185.90"
+        #self.set_locations()
         
     def set_locations(self):
         '''This method will read the file given in the __init__ and set the variables.'''
