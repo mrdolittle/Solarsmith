@@ -42,11 +42,11 @@ class SolrUser:
     '''
     A class representing a User retrieved from Solr.
     '''
-    def __init__(self, id, score, lovekeywords_list, hatekeywords_list, **other_kwargs):
+    def __init__(self, id, score, lovekeywords_list_scaled, hatekeywords_list_scaled, **other_kwargs):
         self.id = id
         self.score = score
-        self.lovekeywords_list = ast.literal_eval(lovekeywords_list)
-        self.hatekeywords_list = ast.literal_eval(hatekeywords_list)
+        self.lovekeywords_list = ast.literal_eval(lovekeywords_list_scaled)
+        self.hatekeywords_list = ast.literal_eval(hatekeywords_list_scaled)
         self.other_kwargs = other_kwargs
 
     def __repr__(self):
@@ -107,7 +107,7 @@ def get_frienemies_by_id(username):
     for keyword, weight in userhatekeywords:
         query = query | SOLR_INTERFACE.Q(hatekeywords=keyword) ** weight
     try:
-        friends = SOLR_INTERFACE.query(query).exclude(id=searchee.getId()).field_limit(['id', 'lovekeywords_list', 'hatekeywords_list'], score=True).paginate(rows=30).execute(constructor=SolrUser)
+        friends = SOLR_INTERFACE.query(query).exclude(id=searchee.getId()).field_limit(['id', 'lovekeywords_list_scaled', 'hatekeywords_list_scaled'], score=True).paginate(rows=30).execute(constructor=SolrUser)
     except:
         return "Error: Connection to Solr lost."
 #    print "Friends: "
@@ -119,7 +119,7 @@ def get_frienemies_by_id(username):
     for keyword, weight in userhatekeywords:
         query = query | SOLR_INTERFACE.Q(lovekeywords=keyword) ** weight
     try:
-        enemies = SOLR_INTERFACE.query(query).exclude(id=searchee.getId()).field_limit(['id', 'lovekeywords_list', 'hatekeywords_list'], score=True).paginate(rows=30).execute(constructor=SolrUser)
+        enemies = SOLR_INTERFACE.query(query).exclude(id=searchee.getId()).field_limit(['id', 'lovekeywords_list_scaled', 'hatekeywords_list_scaled'], score=True).paginate(rows=30).execute(constructor=SolrUser)
     except:
         return "Error: Connection to Solr lost."
 #    print "Enemies: "
@@ -147,7 +147,7 @@ def get_frienemies_by_keywords(keywords):
     for keyword in keywords[1:]:
         query = query | SOLR_INTERFACE.Q(lovekeywords=keyword)
     try:
-        friends = SOLR_INTERFACE.query(query).field_limit(['id', 'lovekeywords_list', 'hatekeywords_list'], score=True).paginate(rows=30).execute(constructor=SolrUser)
+        friends = SOLR_INTERFACE.query(query).field_limit(['id', 'lovekeywords_list_scaled', 'hatekeywords_list_scaled'], score=True).paginate(rows=30).execute(constructor=SolrUser)
     except:
         return "Error: Connection to Solr lost."
    
@@ -155,7 +155,7 @@ def get_frienemies_by_keywords(keywords):
     for keyword in keywords[1:]:
         query = query | SOLR_INTERFACE.Q(hatekeywords=keyword)
     try:
-        enemies = SOLR_INTERFACE.query(query).field_limit(['id', 'lovekeywords_list', 'hatekeywords_list'], score=True).paginate(rows=30).execute(constructor=SolrUser)
+        enemies = SOLR_INTERFACE.query(query).field_limit(['id', 'lovekeywords_list_scaled', 'hatekeywords_list_scaled'], score=True).paginate(rows=30).execute(constructor=SolrUser)
     except:
         return "Error: Connection to Solr lost."
     
