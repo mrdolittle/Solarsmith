@@ -38,12 +38,12 @@ def send_to_request(username):
     try:
         soc = create_socket((REQUEST_SERVER, REQUEST_SERVER_PORT))
     except:
-        return "Error: Cannot connect to request."
+        return False, "Error: Cannot connect to request."
     print "Connected"
     try:
         soc.sendall(username)
     except:
-        return "Error: Could not send to request"
+        return False, "Error: Could not send to request"
     print "username sent: " + username
     response = soc.recv(1024) # Recieves a response of at most 1k
     soc.close()
@@ -97,6 +97,8 @@ def create_xml(result):
     piclinktag = "<piclink>"
     lovekeywordstag = "<lovekeywords>"
     hatekeywordstag = "<hatekeywords>"
+    scoretag = "<score>"
+    endscoretag = "</score>"
     endpiclinktag = "</piclink>"
     endlovekeywordstag = "</lovekeywords>"
     endhatekeywordstag = "</hatekeywords>"
@@ -115,10 +117,9 @@ def create_xml(result):
         friendusername = friends.getId()
         # Start of friends
         tosend = tosend + entrytag + nametag + escape(friendusername) + endnametag
+        tosend = tosend + scoretag + str(friends.score) + endscoretag 
         tosend = tosend + piclinktag + escape(get_pic_link(friendusername)) + endpiclinktag
         tosend = tosend + lovekeywordstag
-
-        lovekeywords = get_common_keywords(userlovekeywords, lovekeywords)
 
         # Add friend's lovekeywords
         lkw_str = ""
@@ -126,8 +127,6 @@ def create_xml(result):
             lkw_str = lkw_str + keyword + ","
         lkw_str = escape(lkw_str.rstrip(","))
         tosend = tosend + lkw_str + endlovekeywordstag + hatekeywordstag
-
-        hatekeywords = get_common_keywords(userhatekeywords, hatekeywords)
 
         # Add friend's hatekeywords
         hkw_str = ""
@@ -147,8 +146,8 @@ def create_xml(result):
         enemyusername = enemies.getId()
         # Add a foe
         tosend = tosend + entrytag + nametag + escape(enemyusername) + endnametag
+        tosend = tosend + scoretag + str(friends.score) + endscoretag 
         tosend = tosend + piclinktag + escape(get_pic_link(enemyusername)) + endpiclinktag
-        lovekeywords = get_common_keywords(userlovekeywords, lovekeywords)
         tosend = tosend + lovekeywordstag
         # Add foe's lovekeywords
         lkw_str = ""
@@ -156,7 +155,6 @@ def create_xml(result):
             lkw_str = lkw_str + keyword + ","
         lkw_str = escape(lkw_str.rstrip(","))
         tosend = tosend + lkw_str + endlovekeywordstag + hatekeywordstag
-        hatekeywords = get_common_keywords(userhatekeywords, hatekeywords)
         # add foe's hatekeywords
         hkw_str = ""
         for keyword in hatekeywords:
@@ -243,8 +241,8 @@ class RequestHandler(BaseHTTPRequestHandler):
             if frienemy_result == False:
                 self.send_result('User not found, attempting to add')
                 succeeded, message = send_to_request(data)
-                succeeded = False
-                message = "Request is not online. Cannot retrieve new users from Twitter."
+#                succeeded = False
+#                message = "Request is not online. Cannot retrieve new users from Twitter."
                 if succeeded == True:
                     self.send_result(message)
                     # Hämta från storage
