@@ -33,4 +33,5 @@ def clear_database_and_add_users(usernames=["SSDummy_Janet", "ssdummy_henry", "s
     print "Done adding test users!"
     
 # testing
-clear_database_and_add_users()
+if __name__ == '__main__':
+    clear_database_and_add_users()

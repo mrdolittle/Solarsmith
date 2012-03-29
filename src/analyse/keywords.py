@@ -61,13 +61,41 @@ def get_hashtags(tweet):
     
     return filter(lambda x: x[0] == '#', tweet.split())
 
+
+def non_aggresive_stemmer(word):
+    '''Should stem some simple non-aggresive stuff. Like plurals and genitives.
+
+    TODO: implement me'''
+
+    return word
+    
+
+def explicit_keywords(words):
+    '''Recognizes certain hard-coded keywords that extract_keywords
+    just might miss. If extract_keywords will find them this gives
+    them a higher priority so this can also be seen as a sort of boost
+    to certain keywords.'''
+
+    # TODO: more?
+    keywords = set(['google', 'microsoft', 'apple', 'adobe', 'flash', 'internet', 'TV'])
+    return map(lambda x: (x, 1.1), filter(lambda x: x in keywords, words))
+    
+
 def extract_keywords(sentence):
     '''Extracts hashtags and keywords from a tweet, stores them in a neat little list of tuples of
     keyword and a confidence factor of some sort (currently hard-coded to 1.0. But might change in
     future, or might not and just be really stupid). '''
     
-    return filter_keywords(extract_keywords_grammar(strip_tweet(sentence)),
-                                                    key = lambda a: a[0]) + map(lambda x: (x, 2.0), get_hashtags(sentence))
+    def concat(a,b):
+        return a+b
+                    
+    return concat(map(lambda (a,b): (a.lower(), b),
+                      concat(explicit_keywords(map(non_aggresive_stemmer, nltk.word_tokenize(sentence))),
+                             map(non_aggresive_stemmer, filter_keywords(extract_keywords_grammar(strip_tweet(sentence)),
+                                                                        key = lambda a: a[0])))),
+                  map(lambda x: (x, 2.0),
+                      get_hashtags(sentence)))
+
 #Initialize _POS_TAGGER
 nltk.data.load(_POS_TAGGER)
 
