@@ -77,7 +77,7 @@ def explicit_keywords(words):
     to certain keywords.'''
 
     # TODO: more?
-    keywords = set(['google', 'microsoft', 'apple', 'adobe', 'flash', 'internet', 'TV'])
+    keywords = set(['google', 'microsoft', 'apple', 'adobe', 'flash', 'internet', 'tv'])
     return map(lambda x: (x, 1.1), filter(lambda x: x.lower() in keywords, words))
     
 
