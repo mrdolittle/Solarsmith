@@ -51,9 +51,15 @@ def send_to_request(username):
     answer from Request.'''
     global REQUEST_SERVER, REQUEST_SERVER_PORT
     print "Trying to connect to request"
-    soc = create_socket((REQUEST_SERVER, REQUEST_SERVER_PORT))
+    try:
+        soc = create_socket((REQUEST_SERVER, REQUEST_SERVER_PORT))
+    except:
+        return "Error: Cannot connect to request."
     print "Connected"
-    soc.sendall(username)
+    try:
+        soc.sendall(username)
+    except:
+        return "Error: Could not send to request"
     print "username sent: " + username
     response = soc.recv(1024) # Recieves a response of at most 1k
     soc.close()
