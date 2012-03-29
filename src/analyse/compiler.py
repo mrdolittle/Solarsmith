@@ -15,7 +15,9 @@ from nltk.corpus import wordnet
 
 def isenglish(tweet):
     # wordlist=tweet.split(" ")
-    wordlist = tweet.split()
+    wordlist = tweet.split() 
+    if len(wordlist)==0:
+        return False
     englishfactor = 0
     for word in wordlist: 
         if wordnet.synsets(word):
