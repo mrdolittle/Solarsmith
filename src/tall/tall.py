@@ -6,13 +6,9 @@ Created on Mar 21, 2012
 '''
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from SocketServer import ThreadingMixIn
-from xml.dom.minidom import getDOMImplementation
-import re
-import string
 import socket
 import tallstore
 import urlparse
-import xml.dom.minidom
 from configHandler import configuration
 
 CONFIG = configuration.Config()
@@ -283,6 +279,9 @@ class RequestHandler(BaseHTTPRequestHandler):
 '''
 This is for starting the server.
 '''
+print "Connecting to Solr"
+tallstore.connect_to_solr()
 serveraddr = ('', 8001)
 srvr = ThreadingServer(serveraddr, RequestHandler)
+print "Server started"
 srvr.serve_forever()

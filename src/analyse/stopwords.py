@@ -14,6 +14,7 @@ STOPWORDS = set(["something",
                  "loving",       # ex: "just got my iphone in the mail, loving it!". This might somehow be appropriate as a keyword though...
                  "hating",        # same as above applies. Strange idea: extract_keywords without filtering then use some extracted keywords for sentiment analysis?
                  "everything",
+                 "anything",
                  "fun",
                  "lol",
                  "LOL",
@@ -23,8 +24,8 @@ STOPWORDS = set(["something",
                  "rolfmao",
                  "roflmao",
                  "URLYBURLYSMURLYPURLY," # this one is inserted for URL's by word_tokenize, so we filter it (it tends to be tagged as NNP and considered a keyword)
-                 "ve",
-                 "t"])
+                 "ve",                  # weird keyword when using "I've"
+                 "t"])                  # Weird keyword when using "can't"
 
 def filter_keywords(keywords):
     """Receives the keywords and filters out words from the set 'words'

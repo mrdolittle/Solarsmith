@@ -10,6 +10,11 @@ import ast
 SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"
 
 
+def connect_to_solr():
+    global SOLR_INTERFACE
+    SOLR_INTERFACE = sunburnt.SolrInterface(SOLR_SERVER)
+
+
 def get_list_from_string(string):
     return ast.literal_eval(string)
 
@@ -44,7 +49,8 @@ class SolrUser:
         for key, _ in hatelist:
             hatekeywords = hatekeywords + [key] # Appends the hatekeywords to a list
         return lovekeywords, hatekeywords
-    
+
+
     def getId(self):
         '''
         Return the username.
@@ -54,9 +60,7 @@ class SolrUser:
 
 def get_frienemies_by_id(username):
     '''Retrieves a users friends and enemies from Solr.'''
-    global SOLR_SERVER
-    interface = sunburnt.SolrInterface(SOLR_SERVER)
-    query = interface.query(id=username).field_limit(score=True)
+    query = SOLR_INTERFACE.query(id=username).field_limit(score=True)
     searchee = ''
     for searchee in query.execute(constructor=SolrUser):
         print "Query executed on username: " + username + ", result: "
@@ -69,21 +73,21 @@ def get_frienemies_by_id(username):
 #    print userlovekeywords
 #    print userhatekeywords
     
-    query = interface.Q(lovekeywords=userlovekeywords[0][0]) ** userlovekeywords[0][1]
+    query = SOLR_INTERFACE.Q(lovekeywords=userlovekeywords[0][0]) ** userlovekeywords[0][1]
     for keyword, weight in userlovekeywords[1:]:
-        query = query | interface.Q(lovekeywords=keyword) ** weight
+        query = query | SOLR_INTERFACE.Q(lovekeywords=keyword) ** weight
     for keyword, weight in userhatekeywords:
-        query = query | interface.Q(hatekeywords=keyword) ** weight
-    friends = interface.query(query).field_limit(['id', 'lovekeywords_list', 'hatekeywords_list'], score=True).paginate(rows=30).execute(constructor=SolrUser)
+        query = query | SOLR_INTERFACE.Q(hatekeywords=keyword) ** weight
+    friends = SOLR_INTERFACE.query(query).field_limit(['id', 'lovekeywords_list', 'hatekeywords_list'], score=True).paginate(rows=30).execute(constructor=SolrUser)
 #    print "Friends: "
 #    print friends
 
-    query = interface.Q(hatekeywords=userlovekeywords[0][0]) ** userlovekeywords[0][1]
+    query = SOLR_INTERFACE.Q(hatekeywords=userlovekeywords[0][0]) ** userlovekeywords[0][1]
     for keyword, weight in userlovekeywords[1:]:
-        query = query | interface.Q(hatekeywords=keyword) ** weight
+        query = query | SOLR_INTERFACE.Q(hatekeywords=keyword) ** weight
     for keyword, weight in userhatekeywords:
-        query = query | interface.Q(lovekeywords=keyword) ** weight
-    enemies = interface.query(query).field_limit(['id', 'lovekeywords_list', 'hatekeywords_list'], score=True).paginate(rows=30).execute(constructor=SolrUser)
+        query = query | SOLR_INTERFACE.Q(lovekeywords=keyword) ** weight
+    enemies = SOLR_INTERFACE.query(query).field_limit(['id', 'lovekeywords_list', 'hatekeywords_list'], score=True).paginate(rows=30).execute(constructor=SolrUser)
 #    print "Emenies: "
 #    print enemies
     userlovekeywords, userhatekeywords = searchee.get_keywords()
@@ -91,18 +95,15 @@ def get_frienemies_by_id(username):
 
 def get_frienemies_by_keywords(keywords):
     '''Retrieves a users friends and enemies from Solr.'''
-    global SOLR_SERVER
     
-    interface = sunburnt.SolrInterface(SOLR_SERVER)
-    
-    query = interface.Q(lovekeywords=keywords[0])
+    query = SOLR_INTERFACE.Q(lovekeywords=keywords[0])
     for keyword in keywords[1:]:
-        query = query | interface.Q(lovekeywords=keyword)
-    friends = interface.query(query).field_limit(['id', 'lovekeywords_list', 'hatekeywords_list'], score=True).paginate(rows=30).execute(constructor=SolrUser)
+        query = query | SOLR_INTERFACE.Q(lovekeywords=keyword)
+    friends = SOLR_INTERFACE.query(query).field_limit(['id', 'lovekeywords_list', 'hatekeywords_list'], score=True).paginate(rows=30).execute(constructor=SolrUser)
 
-    query = interface.Q(hatekeywords=keywords[0])
+    query = SOLR_INTERFACE.Q(hatekeywords=keywords[0])
     for keyword in keywords[1:]:
-        query = query | interface.Q(hatekeywords=keyword)
-    enemies = interface.query(query).field_limit(['id', 'lovekeywords_list', 'hatekeywords_list'], score=True).paginate(rows=30).execute(constructor=SolrUser)
+        query = query | SOLR_INTERFACE.Q(hatekeywords=keyword)
+    enemies = SOLR_INTERFACE.query(query).field_limit(['id', 'lovekeywords_list', 'hatekeywords_list'], score=True).paginate(rows=30).execute(constructor=SolrUser)
 
     return [friends, enemies]
