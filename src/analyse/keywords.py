@@ -64,5 +64,6 @@ def extract_keywords(sentence):
 nltk.data.load(_POS_TAGGER)
 
 if __name__ == '__main__':
-    text = ""
-    #print extract_keywords(text)
+    text = "Google Chrome is by far the most secure browser I've used"
+    print extract_keywords(text)
+    
