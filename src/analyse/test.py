@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 import compiler
+from keywords import extract_keywords
 
-tweetlist=["one tweet is good but two is better", "I don't like apples!","I like reading books about apples","tweeting is boring","I've bought an apple computer"]
-print compiler.analyse_sentences_var_2(tweetlist)
 
 
 tweet="i dislike this apple"
@@ -14,14 +13,16 @@ print compiler.analyse_sentence(tweet)
 tweet="Google is the best search engine"
 print compiler.analyse_sentence(tweet)
 
-tweet="Let’s be honest, folks. Google Chrome is amazingly superior to IE."
-print compiler.analyse_sentence(tweet)
+tweet=["Let’s be honest, folks. Google Chrome is amazingly superior to IE."]
+print compiler.analyse(tweet)
 
 tweet="Can’t get any better browser than Chrome, can you?"
 print compiler.analyse_sentence(tweet)
 
-tweet="Google Chrome is by far the most secure browser I’ve used."
-print compiler.analyse_sentence(tweet)
+tweet=["Google Chrome is by far the most secure browser I’ve used."]
+tweet2="Google Chrome is by far the most secure browser I’ve used."
+print extract_keywords(tweet2)
+print compiler.analyse(tweet)
 
 tweet="Google Chrome is the most stable browser I have ever used. There are very, very few crashes in Chrome."
 print compiler.analyse_sentence(tweet)

@@ -81,7 +81,7 @@ CLASSIFIER = nltk.NaiveBayesClassifier.train(v_train);
 ## classify and dump results for interpretation
 #print "GOING TO PRINT ACCURACY"
 #print '\nAccuracy %f\n' % nltk.classify.accuracy(CLASSIFIER, v_test)
-print CLASSIFIER.show_most_informative_features(200)
+#print CLASSIFIER.show_most_informative_features(200)
 
 
 # build confusion matrix over test set
