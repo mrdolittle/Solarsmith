@@ -16,6 +16,7 @@ def extract_keywords_grammar(text):
     
     sequence = nltk.pos_tag(nltk.word_tokenize(text))
     words = []
+    print sequence
     grammar=''' Noun: {<DT>?<JJ>+(<NN>|<NNS>|<VBG>)+}
                 ToVerb: {<TO><VB>}
                 Name:{<NNP>*}                
@@ -71,6 +72,6 @@ def extract_keywords(sentence):
 nltk.data.load(_POS_TAGGER)
 
 if __name__ == '__main__':
-    text = "Google Chrome is by far the most secure browser and is highly superior to IE"
+    text = ""
     print extract_keywords_grammar(text)
     
