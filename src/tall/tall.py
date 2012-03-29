@@ -51,7 +51,7 @@ def send_to_request(username):
     try:
         ready = select.select([soc], [], [], 10)
         if ready[0]:
-            arrived = soc.recv(1024)
+            arrived = soc.recv(1024) # Recieves a response of at most 1k
         else:
             return (False, "Error: Timeout")
         print "Arrived to request: " + arrived
