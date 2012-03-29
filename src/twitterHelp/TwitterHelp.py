@@ -15,6 +15,12 @@ class TwitterHelp:
         # Get us a twitter API instance
         self.twitter_API = twitter.Api()
         self.OAuthTokenString = ""
+
+    def get_screen_name(self, id):
+        '''Takes an id and returns a canonical representation of a
+        users twitter user id thingamabob potato.'''
+
+        return self.twitter_API.GetUser(id).screen_name
     
     def twitter_contains(self, username):
         '''checks if a username exists on Twitter.

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+#!/usr/bin/env python2.7
+
 '''
 Created on Mar 21, 2012
 
@@ -12,9 +14,9 @@ import urlparse
 from configHandler import configuration
 from xml.sax.saxutils import escape
 
-# CONFIG = configuration.Config()
-# REQUEST_SERVER = CONFIG.get_request_server()
-# REQUEST_SERVER_PORT = 1337
+CONFIG = configuration.Config()
+REQUEST_SERVER = CONFIG.get_request_server()
+REQUEST_SERVER_PORT = 1337
 
 
 def get_pic_link(username):
@@ -30,31 +32,20 @@ def create_socket(address):
     return soc
 
 
-## What was this supposed to become? seems irrelevant now /xantoz 
-# def send_to_storage(command, data):
-#     '''
-#     Sends requests to the Storage Handler. What kind of request it is is determined by 'command'.
-#     If command is 'username' it requests a list of keywords connected to that username, if it is
-#     'keywords' it requests a list of users and the keywords connected to them.
-#     '''
-#     # TODO: write method to send commands to storage handler
-#     print "Command: " + command + " Data: " + data
-#     soc = create_socket("localhost:8002")
-#     soc.sendall(command)
-#     soc.sendall(data)
-#     line = soc.recv
-#     print line
-#     return line
-
-
 def send_to_request(username):
     '''Sends a username to Request and awaits an answer. Returns different values depending on the 
     answer from Request.'''
     global REQUEST_SERVER, REQUEST_SERVER_PORT
     print "Trying to connect to request"
-    soc = create_socket((REQUEST_SERVER, REQUEST_SERVER_PORT))
+    try:
+        soc = create_socket((REQUEST_SERVER, REQUEST_SERVER_PORT))
+    except:
+        return False, "Error: Cannot connect to request."
     print "Connected"
-    soc.sendall(username)
+    try:
+        soc.sendall(username)
+    except:
+        return False, "Error: Could not send to request"
     print "username sent: " + username
     response = soc.recv(1024) # Recieves a response of at most 1k
     soc.close()
@@ -108,6 +99,8 @@ def create_xml(result):
     piclinktag = "<piclink>"
     lovekeywordstag = "<lovekeywords>"
     hatekeywordstag = "<hatekeywords>"
+    scoretag = "<score>"
+    endscoretag = "</score>"
     endpiclinktag = "</piclink>"
     endlovekeywordstag = "</lovekeywords>"
     endhatekeywordstag = "</hatekeywords>"
@@ -126,10 +119,9 @@ def create_xml(result):
         friendusername = friends.getId()
         # Start of friends
         tosend = tosend + entrytag + nametag + escape(friendusername) + endnametag
+        tosend = tosend + scoretag + str(friends.score) + endscoretag 
         tosend = tosend + piclinktag + escape(get_pic_link(friendusername)) + endpiclinktag
         tosend = tosend + lovekeywordstag
-
-        lovekeywords = get_common_keywords(userlovekeywords, lovekeywords)
 
         # Add friend's lovekeywords
         lkw_str = ""
@@ -137,8 +129,6 @@ def create_xml(result):
             lkw_str = lkw_str + keyword + ","
         lkw_str = escape(lkw_str.rstrip(","))
         tosend = tosend + lkw_str + endlovekeywordstag + hatekeywordstag
-
-        hatekeywords = get_common_keywords(userhatekeywords, hatekeywords)
 
         # Add friend's hatekeywords
         hkw_str = ""
@@ -158,8 +148,8 @@ def create_xml(result):
         enemyusername = enemies.getId()
         # Add a foe
         tosend = tosend + entrytag + nametag + escape(enemyusername) + endnametag
+        tosend = tosend + scoretag + str(friends.score) + endscoretag 
         tosend = tosend + piclinktag + escape(get_pic_link(enemyusername)) + endpiclinktag
-        lovekeywords = get_common_keywords(userlovekeywords, lovekeywords)
         tosend = tosend + lovekeywordstag
         # Add foe's lovekeywords
         lkw_str = ""
@@ -167,7 +157,6 @@ def create_xml(result):
             lkw_str = lkw_str + keyword + ","
         lkw_str = escape(lkw_str.rstrip(","))
         tosend = tosend + lkw_str + endlovekeywordstag + hatekeywordstag
-        hatekeywords = get_common_keywords(userhatekeywords, hatekeywords)
         # add foe's hatekeywords
         hkw_str = ""
         for keyword in hatekeywords:
@@ -222,7 +211,6 @@ class ThreadingServer(ThreadingMixIn, HTTPServer):
     allow_reuse_address = True  # much faster rebinding
 
 
-
 class RequestHandler(BaseHTTPRequestHandler):
     '''
     This Handler defines what to do with incoming HTTP requests.
@@ -255,8 +243,8 @@ class RequestHandler(BaseHTTPRequestHandler):
             if frienemy_result == False:
                 self.send_result('User not found, attempting to add')
                 succeeded, message = send_to_request(data)
-                succeeded = False
-                message = "Request is not online. Cannot retrieve new users from Twitter."
+#                succeeded = False
+#                message = "Request is not online. Cannot retrieve new users from Twitter."
                 if succeeded == True:
                     self.send_result(message)
                     # Hämta från storage
@@ -268,9 +256,12 @@ class RequestHandler(BaseHTTPRequestHandler):
                     return
         elif command == "keywords":
             keys = data.split(",")
-            frienemy_result = tallstore.get_frienemies_by_keywords(keys) + [keys]
+            frienemy_result = tallstore.get_frienemies_by_keywords(keys) + [keys]                
         else:
             self.send_result("Error: bad argument") 
+            return
+        if frienemy_result == "Error: Connection to Solr lost.":
+            self.send_result("Error: Connection to Solr lost.")
             return
         self.send_result(create_xml(frienemy_result))
 

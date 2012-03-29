@@ -14,8 +14,13 @@ from nltk.corpus import wordnet
 
 
 def isenglish(tweet):
-    # wordlist=tweet.split(" ")
+    '''Ascertains the englishness of the tweet. I say!'''
+    
     wordlist = tweet.split()
+    
+    if len(wordlist) == 0:
+        return False
+    
     englishfactor = 0
     for word in wordlist: 
         if wordnet.synsets(word):
@@ -82,9 +87,9 @@ def analyse(tweets):
     (love, hate) = analyse(tweets)
     print love => [("cat", 34), ("fishing", 22), ("bear grylls", 33)]
     print hate => [("dog", 123), ("bear hunting", 44)]'''
-   # print tweets
-   # print map(nltk.sent_tokenize,tweets)
-   # print reduce(lambda x,y: x+y,[['tweetlist'], ['lol dont like apples'], ['like reading books']])
+    # print tweets
+    # print map(nltk.sent_tokenize,tweets)
+    # print reduce(lambda x,y: x+y,[['tweetlist'], ['lol dont like apples'], ['like reading books']])
     #reduce(lambda x,y: x+y,map(nltk.sent_tokenize, tweets))
 
     # split the list of tweets to a list of sentences and send it to analyse_sentences
