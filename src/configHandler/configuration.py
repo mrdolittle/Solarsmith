@@ -8,9 +8,9 @@ Created on Mar 28, 2012
 
 class Config():
     
-    def __init__(self):
+    def __init__(self, conf_file = "../configuration_file.conf"):
         #Global variables
-        self.READ_FROM_FILE = "../../configuration_file.conf"
+        self.READ_FROM_FILE = conf_file
         self.SOLR_SERVER = ""
         self.REQUEST_SERVER = ""
         self.TALL_SERVER = ""
