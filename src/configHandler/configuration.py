@@ -12,7 +12,8 @@ class Config():
         #Global variables
         self.READ_FROM_FILE = conf_file
         self.SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/" 
-        self.REQUEST_SERVER = "130.229.142.114"
+#        self.REQUEST_SERVER = "130.229.142.114"
+        self.REQUEST_SERVER = "130.229.185.90"
         self.TALL_SERVER = "130.229.185.90"
         #self.set_locations()
         

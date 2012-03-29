@@ -8,11 +8,12 @@ Created on Mar 21, 2012
 '''
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from SocketServer import ThreadingMixIn
+from configHandler import configuration
+from xml.sax.saxutils import escape
+import select
 import socket
 import tallstore
 import urlparse
-from configHandler import configuration
-from xml.sax.saxutils import escape
 
 CONFIG = configuration.Config()
 REQUEST_SERVER = CONFIG.get_request_server()
@@ -47,15 +48,28 @@ def send_to_request(username):
     except:
         return False, "Error: Could not send to request"
     print "username sent: " + username
-    response = soc.recv(1024) # Recieves a response of at most 1k
+    try:
+        ready = select.select([soc], [], [], 10)
+        if ready[0]:
+            arrived = soc.recv(1024)
+        else:
+            return (False, "Error: Timeout")
+        print "Arrived to request: " + arrived
+        ready = select.select([soc], [], [], 10)
+        if ready[0]:
+            response = soc.recv(1024) # Recieves a response of at most 1k
+        else:
+            return (False, "Error: Timeout")
+    except:
+        "Error: Could not read from request"
     soc.close()
     print "response from request: " + response
-    if response == 1:
-#        print response
+    if response == "1":
+        print (True, "User added")
         return (True, "User added, retrieving frienemies.")
         # Anropa storage igen med användarnamnet
 
-    elif response == 2:
+    elif response == "2":
 #        print response
         return (False, "User does not exist.")
         # Tala om för gui att användaren inte finns
@@ -235,18 +249,19 @@ class RequestHandler(BaseHTTPRequestHandler):
         if self.path == '/':
             return
         command, data = get_arguments(self.path)
-        data = data.lower()
+#        data = data.lower()
         print "Command: " + command
         print "Data: " + data
         if command == "username":
             frienemy_result = tallstore.get_frienemies_by_id(data) # Ska ersättas med anrop till storage handler
             if frienemy_result == False:
-                self.send_result('User not found, attempting to add')
+#                self.send_result('User not found, attempting to add.')
                 succeeded, message = send_to_request(data)
 #                succeeded = False
 #                message = "Request is not online. Cannot retrieve new users from Twitter."
+#                print message
+                print "Succeeded: " + str(succeeded)
                 if succeeded == True:
-                    self.send_result(message)
                     # Hämta från storage
                     frienemy_result = tallstore.get_frienemies_by_id(data)
                     if frienemy_result == False:
