@@ -26,11 +26,8 @@ def clear_database_and_add_users(usernames=["SSDummy_Janet", "ssdummy_henry", "s
     users_left_to_add = len(usernames)
     for username in usernames:
         print "Adding: " + username + " Left to add: " +str(users_left_to_add)
-        try:
-            users_left_to_add = users_left_to_add - 1
-            addalyse(sh,username)
-        except Exception,e:
-            print e
+        users_left_to_add = users_left_to_add - 1
+        addalyse(sh,username)
     print "Done adding test users!"
     
 # testing
