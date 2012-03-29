@@ -39,10 +39,11 @@ def add_to_solr(username):
     try:
         addalyse(SOLR_SERVER, username)
         return "UserAdded"
-    except Addalyse.AddalyseUserNotOnTwitterError:
+    except addalyse.AddalyseUserNotOnTwitterError:
         return "UserNotOnTwitter"
-    except Addalyse.AddalyseUnableToProcureTweetsError:
+    except addalyse.AddalyseUnableToProcureTweetsError:
         return "OtherError"
+    return "OtherError"
 
     
 def main():
@@ -126,16 +127,6 @@ class Server():
                     #Handle the server console input
                     server_input = sys.stdin.readline()
                     sys.stdout.write("Server input: " + server_input)
-                    
-                    #Terminate command to shut down the server.
-                    if server_input == "Terminate\n":
-                        listen = False
-                    
-                    #Connections command to check the number of threads created.
-                    if server_input == "Connections\n" and self.threads != []:
-                        sys.stdout.write(str(len(self.threads)) + " connection(s) has been made untill now!\n")
-                    if server_input == "Connections\n" and self.threads == []:
-                        sys.stdout.write("Currently there are no threads \n")
         
         #Close down all the threads
         self.server.close()
@@ -180,8 +171,8 @@ class Client(threading.Thread):
                 #If the data does not exist in the list, then append it with the client.
                 if not self.request_list.__contains__(data):
                     self.request_list.append((data, self.client))
-            else:
-                self.client.close()
+#            else:
+#                #self.client.close()
                 running = False
                 
 class UsernameHandler(threading.Thread):
@@ -201,20 +192,25 @@ class UsernameHandler(threading.Thread):
         running = True
         while(running):
             if self.request_list != []:
-                data = self.request_list.pop()
+                data = self.request_list.pop() #data[0] = username, data[1] = socket
                 sys.stdout.write("Processing username: " + data[0] + "\n")
                 res = add_to_solr(data[0])
                 #On response:
                 if res == "UserAdded":
-                    sent = data[1].send(1)      #1 = User added
-                if res == "UserNotOnTwitter":
-                    sent = data[1].send(2)      #2 = User does not exist on Twitter
+                    print "UserAdded"
+                    data[1].send("1")      #1 = User added
+                elif res == "UserNotOnTwitter":
+                    print "UserNotOnTwitter"
+                    data[1].send("2")      #2 = User does not exist on Twitter
                 else:
-                    sent = res[1].send(3)       #3 = Other error
-                if sent == 0:
-                    raise RuntimeError("Socket connection broken")
-                else:
-                    data[1].close()
+                    print "OtherError"
+                    data[1].send("3")       #3 = Other error
+                #Was the message sent?
+#                if sent == 0:
+#                    raise RuntimeError("Socket connection broken")
+#                else:
+                data[1].close()
+                print "Closed the connection"
                 
 if __name__ == "__main__":
     main()

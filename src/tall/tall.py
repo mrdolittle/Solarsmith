@@ -7,10 +7,12 @@ Created on Mar 21, 2012
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from SocketServer import ThreadingMixIn
 import socket
-import urlparse
 import tallstore
+import urlparse
+from configHandler import configuration
 
-REQUEST_SERVER = "130.229.128.185"
+CONFIG = configuration.Config()
+REQUEST_SERVER = CONFIG.get_request_server()
 REQUEST_SERVER_PORT = 1337
 
 
@@ -48,11 +50,14 @@ def send_to_request(username):
     '''Sends a username to Request and awaits an answer. Returns different values depending on the 
     answer from Request.'''
     global REQUEST_SERVER, REQUEST_SERVER_PORT
-
+    print "Trying to connect to request"
     soc = create_socket((REQUEST_SERVER, REQUEST_SERVER_PORT))
+    print "Connected"
     soc.sendall(username)
-    response = soc.recv(1024) # Recieves a response of at most 1kB
-
+    print "username sent: " + username
+    response = soc.recv(1024) # Recieves a response of at most 1k
+    soc.close()
+    print "response from request: " + response
     if response == 1:
 #        print response
         return (True, "User added, retrieving frienemies.")
@@ -169,7 +174,12 @@ def create_xml(result):
     tosend = tosend + endenemiestag
     # End of Search result
     tosend = tosend + endsearchtag
+    # Kanske inte bästa lösningen men den funkar, tar bort tecken som inte gui klarar av
+    # Detta är vår blacklist
     tosend = tosend.replace('"', '')
+    tosend = tosend.replace('&', '')
+    
+   
     print "Response: " + tosend
 
     return tosend.encode('UTF-8')
@@ -238,13 +248,14 @@ class RequestHandler(BaseHTTPRequestHandler):
         if self.path == '/':
             return
         command, data = get_arguments(self.path)
+        data = data.lower()
         print "Command: " + command
         print "Data: " + data
         if command == "username":
             frienemy_result = tallstore.get_frienemies_by_id(data) # Ska ersättas med anrop till storage handler
             if frienemy_result == False:
                 self.send_result('User not found, attempting to add')
-             #   succeeded, message = send_to_request(data)
+                succeeded, message = send_to_request(data)
                 succeeded = False
                 message = "Request is not online. Cannot retrieve new users from Twitter."
                 if succeeded == True:
@@ -268,6 +279,9 @@ class RequestHandler(BaseHTTPRequestHandler):
 '''
 This is for starting the server.
 '''
+print "Connecting to Solr"
+tallstore.connect_to_solr()
 serveraddr = ('', 8001)
 srvr = ThreadingServer(serveraddr, RequestHandler)
+print "Server started"
 srvr.serve_forever()
