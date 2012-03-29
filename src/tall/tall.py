@@ -12,9 +12,9 @@ import urlparse
 from configHandler import configuration
 from xml.sax.saxutils import escape
 
-# CONFIG = configuration.Config()
-# REQUEST_SERVER = CONFIG.get_request_server()
-# REQUEST_SERVER_PORT = 1337
+CONFIG = configuration.Config()
+REQUEST_SERVER = CONFIG.get_request_server()
+REQUEST_SERVER_PORT = 1337
 
 
 def get_pic_link(username):
@@ -30,31 +30,20 @@ def create_socket(address):
     return soc
 
 
-## What was this supposed to become? seems irrelevant now /xantoz 
-# def send_to_storage(command, data):
-#     '''
-#     Sends requests to the Storage Handler. What kind of request it is is determined by 'command'.
-#     If command is 'username' it requests a list of keywords connected to that username, if it is
-#     'keywords' it requests a list of users and the keywords connected to them.
-#     '''
-#     # TODO: write method to send commands to storage handler
-#     print "Command: " + command + " Data: " + data
-#     soc = create_socket("localhost:8002")
-#     soc.sendall(command)
-#     soc.sendall(data)
-#     line = soc.recv
-#     print line
-#     return line
-
-
 def send_to_request(username):
     '''Sends a username to Request and awaits an answer. Returns different values depending on the 
     answer from Request.'''
     global REQUEST_SERVER, REQUEST_SERVER_PORT
     print "Trying to connect to request"
-    soc = create_socket((REQUEST_SERVER, REQUEST_SERVER_PORT))
+    try:
+        soc = create_socket((REQUEST_SERVER, REQUEST_SERVER_PORT))
+    except:
+        return "Error: Cannot connect to request."
     print "Connected"
-    soc.sendall(username)
+    try:
+        soc.sendall(username)
+    except:
+        return "Error: Could not send to request"
     print "username sent: " + username
     response = soc.recv(1024) # Recieves a response of at most 1k
     soc.close()
@@ -222,7 +211,6 @@ class ThreadingServer(ThreadingMixIn, HTTPServer):
     allow_reuse_address = True  # much faster rebinding
 
 
-
 class RequestHandler(BaseHTTPRequestHandler):
     '''
     This Handler defines what to do with incoming HTTP requests.
@@ -268,9 +256,12 @@ class RequestHandler(BaseHTTPRequestHandler):
                     return
         elif command == "keywords":
             keys = data.split(",")
-            frienemy_result = tallstore.get_frienemies_by_keywords(keys) + [keys]
+            frienemy_result = tallstore.get_frienemies_by_keywords(keys) + [keys]                
         else:
             self.send_result("Error: bad argument") 
+            return
+        if frienemy_result == "Error: Connection to Solr lost.":
+            self.send_result("Error: Connection to Solr lost.")
             return
         self.send_result(create_xml(frienemy_result))
 
