@@ -10,10 +10,11 @@ import socket
 import tallstore
 import urlparse
 from configHandler import configuration
+from xml.sax.saxutils import escape
 
-CONFIG = configuration.Config()
-REQUEST_SERVER = CONFIG.get_request_server()
-REQUEST_SERVER_PORT = 1337
+# CONFIG = configuration.Config()
+# REQUEST_SERVER = CONFIG.get_request_server()
+# REQUEST_SERVER_PORT = 1337
 
 
 def get_pic_link(username):
@@ -159,26 +160,23 @@ def create_xml(result):
         lovekeywords = get_common_keywords(userlovekeywords, lovekeywords)
         tosend = tosend + lovekeywordstag
         # Add foe's lovekeywords
+        lkw_str = ""
         for keyword in lovekeywords:
-            tosend = tosend + keyword + ","
-        tosend = tosend.rstrip(",")
-        tosend = tosend + endlovekeywordstag + hatekeywordstag
+            lkw_str = lkw_str + keyword + ","
+        lkw_str = escape(lkw_str.rstrip(","))
+        tosend = tosend + lkw_str + endlovekeywordstag + hatekeywordstag
         hatekeywords = get_common_keywords(userhatekeywords, hatekeywords)
         # add foe's hatekeywords
+        hkw_str = ""
         for keyword in hatekeywords:
-            tosend = tosend + keyword + ","
-        tosend = tosend.rstrip(",")
-        tosend = tosend + endhatekeywordstag + endentrytag
+            hkw_str = hkw_str + keyword + ","
+        hkw_str = escape(hkw_str.rstrip(","))
+        tosend = tosend + hkw_str + endhatekeywordstag + endentrytag
 
     # End of foes
     tosend = tosend + endenemiestag
     # End of Search result
     tosend = tosend + endsearchtag
-    # Kanske inte bästa lösningen men den funkar, tar bort tecken som inte gui klarar av
-    # Detta är vår blacklist
-    tosend = tosend.replace('"', '')
-    tosend = tosend.replace('&', '')
-    
    
     print "Response: " + tosend
 
