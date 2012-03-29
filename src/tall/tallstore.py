@@ -14,6 +14,14 @@ def get_list_from_string(string):
     return ast.literal_eval(string)
 
 
+def get_common_keywords(userskeywords, otherkeywords):
+    commonkeywords = []
+    for key in otherkeywords:
+        if key in userskeywords:
+            commonkeywords = commonkeywords + [key]
+    return commonkeywords
+
+
 class SolrUser:
     '''
     A class representing a User retrieved from Solr.
@@ -86,6 +94,12 @@ def get_frienemies_by_id(username):
     enemies = interface.query(query).field_limit(['id', 'lovekeywords_list', 'hatekeywords_list'], score=True).paginate(rows=30).execute(constructor=SolrUser)
 #    print "Emenies: "
 #    print enemies
+
+    for keywordlist in friends:
+        get_common_keywords(userlovekeywords, keywordlist)
+    for keywordlist in enemies:
+        get_common_keywords(userhatekeywords, keywordlist)
+
     userlovekeywords, userhatekeywords = searchee.get_keywords()
     return [friends, enemies, userlovekeywords, userhatekeywords]
 
