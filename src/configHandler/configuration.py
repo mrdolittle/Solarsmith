@@ -8,7 +8,7 @@ Created on Mar 28, 2012
 
 class Config():
     
-    def __init__(self, conf_file = "../configuration_file.conf"):
+    def __init__(self, conf_file="../../configuration_file.conf"):
         #Global variables
         self.READ_FROM_FILE = conf_file
         self.SOLR_SERVER = ""
@@ -21,9 +21,9 @@ class Config():
         
         file = open(self.READ_FROM_FILE)
         for current_line in file:
-            if not current_line.startswith('#',0,1):    #The line is not a comment.
+            if not current_line.startswith('#', 0, 1):    #The line is not a comment.
                 #Remove newline
-                current_line = current_line.replace('\n','')
+                current_line = current_line.replace('\n', '')
                 
                 #If the line starts with SOLR then set the solr variable
                 if current_line.startswith("SOLR"):
