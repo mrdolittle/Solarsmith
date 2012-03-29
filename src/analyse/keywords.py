@@ -28,17 +28,17 @@ def extract_keywords_grammar(text):
     
     for t in chunks.parse(sequence).subtrees():
         if t.node == "Noun":
-            if len(t[0][0])>1:
+            if len(t[0][0])>2:
+                print t[0][0]
                 keys = reduce(lambda x,y: x + " " + y, map(lambda (x,_1): x, t)).lower()            
                 words.append((keys,1.0))         
         elif t.node == "ToVerb":
-            if len(t[0][0])>1:
+            if len(t[1][0])>2:
                 words.append((t[1][0].lower(),1.0))
         elif t.node == "Name":
             if len(t[0][0])>1:
-                print t[0][0]
-                if len(t)>1:
-                    words.append((reduce(lambda x,y: x + " " + y, map(lambda (x,_1): x, t)).lower(), 1.0))
+                if len(t)>2:
+                    words.append((reduce(lambda x,y: x + " " + y if len(y)>2 else x, map(lambda (x,_1): x, t)).lower(), 1.0))
                     for x in t:
                         words.append((x[0].lower(),0.5))   
                 else:
@@ -46,7 +46,7 @@ def extract_keywords_grammar(text):
                 
     for s in chunksSingular.parse(sequence).subtrees():
         if s.node == "Noun":
-            if len(t[0][0])>1:
+            if len(t[0][0])>2:
                 words.append((s[0][0].lower(),1.0))                    
     return words
 
