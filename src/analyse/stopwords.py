@@ -24,7 +24,7 @@ STOPWORDS = set(["something",
                  "ROLFMAO",     # rolling on lava fucking my ass of. The variant ROLF, rolling on laughing floor, is not added since it is a name
                  "rolfmao",
                  "roflmao",
-                 "URLYBURLYSMURLYPURLY", # this one is inserted for URL's by word_tokenize, so we filter it (it tends to be tagged as NNP and considered a keyword)
+                 "urlyburlysmurlypurly", # this one is inserted for URL's by word_tokenize, so we filter it (it tends to be tagged as NNP and considered a keyword)
                  "ve",                  # weird keyword when using "I've"
                  "t",                   # weird keyword when using "can't"
                  "s",
@@ -457,24 +457,24 @@ STOPWORDS = set(["something",
                 "your",
                 "yours",
                 "z",
-                  # weird keyword when using "let's"
-                 "let",
-                 "stunning",
-                 "half",
-                 "annoying",
-                 "inspiring",
-                 "amazing",
-                 "warming"])
+                # weird keyword when using "let's"
+                "let",
+                "stunning",
+                "half",
+                "annoying",
+                "inspiring",
+                "amazing",
+                "warming"])
 
 def filter_keywords(keywords, key=id):
-    """Receives the keywords and filters out words from the set 'words'
+    """Receives the keywords and filters out words from the set 'words'.
 
-    FIXME?: Should we do lowercase matching or something like that
-    """
+    Takes an optional key argument for usage like:
+        filter_keywords([('hej', 2), ('potatis', 3)], key=lambda x: x[0])"""
     global STOPWORDS
     
-    #return filter(lambda x: x not in words, keywords)
-    return [x for x in keywords if key(x) not in STOPWORDS]
+    # matches lowercaseish
+    return [x for x in keywords if key(x).lower() not in STOPWORDS]
 
 # smileys and other words that shouldn't be left intact as to not confuse the keyword-exrctracty shit
 # TODO: generate this in some function or something instead, so many combinations!
