@@ -511,7 +511,7 @@ def split_tweet(text):
 
     def split_tag(tag):
         if len(tag) < 2:        # avoid blowing up 
-            return [""]
+            return [" "]
         [(a, b)] = re.findall(r'([#@]\w+)(.*)', tag) # this will blow up if more than one match (but it won't due to the regex...)
         return [a] if b == '' else [a,b]
 
