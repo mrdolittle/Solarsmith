@@ -17,10 +17,9 @@ import string
 def extract_keywords_grammar(text):
     '''Uses chunks matching to identify keywords in a tweet. The code looks much nicer this way :P'''
 
-    if all(map(lambda x: x in string.whitespace, text)): # gets rid of all the Warning: parsing empty text messages. By checking if
-        return []                                        # string consists of only whitespace. KLUDGEish and slow
-    
     sequence = nltk.pos_tag(nltk.word_tokenize(text))
+    if sequence == []:          # gets rid of all the 'Warning: parsing empty text' messages
+        return []
     words = []
     grammar=''' Noun: {<DT>?<JJ>+(<NN>|<NNS>|<VBG>)+}
                 ToVerb: {<TO><VB>}
