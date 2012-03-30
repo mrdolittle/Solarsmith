@@ -17,9 +17,9 @@ Used by: request, update, scrape
 '''
 
 import twitter
-from twitterHelp import *
-from storageHandler import *
-from analyse import *
+from twitterHelp import TwitterHelp
+from storageHandler import StorageHandler
+from analyse import analyse
 from operator import itemgetter
 import math
 
@@ -105,7 +105,7 @@ def _addalyse(solr_server, username, since_id=0, remake_profile=True, update_cou
         
         # send to analysis
         #(lovekeywords, hatekeywords) = ([("cat", 44), ("bear hunting", 22), ("dog", 33)], [("fishing", 55), ("bear grylls", 33)])
-        (lovekeywords, hatekeywords) = compiler.analyse(map(lambda x: x.GetText(), tweets))# TODO:implement in analyse
+        (lovekeywords, hatekeywords) = analyse(map(lambda x: x.GetText(), tweets))# TODO:implement in analyse
         
         # store result in sunburnt
         sh.add_profile(username, lovekeywords, hatekeywords, new_since_id, update_count)
@@ -125,7 +125,7 @@ def _addalyse(solr_server, username, since_id=0, remake_profile=True, update_cou
 
         # send to analysis
         #(lovekeywords, hatekeywords) = ([("cat", 44), ("bear hunting", 22), ("dog", 33)], [("fishing", 55), ("bear grylls", 33)])
-        (lovekeywords, hatekeywords) = compiler.analyse(map(lambda x: x.GetText(), tweets))
+        (lovekeywords, hatekeywords) = analyse(map(lambda x: x.GetText(), tweets))
 
         
         # get a users old hatekeywords_list and lovekeywords_list
