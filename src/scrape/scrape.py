@@ -17,6 +17,7 @@ from storageHandler import StorageHandler
 import time
 import configHandler
 import traceback
+import sys
 
 CONFIG = configHandler.Config()
 SOLR_SERVER = CONFIG.get_solr_server()
@@ -92,7 +93,9 @@ def gather_data_loop(request_per_hour = 3600, users_to_add = 21):
                     if addalyse.addalyse(SOLR_SERVER, user):
                         users_added.add(user)
                         added_users += 1
-                except:
+                except addalyse.AddalyseError as err: # we use polymorphism here, WEE
+                    sys.stderr.write("Addalyse threw an error: "  + str(err) + "\n")
+                except Exception:
                     # ignore errors non-silently (we print tracebacks!)
                     # TODO: use the logger for this?
                     sys.stderr.write("Unhandled exception\n")

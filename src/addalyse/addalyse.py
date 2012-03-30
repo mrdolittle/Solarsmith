@@ -28,13 +28,10 @@ class AddalyseError(Exception):
     def __init__(self, value):
         self.value = value
     def __str__(self):
-        return repr(self.value)
+        return repr(self)[:-1] + repr(self.value) + ')'
 
-# subclass of AddalyseError...
 class AddalyseUserNotOnTwitterError(AddalyseError): pass
-# subclass of AddalyseError...
 class AddalyseUnableToProcureTweetsError(AddalyseError): pass
-
 class AddalyseProtectedUserError(AddalyseError): pass
 
 def addalyse(*args):
@@ -98,7 +95,7 @@ def _addalyse(solr_server, username, since_id=0, remake_profile=True, update_cou
         if not tweets: 
             e = AddalyseUnableToProcureTweetsError("I couldn't for the love of me extract some tweets for '" +
                                                    username +
-                                                   "'. Maybe he just doesn't have any?")
+                                                   "'. Maybe they just doesn't have any?")
             e.remake_profile = True
             raise e
         
@@ -117,7 +114,7 @@ def _addalyse(solr_server, username, since_id=0, remake_profile=True, update_cou
         if not tweets:
             e = AddalyseUnableToProcureTweetsError("I couldn't for the love of me extract some tweets for '" +
                                                    username +
-                                                   "'. Maybe he just doesn't have any new ones?")
+                                                   "'. Maybe they just doesn't have any new ones?")
             e.remake_profile = False
             raise e
            
