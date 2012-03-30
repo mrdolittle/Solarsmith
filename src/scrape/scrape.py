@@ -17,6 +17,7 @@ from storageHandler import StorageHandler
 import time
 import configHandler
 import traceback
+import sys
 
 CONFIG = configHandler.Config()
 SOLR_SERVER = CONFIG.get_solr_server()
