@@ -25,9 +25,7 @@ def split_tweet(text):
             [(a, b)] = re.findall(r'([#@]\w+)(.*)', tag) # this will blow up if more than one match (but it won't due to the regex...)
             return [a] if b == '' else [a,b]
         except ValueError:
-            # KLUDGE: When we had a too short string or otherwise failed return an empty list
-            
-            return []
+            return [] # KLUDGE: When we had a too short string or otherwise failed return an empty list
 
     wordsplit = text.split()
     result = []
