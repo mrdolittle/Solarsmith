@@ -28,7 +28,7 @@ import socket
 import sys
 from configHandler import configuration
 
-CONFIG = configuration.Config(setting = 2)
+CONFIG = configuration.Config(setting = 1)
 SOLR_SERVER = CONFIG.get_solr_server()
 
         
@@ -45,7 +45,9 @@ def add_to_solr(username):
         return "UserNotOnTwitter"
     except addalyse.AddalyseUnableToProcureTweetsError:
         return "OtherError"
-    return "ThisWon'tHappen"
+    #except:
+        #return "OtherError"
+    return None
 
     
 def main():
@@ -209,9 +211,12 @@ class UsernameHandler(threading.Thread):
                 elif res == "UserNotOnTwitter":
                     print "UserNotOnTwitter"
                     data[1].send("2")      #2 = User does not exist on Twitter
+                elif res == "ProtectedUser":
+                    print "ProtectedUser"
+                    data[1].send("3")       #3 = Protected User (hidden from public requests)
                 else:
                     print "OtherError"
-                    data[1].send("3")       #3 = Other error
+                    data[1].send("4")       #4 = Other error
                 #Was the message sent?
 #                if sent == 0:
 #                    raise RuntimeError("Socket connection broken")
