@@ -97,8 +97,8 @@ def extract_keywords(sentence):
     names    = set(get_names(sentence)) # made into sets to speed up the filtering below
     hashtags = set(get_hashtags(sentence))
                     
-    return concat(map(lambda (a,b): (a.lower(), b),
-                      filter(lambda (a,_1): a not in names and a not in hashtags,
+    return concat(filter(lambda (a,_1): a not in names and a not in hashtags,
+                         map(lambda (a,b): (a.lower(), b),
                              concat(explicit_keywords(map(non_aggresive_stemmer, nltk.word_tokenize(stripped))),
                                     map(non_aggresive_stemmer, filter_keywords(extract_keywords_grammar(stripped),
                                                                                key = lambda a: a[0]))))),
