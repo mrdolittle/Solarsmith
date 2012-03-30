@@ -21,6 +21,7 @@ from twitterHelp import *
 from storageHandler import *
 from analyse import *
 from operator import itemgetter
+import math
 
 class AddalyseError(Exception):
     '''Base class for all variants of errors Addalyse wants to raise.'''
@@ -142,6 +143,8 @@ def _addalyse(solr_server, username, since_id=0, remake_profile=True, update_cou
         
     # returns true if added to database   
     return True #TODO: should this return True?
+    # return the number of requests to twitter
+    #return math.ceil(len(tweets)/140.0)
 
 def merge_tuples(list_of_only_love_or_only_hate_tuples):
     '''Gets a list of love tuples or a list of hate tuples, it merges
