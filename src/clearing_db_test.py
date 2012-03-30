@@ -6,7 +6,7 @@ Created on Mar 29, 2012
 @author: mbernt, anneback
 '''
 
-from storageHandler import *
+from storageHandler import StorageHandler
 import addalyse
 import configHandler
 import traceback
@@ -40,6 +40,10 @@ def add_users(usernames=["SSDummy_Janet", "ssdummy_henry", "ssdummy_hoot", "ssdu
             traceback.print_exc()
             
     print "Done adding test users!"
+
+def redo_all_users():
+    sh = StorageHandler(SOLR_SERVER)
+    add_users(map(lambda (a,): a, sh.get_user_fields('*', 'id')))
     
 # testing
 if __name__ == '__main__':
