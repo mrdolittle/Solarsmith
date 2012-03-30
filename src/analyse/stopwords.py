@@ -480,7 +480,14 @@ STOPWORDS = set(["something",
                  "look",
                  "'ve", # stupid keyword coming from whatever
                  "disgusting",
-                 "cause"
+                 "cause",
+                 "day", "days",  # really really fuzzy (second one not needed if we stem plurals in future)
+                 "life",         # fuzzy
+                 "getting",
+                 "trying",      # hmm
+                 "name",
+                 "yes",
+                 "sorry"        # WUT?
                  ])
 
 def filter_keywords(keywords, key=nop):
