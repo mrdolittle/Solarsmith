@@ -8,6 +8,7 @@ import sunburnt
 import ast
 
 SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"
+SCORELIMIT = 0.0002 # Filter for friends/enemies
 
 
 def connect_to_solr():
@@ -125,20 +126,28 @@ def get_frienemies_by_id(username):
 #    print "Enemies: "
 #    print enemies
     
+    newfriends = []
     for single_friend in friends:
+        if single_friend.score < SCORELIMIT:
+            break
         common_friend_lovekeywords = get_and_sort_common_keywords(userlovekeywords, single_friend.lovekeywords_list)
         single_friend.set_lovekeywords(common_friend_lovekeywords) # Set and sort friend lovekeywords to common keywords
         common_friend_hatekeywords = get_and_sort_common_keywords(userhatekeywords, single_friend.hatekeywords_list)
         single_friend.set_hatekeywords(common_friend_hatekeywords) # Set and sort friend hatekeywords to common keywords
+        newfriends = newfriends + [single_friend]
 
+    newenemies = []
     for single_enemy in enemies:
+        if single_enemy.score < SCORELIMIT:
+            break
         common_enemy_keywords = get_and_sort_common_keywords(userhatekeywords, single_enemy.lovekeywords_list)
         single_enemy.set_lovekeywords(common_enemy_keywords) # Set and sort enemy lovekeywords to common keywords
         common_enemy_keywords = get_and_sort_common_keywords(userlovekeywords, single_enemy.hatekeywords_list)
         single_enemy.set_hatekeywords(common_enemy_keywords) # Set and sort enemy hatekeywords to common keywords
+        newenemies = newenemies + [single_enemy]
 
 #    userlovekeywords, userhatekeywords = searchee.get_keywords()
-    return friends, enemies
+    return newfriends, newenemies
 
 def get_frienemies_by_keywords(keywords):
     '''Retrieves a users friends and enemies from Solr.'''
