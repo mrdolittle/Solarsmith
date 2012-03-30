@@ -129,14 +129,14 @@ def get_frienemies_by_id(username):
 #    print enemies
 
     # Filter friends and enemies on score and on keywords the searchee and they have in common
-    friends = filter(lambda friend: friend.score > 3, friends)   
+    friends = filter(lambda friend: friend.score > SCORELIMIT, friends)   
     for single_friend in friends:
         common_friend_lovekeywords = get_and_sort_common_keywords(userlovekeywords, single_friend.lovekeywords_list)
         single_friend.set_lovekeywords(common_friend_lovekeywords) # Set and sort friend lovekeywords to common keywords
         common_friend_hatekeywords = get_and_sort_common_keywords(userhatekeywords, single_friend.hatekeywords_list)
         single_friend.set_hatekeywords(common_friend_hatekeywords) # Set and sort friend hatekeywords to common keywords
 
-    enemies = filter(lambda friend: friend > 3, enemies)
+    enemies = filter(lambda enemy: enemy > SCORELIMIT, enemies)
     for single_enemy in enemies:
         common_enemy_keywords = get_and_sort_common_keywords(userhatekeywords, single_enemy.lovekeywords_list)
         single_enemy.set_lovekeywords(common_enemy_keywords) # Set and sort enemy lovekeywords to common keywords
