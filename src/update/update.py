@@ -14,10 +14,12 @@ TODO: WRITE MORE DESCRIPTION OF ME?
 from storageHandler import *
 from twitterHelp import *
 from mx import DateTime as mxDateTime
-import addalyse
-import time
 from configHandler import configuration
 from logger import logger
+import addalyse
+import time
+import traceback
+import sys
 
 CONFIG = configuration.Config(setting = 1)
 SOLR_SERVER = CONFIG.get_solr_server()
@@ -52,6 +54,9 @@ def main():
                     print err
                 except addalyse.AddalyseUnableToProcureTweetsError as err:
                     print err
+                except:
+                        sys.stderr.write("Unhandled exception:\n")
+                        traceback.print_exc()
                 time.sleep(sleep_time) # sleep for ten seconds, to not make to many requests to twitter                
             else:
                 print("This user has recently been updated ( " + str(diff.minutes) + " minutes ago).")
