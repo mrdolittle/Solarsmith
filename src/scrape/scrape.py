@@ -11,9 +11,9 @@ TODO: handle exceptions (like when we've been making too many twitter requests s
 
 import random
 import addalyse
-import storageHandler
 import urllib2
-from twitterHelp import *
+from twitterHelp import TwitterHelp
+from storageHandler import StorageHandler
 #from addalyse import *
 import time
 import configHandler
@@ -37,7 +37,7 @@ def load_followers(users, requests_per_hour=30):
     Warning: Many API calls, can take a lot of time!'''
     
     th = TwitterHelp()
-    sh = storageHandler.StorageHandler(SOLR_SERVER)
+    sh = StorageHandler(SOLR_SERVER)
     
     users = set(users);
     new_users = set([]);
@@ -57,7 +57,7 @@ def load_existing_users():
     @return: Set containing twitter usernames.'''
     
     #TODO: Implement a real solution, calling the storage handler.
-    sh = storageHandler.StorageHandler(SOLR_SERVER)
+    sh = StorageHandler(SOLR_SERVER)
     mset = set([a for (a,) in sh.get_user_fields('*', 'id')])
     print mset
     return mset
@@ -70,7 +70,7 @@ def gather_data_loop(request_per_hour = 3600, users_to_add = 21):
     sleep_time = 3600 / request_per_hour
     
     th = TwitterHelp()
-    sh = storageHandler.StorageHandler(SOLR_SERVER)
+    sh = StorageHandler(SOLR_SERVER)
     
     added_users = 0
     
