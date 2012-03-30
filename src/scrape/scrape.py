@@ -12,6 +12,7 @@ TODO: handle exceptions (like when we've been making too many twitter requests s
 import random
 import addalyse
 import urllib2
+import twitter
 from twitterHelp import TwitterHelp
 from storageHandler import StorageHandler
 import time
@@ -80,7 +81,13 @@ def gather_data_loop(request_per_hour = 3600, users_to_add = 21):
     
     while(added_users < users_to_add):
         # The set of users which will be added.
-        set_to_add = th.get_public_tweeters()
+        try: 
+            set_to_add = th.get_public_tweeters()
+        except twitter.TwitterError as err:
+            sys.stderr.write("Got TwitterError while trying to get public timeline " + str(err) + "\n")
+            traceback.print_exc()
+            time.sleep(100)
+            continue            # retry the loop
         
         print "These will be added:"
         for s in set_to_add:

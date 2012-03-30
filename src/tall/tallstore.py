@@ -176,3 +176,68 @@ def get_frienemies_by_keywords(keywords):
         single_enemy.set_lovekeywords([]) # Not interested in their lovekeywords
     
     return friends, enemies
+
+
+#######TEST#########
+def test_get_frienemies_by_id(username):
+    '''Retrieves a users friends and enemies from Solr.'''
+
+    query = SOLR_INTERFACE.query(id_ci=username).field_limit(score=True)
+    searchee = ''
+    try:
+        for searchee in query.execute(constructor=SolrUser):
+            print "Query executed on username: " + username + ", result: "
+            print searchee
+        if searchee == '':  # Ãƒâ€žndrade kollen, definierade searchee som en tom strÃƒÂ¤ng. searchee existerar inte om anvÃƒÂ¤ndaren inte finns i Solr och man inte definierar den sjÃƒÂ¤lv
+            return False # User is not in Solr
+    except:
+        return "Error: Connection to Solr lost."
+    
+    userlovekeywords = searchee.lovekeywords_list
+    userhatekeywords = searchee.hatekeywords_list
+#    print userlovekeywords
+#    print userhatekeywords
+    
+    query = SOLR_INTERFACE.Q(lovekeywords=userlovekeywords[0][0]) ** userlovekeywords[0][1]
+    for keyword, weight in userlovekeywords[1:]:
+        query = query | SOLR_INTERFACE.Q(lovekeywords=keyword) ** weight
+    for keyword, weight in userhatekeywords:
+        query = query | SOLR_INTERFACE.Q(hatekeywords=keyword) ** weight
+    try:
+        friends = SOLR_INTERFACE.query(query).exclude(id=searchee.getId()).field_limit(['id', 'lovekeywords_list_scaled', 'hatekeywords_list_scaled'], score=True).paginate(rows=30).execute(constructor=SolrUser)
+    except:
+        return "Error: Connection to Solr lost."
+#    print "Friends: "
+#    print friends
+
+    query = SOLR_INTERFACE.Q(hatekeywords=userlovekeywords[0][0]) ** userlovekeywords[0][1]
+    for keyword, weight in userlovekeywords[1:]:
+        query = query | SOLR_INTERFACE.Q(hatekeywords=keyword) ** weight
+    for keyword, weight in userhatekeywords:
+        query = query | SOLR_INTERFACE.Q(lovekeywords=keyword) ** weight
+    try:
+        enemies = SOLR_INTERFACE.query(query).exclude(id=searchee.getId()).field_limit(['id', 'lovekeywords_list_scaled', 'hatekeywords_list_scaled'], score=True).paginate(rows=30).execute(constructor=SolrUser)
+    except:
+        return "Error: Connection to Solr lost."
+#    print "Enemies: "
+#    print enemies
+
+    # Filter friends and enemies on score and on keywords the searchee and they have in common
+    friends = filter(lambda friend: friend.score > SCORELIMIT, friends)   
+    friends = filter(lambda test: "SSDummy" in test.id, friends)
+    for single_friend in friends:
+        common_friend_lovekeywords = get_and_sort_common_keywords(userlovekeywords, single_friend.lovekeywords_list)
+        single_friend.set_lovekeywords(common_friend_lovekeywords) # Set and sort friend lovekeywords to common keywords
+        common_friend_hatekeywords = get_and_sort_common_keywords(userhatekeywords, single_friend.hatekeywords_list)
+        single_friend.set_hatekeywords(common_friend_hatekeywords) # Set and sort friend hatekeywords to common keywords
+
+    enemies = filter(lambda enemy: enemy > SCORELIMIT, enemies)
+    enemies = filter(lambda test: "SSDummy" in test.id, enemies)
+    for single_enemy in enemies:
+        common_enemy_keywords = get_and_sort_common_keywords(userhatekeywords, single_enemy.lovekeywords_list)
+        single_enemy.set_lovekeywords(common_enemy_keywords) # Set and sort enemy lovekeywords to common keywords
+        common_enemy_keywords = get_and_sort_common_keywords(userlovekeywords, single_enemy.hatekeywords_list)
+        single_enemy.set_hatekeywords(common_enemy_keywords) # Set and sort enemy hatekeywords to common keywords
+
+#    userlovekeywords, userhatekeywords = searchee.get_keywords()
+    return friends, enemies
