@@ -26,12 +26,16 @@ def main():
     gather_data_loop()
     
 def load_followers(users, requests_per_hour=30):
-    '''TODO: Does not work!! API Support?
-    Warning: Many API calls, can take a lot of time!
-    Loads followers to a specified set of users.
+    '''Loads followers to a specified set of users.
+    
     @arg users: The users which to find followers for (list/set).
-    @return: A unique set of users that follows the input users, none that was found in the input set.
-    '''
+    
+    @return: A unique set of users that follows the input users, none
+             that was found in the input set.
+
+    TODO: Does not work!! API Support?
+    Warning: Many API calls, can take a lot of time!'''
+    
     th = TwitterHelp()
     sh = storageHandler.StorageHandler(SOLR_SERVER)
     
@@ -47,9 +51,11 @@ def load_followers(users, requests_per_hour=30):
     
     
 def load_existing_users():
-    '''Loads users from the storage handler, to gain information of which users to ignore.
-    @return: Set containing twitter usernames.
-    '''
+    '''Loads users from the storage handler, to gain information of
+    which users to ignore.
+    
+    @return: Set containing twitter usernames.'''
+    
     #TODO: Implement a real solution, calling the storage handler.
     sh = storageHandler.StorageHandler(SOLR_SERVER)
     mset = set([a for (a,) in sh.get_user_fields('*', 'id')])
@@ -57,8 +63,9 @@ def load_existing_users():
     return mset
     
 def gather_data_loop(request_per_hour = 3600, users_to_add = 21):
-    '''Gathers data about twitter IDs, and sends the data to the storage handler.
-    '''
+    '''Gathers data about twitter IDs, and sends the data to the
+    storage handler.'''
+    
     # TODO: Change for real implementation!
     sleep_time = 3600 / request_per_hour
     
