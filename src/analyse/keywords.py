@@ -15,6 +15,9 @@ import operator
 
 def extract_keywords_grammar(text):
     '''Uses chunks matching to identify keywords in a tweet. The code looks much nicer this way :P'''
+
+    if text.split() == []: # gets rid of all the Waring: parsing empty text messages (essientially we check if whole sting is whitespace using this KLUDGE)
+        return []
     
     sequence = nltk.pos_tag(nltk.word_tokenize(text))
     words = []
@@ -72,13 +75,19 @@ def non_aggresive_stemmer(word):
     return word
     
 
-def explicit_keywords(words, keywords = set(['google', 'microsoft', 'apple', 'adobe', 'flash', 'internet', 'tv'])):
+def explicit_keywords(words,
+                      keywords = set(['google', # TODO: more?
+                                      'microsoft',
+                                      'apple',
+                                      'adobe',
+                                      'flash',
+                                      'internet',
+                                      'tv'])):
     '''Recognizes certain hard-coded keywords that extract_keywords
     just might miss. If extract_keywords will find them this gives
     them a higher priority so this can also be seen as a sort of boost
     to certain keywords.'''
 
-    # TODO: more?
     return map(lambda x: (x, 1.1), filter(lambda x: x.lower() in keywords, words))
     
 
