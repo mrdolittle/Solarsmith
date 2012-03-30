@@ -162,9 +162,11 @@ def get_frienemies_by_keywords(keywords):
     for single_friend in friends:
         common_friend_lovekeywords = get_common_keywords(keywords, single_friend.lovekeywords_list)
         single_friend.set_lovekeywords(common_friend_lovekeywords) # Set and sort friend lovekeywords to common keywords
+        single_friend.set_hatekeywords([]) # Not interested in their hatekeywords
         
     for single_enemy in enemies:
         common_enemy_keywords = get_common_keywords(keywords, single_enemy.hatekeywords_list)
         single_enemy.set_hatekeywords(common_enemy_keywords) # Set and sort enemy hatekeywords to common keywords
+        single_enemy.set_lovekeywords([]) # Not interested in their lovekeywords
     
     return friends, enemies
