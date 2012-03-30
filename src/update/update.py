@@ -35,15 +35,15 @@ def main():
     sh = StorageHandler(SOLR_SERVER)
     temporarly_ignore_user = {}
     
-    sleep_time = 2     #Sleep in seconds per update
+    sleep_time = 10     #Sleep in seconds per update
     update_time = 1     #Minimum time for a new update (in hours)
+    cycle_time = 60     #When all users have been checked: sleep
     
     while True:
         #Get the information from Solr
         for (username, since_id, update_count, timestamp) in sh.get_user_fields('*', 'id', 'since_id', 'updatecount', 'timestamp'):
             print("Checking user: " + str(username) + " Last updated: " + str(timestamp)) # Debug print
             
-            print temporarly_ignore_user
             #Time checks
             current_datetime = mxDateTime.now()
             diff_twitter = current_datetime - timestamp
@@ -70,7 +70,6 @@ def main():
                 except addalyse.AddalyseUnableToProcureTweetsError as err:
                     sys.stderr.write(str(err) + "\n")
                     temporarly_ignore_user[username] = mxDateTime.now()
-                    print "Added " + username + " to the temporarly_ignore_user list"                      
                 
                 #If an unhandled exception is found, a traceback will be made so that the programmer can take care of it.
                 except Exception:
@@ -80,8 +79,9 @@ def main():
                 #Sleep for ten seconds, to not make to many Twitter requests
                 time.sleep(sleep_time)                 
             else:
-                print("This user has recently been updated.")
-       
+                print "This user has recently been updated."
+        print "A cycle has been done. Initiating a " + str(cycle_time) + " seconds sleep"
+        time.sleep(cycle_time)       
 
 if __name__ == "__main__":
     main()
