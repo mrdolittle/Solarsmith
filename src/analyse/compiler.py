@@ -10,23 +10,7 @@ TODO: Do some sort of stemming somewhere around here (at least stem
 import nltk
 from keywords import extract_keywords
 from sentiment import analyse_sentiment
-from nltk.corpus import wordnet
-
-
-def isenglish(tweet):
-    '''Ascertains the englishness of the tweet. I say!'''
-    
-    wordlist = tweet.split()
-    
-    if len(wordlist) == 0:
-        return False
-    
-    englishfactor = 0
-    for word in wordlist: 
-        if wordnet.synsets(word):
-            englishfactor = englishfactor + 1
-            #  a english word
-    return True if (englishfactor + 0.0)/len(wordlist) > 0.4 else False
+from common import *
 
 def analyse_sentence(sentence):
     '''Takes a tweet and performs sentimentanalysis on the given tweet, then gives the weight that
@@ -93,4 +77,8 @@ def analyse(tweets):
     #reduce(lambda x,y: x+y,map(nltk.sent_tokenize, tweets))
 
     # split the list of tweets to a list of sentences and send it to analyse_sentences
-    return analyse_sentences_var_1(reduce(lambda x,y: x+y, map(nltk.sent_tokenize, filter(isenglish, tweets))))
+    return map(lambda x: filter(lambda (_1,y): y>=1.0, x) ,analyse_sentences_var_1(reduce(lambda x,y: x+y, map(nltk.sent_tokenize, filter(isenglish, tweets)))))
+
+if __name__ == "__main__":
+    print analyse(["Star Wars is the movie of the century","Bear Grylls is being tortured by us more and more"])
+    

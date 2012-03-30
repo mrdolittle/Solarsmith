@@ -537,7 +537,7 @@
    -->
 
    <field name="id"                       type="string"            indexed="true"  stored="true"  required="true" />
-   <field name="id_ci"                    type="string_ci"         indexed="true"  stored="true"  required="true" />
+   <field name="id_ci"                    type="string_ci"         indexed="true"  stored="true"  required="false" />
    <field name="lovekeywords_list"        type="string"            indexed="false" stored="true"  required="true" />
    <field name="hatekeywords_list"        type="string"            indexed="false" stored="true"  required="true" />
    <field name="lovekeywords_list_scaled" type="string"            indexed="false" stored="true"  required="true" />

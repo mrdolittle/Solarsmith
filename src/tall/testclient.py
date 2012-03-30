@@ -19,5 +19,6 @@ def create_socket(address):
     soc.connect(address)
     soc.sendall('_xantoz_')
     print soc.recv(1024)
+    print soc.recv(1024)
     
 create_socket((REQUEST_HANDLER, 1337))

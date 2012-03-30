@@ -19,7 +19,7 @@ If it is not empty, the thread will pop the first element and process it by send
 addalyse package and then expect an answer. This will be done untill the list is empty again.  
 '''
 
-from addalyse import *
+import addalyse 
 from twitterHelp import *
 from select import *
 from sys import *
@@ -29,26 +29,32 @@ import sys
 from configHandler import configuration
 import threading
 
-CONFIG = configuration.Config()
+CONFIG = configuration.Config(setting = 1)
 SOLR_SERVER = CONFIG.get_solr_server()
 
         
 def add_to_solr(username):
-    '''Requests a certain Twitter username to be added. 
-    @argument username: A string containing the username of a Twitter user.
-    @return: A boolean set to true if the user has been added, otherwise false.'''
+    '''Requests a certain Twitter username to be added.  @argument
+    username: A string containing the username of a Twitter user.
+    @return: A string "UserAdded" if succesfull, otherwise en error
+    message, either: "UserNotOnTwitter" or "OtherError".'''
+    
     try:
-        addalyse(SOLR_SERVER, username)
+        addalyse.addalyse(SOLR_SERVER, username)
         return "UserAdded"
     except addalyse.AddalyseUserNotOnTwitterError:
         return "UserNotOnTwitter"
     except addalyse.AddalyseUnableToProcureTweetsError:
         return "OtherError"
-    return "OtherError"
+    #except:
+        #return "OtherError"
+    return None
 
     
 def main():
-    '''The main will create the necessary lists, set up the instances and await termination'''
+    '''The main procedure will create the necessary lists, set up the
+    instances and await termination'''
+    
     #Create the request list
     request_list = []
     
@@ -67,9 +73,12 @@ def main():
     
 class Server():
     '''The server class that handles the incomming connections
-    @param request_list_input: a request list which is forwarded from the main method.
-            the request list will contain a list of usernames requested that they are added
-            into the database. This parameter will be sent to each client thread that is spawned'''
+    
+    @param request_list_input: a request list which is forwarded from
+            the main method.  the request list will contain a list of
+            usernames requested that they are added into the
+            database. This parameter will be sent to each client
+            thread that is spawned'''
     
     def __init__(self, request_list_input,lock):
         '''Setting up default variables for the server socket.'''
@@ -190,7 +199,7 @@ class UsernameHandler(threading.Thread):
         '''Initiate the variables used by the UsernameHandler'''
         threading.Thread.__init__(self)
         self.size = 1024
-        self.request_list_empty = True 
+        # self.request_list_empty = True 
         self.request_list = request_list_input
         self.stop_thread = False
         self.lock=lock
@@ -212,9 +221,12 @@ class UsernameHandler(threading.Thread):
                 elif res == "UserNotOnTwitter":
                     print "UserNotOnTwitter"
                     data[1].send("2")      #2 = User does not exist on Twitter
+                elif res == "ProtectedUser":
+                    print "ProtectedUser"
+                    data[1].send("3")       #3 = Protected User (hidden from public requests)
                 else:
                     print "OtherError"
-                    data[1].send("3")       #3 = Other error
+                    data[1].send("4")       #4 = Other error
                 #Was the message sent?
 #                if sent == 0:
 #                    raise RuntimeError("Socket connection broken")
