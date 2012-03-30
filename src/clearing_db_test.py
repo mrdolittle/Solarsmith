@@ -15,9 +15,10 @@ import sys
 CONFIG = configHandler.Config()
 SOLR_SERVER = CONFIG.get_solr_server()
 
-def clear_database_and_add_users(usernames=["SSDummy_Janet", "ssdummy_henry", "ssdummy_hoot", "ssdummy_faye"
-                                            ,"ssdummy_burt", "ssdummy_gustavo", "ssdummy_amanda"
-                                            ,"ssdummy_duke", "ssdummy_ian", "ssdummy_ellen" , "ssdummy_chrissy"], clear=False):
+def add_users(usernames=["SSDummy_Janet", "ssdummy_henry", "ssdummy_hoot", "ssdummy_faye"
+                         ,"ssdummy_burt", "ssdummy_gustavo", "ssdummy_amanda"
+                         ,"ssdummy_duke", "ssdummy_ian", "ssdummy_ellen" , "ssdummy_chrissy"],
+              clear=False):
     '''Used by analyse team to test their accuracy!  Removes all users
     from the database and then adds the ones in the usernames list.
     TODO: test it'''
@@ -42,4 +43,4 @@ def clear_database_and_add_users(usernames=["SSDummy_Janet", "ssdummy_henry", "s
     
 # testing
 if __name__ == '__main__':
-    clear_database_and_add_users(clear=True)
+    add_users(clear=True)
