@@ -81,7 +81,7 @@ class TwitterHelp:
         form. None if the user was not found'''
         status_dic = {}
         try:
-            statuses = self.twitter_API.GetUserTimeline(username, count=200, since_id=since_id)            
+            statuses = self.get_all_statuses(username, since_id)
         except twitter.TwitterError:
             return None
         except urllib2.HTTPError:
