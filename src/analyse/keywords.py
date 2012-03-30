@@ -17,7 +17,6 @@ def extract_keywords_grammar(text):
     
     sequence = nltk.pos_tag(nltk.word_tokenize(text))
     words = []
-    print sequence
     grammar=''' Noun: {<DT>?<JJ>+(<NN>|<NNS>|<VBG>)+}
                 ToVerb: {<TO><VB>}
                 Name:{<NNP>*}                
