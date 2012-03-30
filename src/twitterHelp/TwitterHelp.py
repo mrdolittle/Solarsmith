@@ -71,7 +71,6 @@ class TwitterHelp:
         page = 1
         view_size = 140
         # get statuses and append to all_statuses
-
         
         while True:
             statuses = self.twitter_API.GetUserTimeline(id=username, count=view_size, since_id=since_id, page=page)
