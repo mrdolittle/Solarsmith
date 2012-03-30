@@ -68,7 +68,7 @@ class TwitterHelp:
         @return: A list of status objects'''
         try:
             print(username)
-            return self.twitter_API.GetUserTimeline(username, 100000, since_id)
+            return self.twitter_API.GetUserTimeline(id=username, count=200, since_id=since_id)
         except twitter.TwitterError:
             raise #Skickar vidare felet. Kan skicka eget exception om man vill.
         #except urllib2.HTTPError:
@@ -83,7 +83,7 @@ class TwitterHelp:
         form. None if the user was not found'''
         status_dic = {}
         try:
-            statuses = self.twitter_API.GetUserTimeline(username, 1000000, since_id, None)            
+            statuses = self.twitter_API.GetUserTimeline(username, count=200, since_id=since_id)            
         except twitter.TwitterError:
             return None
         except urllib2.HTTPError:
