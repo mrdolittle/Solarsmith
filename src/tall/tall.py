@@ -87,7 +87,7 @@ def send_to_request(username):
 
     # 1 = user added
     # 2 = user does not exist
-    # 3 = timeout
+    # 3 = user is hidden
     # 4 = unknown error
 
 
