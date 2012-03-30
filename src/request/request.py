@@ -28,7 +28,7 @@ import socket
 import sys
 from configHandler import configuration
 
-CONFIG = configuration.Config()
+CONFIG = configuration.Config(setting = 2)
 SOLR_SERVER = CONFIG.get_solr_server()
 
         

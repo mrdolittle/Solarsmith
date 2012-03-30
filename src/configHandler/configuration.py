@@ -8,15 +8,23 @@ Created on Mar 28, 2012
 
 class Config():
     
-    def __init__(self, conf_file="../../configuration_file.conf"):
-        #Global variables
-        self.READ_FROM_FILE = conf_file
-        self.SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/" 
-        self.REQUEST_SERVER = "130.229.168.86"
-        self.TALL_SERVER = "130.229.185.90"
-        #self.REQUEST_SERVER="localhost"
-        #self.TALL_SERVER="localhost"
-        #self.set_locations()
+    def __init__(self, conf_file = "../../configuration_file.conf", setting = 3):
+            
+        self.SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"
+            
+        #Run using Localhost
+        if setting == 1:            
+            self.REQUEST_SERVER="localhost"
+            self.TALL_SERVER="localhost"
+            
+        #Run using HardCoded values
+        elif setting == 2:
+            self.REQUEST_SERVER = "130.229.168.86"
+            self.TALL_SERVER = "130.229.185.90"
+        
+        elif setting == 3:
+            self.READ_FROM_FILE = conf_file
+            self.set_locations()
         
     def set_locations(self):
         '''This method will read the file given in the __init__ and set the variables.'''
