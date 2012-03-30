@@ -16,8 +16,8 @@ import operator
 def extract_keywords_grammar(text):
     '''Uses chunks matching to identify keywords in a tweet. The code looks much nicer this way :P'''
 
-    if text.split() == []: # gets rid of all the Waring: parsing empty text messages (essientially we check if whole sting is whitespace using this KLUDGE)
-        return []
+    if all(map(lambda x: x in string.whitespace, text)): # gets rid of all the Warning: parsing empty text messages. By checking if
+        return []                                        # string consists of only whitespace. KLUDGEish and slow
     
     sequence = nltk.pos_tag(nltk.word_tokenize(text))
     words = []
