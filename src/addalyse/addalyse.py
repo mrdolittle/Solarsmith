@@ -30,11 +30,8 @@ class AddalyseError(Exception):
     def __str__(self):
         return repr(self)[:-1] + repr(self.value) + ')'
 
-# subclass of AddalyseError...
 class AddalyseUserNotOnTwitterError(AddalyseError): pass
-# subclass of AddalyseError...
 class AddalyseUnableToProcureTweetsError(AddalyseError): pass
-
 class AddalyseProtectedUserError(AddalyseError): pass
 
 def addalyse(*args):
