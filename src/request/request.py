@@ -44,26 +44,29 @@ def add_to_solr(username):
         return "UserAdded"
     except addalyse.AddalyseUserNotOnTwitterError:
         return "UserNotOnTwitter"
+    except addalyse.AddalyseProtectedUserError:
+        return "ProtectedUser"
     except addalyse.AddalyseUnableToProcureTweetsError:
         return "OtherError"
-    #except:
-        #return "OtherError"
+    except:
+        return "OtherError"
     return None
 
     
 def main():
     '''The main procedure will create the necessary lists, set up the
     instances and await termination'''
+     # create a lock
+    lock = threading.Lock()
     
     #Create the request list
     request_list = []
     
     #Start the username handler
-    username_handle_instance = UsernameHandler(request_list)
+    username_handle_instance = UsernameHandler(request_list,lock)
     username_handle_instance.start()
     
-    # create a lock
-    lock = threading.Lock()
+   
 
     #Create a new Server instance
     server_instance = Server(request_list, lock)
