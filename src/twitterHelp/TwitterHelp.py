@@ -69,12 +69,13 @@ class TwitterHelp:
         
         all_statuses = []
         page = 1
+        page_ultimate_limit = 10
         view_size = 140
         # get statuses and append to all_statuses
         
         while True:
             statuses = self.twitter_API.GetUserTimeline(id=username, count=view_size, since_id=since_id, page=page)
-            if statuses:
+            if statuses and not page >= page_ultimate_limit:
                 for status in statuses:
                     status.text = unescape(status.text)
                     all_statuses.append(status)
