@@ -12,6 +12,7 @@ TODO: handle exceptions (like when we've been making too many twitter requests s
 import random
 import addalyse
 import urllib2
+import twitter
 from twitterHelp import TwitterHelp
 from storageHandler import StorageHandler
 import time
