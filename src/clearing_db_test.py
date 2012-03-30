@@ -8,9 +8,10 @@ Created on Mar 29, 2012
 
 from storageHandler import *
 import addalyse
+import configHandler
 
-# TODO: read this from some configuration file in a smart way?
-SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"
+CONFIG = configHandler.Config()
+SOLR_SERVER = CONFIG.get_solr_server()
 
 def clear_database_and_add_users(usernames=["SSDummy_Janet", "ssdummy_henry", "ssdummy_hoot", "ssdummy_faye"
                                             ,"ssdummy_burt", "ssdummy_gustavo", "ssdummy_amanda"
