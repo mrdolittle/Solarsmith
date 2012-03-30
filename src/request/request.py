@@ -65,8 +65,6 @@ def main():
     username_handle_instance = UsernameHandler(request_list,lock)
     username_handle_instance.start()
     
-   
-
     #Create a new Server instance
     server_instance = Server(request_list, lock)
     
