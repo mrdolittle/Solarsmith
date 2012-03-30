@@ -8,7 +8,11 @@ import sunburnt
 import ast
 
 SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"
+<<<<<<< HEAD
 SCORELIMIT = 0.0002  # Filter for friends/enemies
+=======
+SCORELIMIT = 3.0002 # Filter for friends/enemies
+>>>>>>> branch 'master' of https://dollittle@github.com:443/dollittle/Solarsmith.git
 
 
 def connect_to_solr():
@@ -38,6 +42,8 @@ def get_common_keywords(userskeywords, otherkeywords):
             commonkeywords = commonkeywords + [(key, weight)]
     return commonkeywords
 
+def compare_userscore_to_scorelimit(user):
+    return user.score > SCORELIMIT
 
 class SolrUser:
     '''
@@ -125,29 +131,24 @@ def get_frienemies_by_id(username):
         return "Error: Connection to Solr lost."
 #    print "Enemies: "
 #    print enemies
-    
-    newfriends = []
+
+    # Filter friends and enemies on score and on keywords the searchee and they have in common
+    friends = filter(compare_userscore_to_scorelimit, friends)   
     for single_friend in friends:
-        if single_friend.score < SCORELIMIT:
-            break
         common_friend_lovekeywords = get_and_sort_common_keywords(userlovekeywords, single_friend.lovekeywords_list)
         single_friend.set_lovekeywords(common_friend_lovekeywords) # Set and sort friend lovekeywords to common keywords
         common_friend_hatekeywords = get_and_sort_common_keywords(userhatekeywords, single_friend.hatekeywords_list)
         single_friend.set_hatekeywords(common_friend_hatekeywords) # Set and sort friend hatekeywords to common keywords
-        newfriends = newfriends + [single_friend]
 
-    newenemies = []
+    enemies = filter(compare_userscore_to_scorelimit, enemies)
     for single_enemy in enemies:
-        if single_enemy.score < SCORELIMIT:
-            break
         common_enemy_keywords = get_and_sort_common_keywords(userhatekeywords, single_enemy.lovekeywords_list)
         single_enemy.set_lovekeywords(common_enemy_keywords) # Set and sort enemy lovekeywords to common keywords
         common_enemy_keywords = get_and_sort_common_keywords(userlovekeywords, single_enemy.hatekeywords_list)
         single_enemy.set_hatekeywords(common_enemy_keywords) # Set and sort enemy hatekeywords to common keywords
-        newenemies = newenemies + [single_enemy]
 
 #    userlovekeywords, userhatekeywords = searchee.get_keywords()
-    return newfriends, newenemies
+    return friends, enemies
 
 def get_frienemies_by_keywords(keywords):
     '''Retrieves a users friends and enemies from Solr.'''

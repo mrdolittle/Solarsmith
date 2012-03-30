@@ -27,7 +27,6 @@ import threading
 import socket
 import sys
 from configHandler import configuration
-import threading
 
 CONFIG = configuration.Config(setting = 1)
 SOLR_SERVER = CONFIG.get_solr_server()
@@ -56,7 +55,7 @@ def add_to_solr(username):
 def main():
     '''The main procedure will create the necessary lists, set up the
     instances and await termination'''
-     # create a lock
+    # create a lock
     lock = threading.Lock()
     
     #Create the request list
@@ -66,8 +65,6 @@ def main():
     username_handle_instance = UsernameHandler(request_list,lock)
     username_handle_instance.start()
     
-   
-
     #Create a new Server instance
     server_instance = Server(request_list, lock)
     
