@@ -68,20 +68,20 @@ def send_to_request(username):
     soc.close()
     if response == "1":
         return (True, "User added, retrieving frienemies.")
-        # Anropa storage igen med användarnamnet
+        # Anropa storage igen med anvÃ¤ndarnamnet
 
     elif response == "2":
 #        print response
         return (False, "Error: User does not exist.")
-        # Tala om för gui att användaren inte finns
+        # Tala om fÃ¶r gui att anvÃ¤ndaren inte finns
     elif response == "3":
-        # Tala om att användaren är skyddad
+        # Tala om att anvÃ¤ndaren Ã¤r skyddad
         return (False, "Error: User is hidden and cannot be shown.")
     else:
         # Response was something else
 #        print response
         return (False, "Error: Unknown error.")
-        # Tala om för gui att nånting pajade
+        # Tala om fÃ¶r gui att nÃ¥nting pajade
 
     # 1 = user added
     # 2 = user does not exist
@@ -160,7 +160,7 @@ def create_xml(result):
         enemyusername = enemies.getId()
         # Add a foe
         tosend = tosend + entrytag + nametag + escape(enemyusername) + endnametag
-        tosend = tosend + scoretag + str(friends.score) + endscoretag 
+        tosend = tosend + scoretag + str(enemies.score) + endscoretag 
         tosend = tosend + piclinktag + escape(get_pic_link(enemyusername)) + endpiclinktag
         tosend = tosend + lovekeywordstag
         # Add foe's lovekeywords
@@ -251,7 +251,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         print "Command: " + command
         print "Data: " + data
         if command == "username":
-            frienemy_result = tallstore.get_frienemies_by_id(data) # Ska ersättas med anrop till storage handler
+            frienemy_result = tallstore.get_frienemies_by_id(data) # Ska ersÃ¤ttas med anrop till storage handler
             if frienemy_result == False:
 #                self.send_result('User not found, attempting to add.')
                 succeeded, message = send_to_request(data)
@@ -261,10 +261,10 @@ class RequestHandler(BaseHTTPRequestHandler):
                 print "Succeeded: " + str(succeeded)
                 print message
                 if succeeded == True:
-                    # Hämta från storage
+                    # HÃ¤mta frÃ¥n storage
                     frienemy_result = tallstore.get_frienemies_by_id(data)
                     if frienemy_result == False:
-                        return # Bör ersättas med felkod. Kommer vi hit är något allvarligt fel
+                        return # BÃ¶r ersÃ¤ttas med felkod. Kommer vi hit Ã¤r nÃ¥got allvarligt fel
                 else:
                     self.send_result(message)
                     return
