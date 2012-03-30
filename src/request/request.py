@@ -61,7 +61,10 @@ def add_to_solr(username):
     
 def main():
     '''The main procedure will create the necessary lists, set up the
-    instances and await termination'''
+    instances and await termination
+
+    TODO: Be better at awaiting termination (KeyboardInterrupts, that
+    is CTRL+C-s are being eaten somehow)'''
     
     #Create the request list
     request_list = []
@@ -98,8 +101,8 @@ class Server():
         self.request_list = request_list_input
     
     def open_server_socket(self):
-        '''Opens a server socket. 
-           On error, the program will exit while printing out the error message.'''
+        '''Opens a server socket.  On error, the program will exit
+        while printing out the error message.'''
         
         try:
             self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -112,7 +115,8 @@ class Server():
             sys.exit(1)
     
     def run(self):
-        '''Listens for incomming connections and creates threads (for the clients) accordingly.'''
+        '''Listens for incomming connections and creates threads (for
+        the clients) accordingly.'''
         
         #Call the open_server_socket and set start variables.
         self.open_server_socket()
@@ -152,10 +156,11 @@ class Server():
             c.join()
                  
 class Client(threading.Thread):
-    '''The Client class is a modification of a normal thread and can be found in request.py.
-        A Client will read the data from the socket and append the data as well as the client itself,
-        into a list for further use. The client will also send a response back when the received data
-        has been processed.'''
+    '''The Client class is a modification of a normal thread and can
+    be found in request.py.  A Client will read the data from the
+    socket and append the data as well as the client itself, into a
+    list for further use. The client will also send a response back
+    when the received data has been processed.'''
     
     def __init__(self, (client, address), request_list_input):
         '''Used to initiate the values and set the input arguments'''
@@ -170,8 +175,8 @@ class Client(threading.Thread):
         self.request_list = request_list_input
         
     def run(self):
-        '''This method will run continuously until the client is shut down or until the
-            terminate command is called upon'''
+        '''This method will run continuously until the client is shut
+        down or until the terminate command is called upon'''
         
         #Set the while parameter
         running = True
@@ -192,8 +197,9 @@ class Client(threading.Thread):
                 running = False
                 
 class UsernameHandler(threading.Thread):
-    '''A class that will handle all of the usernames and their client threads and 
-        make sure that they are sent and processed one by one. '''
+    '''A class that will handle all of the usernames and their client
+    threads and make sure that they are sent and processed one by
+    one.'''
     
     def __init__(self, request_list_input):
         '''Initiate the variables used by the UsernameHandler'''
