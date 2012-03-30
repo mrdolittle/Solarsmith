@@ -21,7 +21,8 @@ import time
 import traceback
 import sys
 
-CONFIG = configHandler.Config()
+#The configuration instance containing the basic configuration methods.
+CONFIG = configHandler.Config(setting = 1)
 SOLR_SERVER = CONFIG.get_solr_server()
 
 # Every UPDATE_N:th update of a profile do a full analysis throwing away the old one
@@ -32,34 +33,54 @@ def main():
     
     th = TwitterHelp() 
     sh = StorageHandler(SOLR_SERVER)
+    temporarly_ignore_user = {}
     
-    sleep_time = 10
+    sleep_time = 2     #Sleep in seconds per update
     update_time = 1     #Minimum time for a new update (in hours)
     
     while True:
+        #Get the information from Solr
         for (username, since_id, update_count, timestamp) in sh.get_user_fields('*', 'id', 'since_id', 'updatecount', 'timestamp'):
             print("Checking user: " + str(username) + " Last updated: " + str(timestamp)) # Debug print
+            
+            print temporarly_ignore_user
+            #Time checks
             current_datetime = mxDateTime.now()
-            diff = current_datetime - timestamp
-            if diff.hours > update_time:     #Continue if it was more than 1 hour ago since the document was updated
+            diff_twitter = current_datetime - timestamp
+            if username in temporarly_ignore_user and (current_datetime - temporarly_ignore_user[username]).hours > update_time:
+                del temporarly_ignore_user[username]
+                
+            #If the conditions are met: Continue
+            if diff_twitter.hours > update_time and username not in temporarly_ignore_user:     #Continue if it was more than 1 hour ago since the document was updated
                 print("Updating...")
+                #Try to update:
                 try:
                     addalyse.addalyse(SOLR_SERVER,
                              username,
                              since_id,
                              (update_count % UPDATE_N) == 0,
                              update_count + 1)
+                
+                #If the user can no longer be found on Twitter: Remove from Solr
                 except addalyse.AddalyseUserNotOnTwitterError as err:
                     sys.stderr.write("Got: " + str(err) + ". Twitter acount deleted. Deleting from SOLR.\n")
                     sh.delete(username)
+                
+                #If Solr can not be updated with new Tweet data at the time of the update. Wait for 1h with this user.
                 except addalyse.AddalyseUnableToProcureTweetsError as err:
                     sys.stderr.write(str(err) + "\n")
+                    temporarly_ignore_user[username] = mxDateTime.now()
+                    print "Added " + username + " to the temporarly_ignore_user list"                      
+                
+                #If an unhandled exception is found, a traceback will be made so that the programmer can take care of it.
                 except Exception:
                         sys.stderr.write("Unhandled exception:\n")
                         traceback.print_exc()
-                time.sleep(sleep_time) # sleep for ten seconds, to not make to many requests to twitter                
+                
+                #Sleep for ten seconds, to not make to many Twitter requests
+                time.sleep(sleep_time)                 
             else:
-                print("This user has recently been updated ( " + str(diff.minutes) + " minutes ago).")
+                print("This user has recently been updated.")
        
 
 if __name__ == "__main__":
