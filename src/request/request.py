@@ -19,7 +19,7 @@ If it is not empty, the thread will pop the first element and process it by send
 addalyse package and then expect an answer. This will be done untill the list is empty again.  
 '''
 
-from addalyse import *
+import addalyse 
 from twitterHelp import *
 from select import *
 from sys import *
@@ -39,7 +39,7 @@ def add_to_solr(username):
     message, either: "UserNotOnTwitter" or "OtherError".'''
     
     try:
-        addalyse(SOLR_SERVER, username)
+        addalyse.addalyse(SOLR_SERVER, username)
         return "UserAdded"
     except addalyse.AddalyseUserNotOnTwitterError:
         return "UserNotOnTwitter"
