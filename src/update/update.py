@@ -35,9 +35,9 @@ def main():
     sh = StorageHandler(SOLR_SERVER)
     temporarly_ignore_user = {}
     
-    sleep_time = 10     #Sleep in seconds per update
-    update_time = 1     #Minimum time for a new update (in hours)
-    cycle_time = 60     #When all users have been checked: sleep
+    sleep_time = 10     # Sleep in seconds per update
+    update_time = 1     # Minimum time for a new update (in hours)
+    cycle_time = 60*3   # When all users have been checked: sleep
     
     while True:
         #Get the information from Solr
