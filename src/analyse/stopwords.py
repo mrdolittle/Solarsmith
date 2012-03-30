@@ -524,7 +524,7 @@ def strip_tweet(tweet):
           (seems common) (maybe be wholly crazy and get fullname from twitter?)
           * Strip URLS at the very end or so (like hashtags)
           '''
-    global TWEET_STOPSMILEYS, URL_REGEX
+    global TWEET_STOPSMILEYS, URL_REGEX, DOTS_REGEX
 
 
     def transform(a):
