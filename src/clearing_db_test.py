@@ -10,6 +10,7 @@ from storageHandler import *
 import addalyse
 import configHandler
 import traceback
+import sys
 
 CONFIG = configHandler.Config()
 SOLR_SERVER = CONFIG.get_solr_server()
