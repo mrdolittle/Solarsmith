@@ -8,7 +8,7 @@ Created on Mar 28, 2012
 
 class Config():
     
-    def __init__(self, conf_file="../../configuration_file.conf", setting=3):
+    def __init__(self, conf_file="../../configuration_file.conf.example", setting=3):
             
         self.SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"
             
