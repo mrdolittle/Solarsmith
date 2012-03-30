@@ -11,11 +11,10 @@ the influence of covariant features.
 
 """
 
-import csv, random
+import  random
 import nltk
 import ast
 import tweet_features, tweet_pca
-from keywords import extract_keywords
 CORPUS1="../analyse/sentiment.csv"
 CORPUS2="../analyse/corpusnew"
 
@@ -41,7 +40,7 @@ with open(CORPUS2, 'rb') as fp:
     for row in fp:
         #print row
         tweets.append(ast.literal_eval(row))
-  #      tweets.append([row[4], row[1]])
+#      tweets.append([row[4], row[1]])
 #with open(CORPUS1, 'rb') as fp:
 #    reader = csv.reader(fp, delimiter=',', quotechar='"', escapechar='\\')
 #    for row in reader:
@@ -65,8 +64,8 @@ v_train = fvecs
 
 #dump tweets which our feature selector found nothing
 #for i in range(0,len(tweets)):
-     #if tweet_features.is_zero_dict( fvecs[i][0] ):
-         #print tweets[i][1] + ': ' + tweets[i][0]
+    #if tweet_features.is_zero_dict( fvecs[i][0] ):
+        #print tweets[i][1] + ': ' + tweets[i][0]
 
 
 ## apply PCA reduction
