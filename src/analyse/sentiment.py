@@ -54,13 +54,13 @@ for t in tweets:
         t[1] = 'neutral'
         
 ## split in to training and test sets
-#print "SHUFFLING TWEETS"
+
 random.shuffle(tweets);
-#print "PUTTING INTO TRAINING AND TESTING VECTORS"
+
 fvecs = [(tweet_features.make_tweet_dict(t),s) for (t,s) in tweets]
 v_train = fvecs
 #v_test  = fvecs[2000:]
-#print v_test[450]
+
 
 
 #dump tweets which our feature selector found nothing
@@ -74,9 +74,11 @@ v_train = fvecs
 
 
 ## train CLASSIFIER
-#print "TRAINING NAIVESBAYESCLASSIFIER"
+
 CLASSIFIER = nltk.NaiveBayesClassifier.train(v_train);
 #CLASSIFIER = nltk.classify.maxent.train_maxent_CLASSIFIER_with_gis(v_train);
+
+
 
 ## classify and dump results for interpretation
 #print "GOING TO PRINT ACCURACY"

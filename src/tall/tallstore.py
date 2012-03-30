@@ -10,7 +10,7 @@ import configHandler
 
 CONFIG = configHandler.Config()
 SOLR_SERVER = CONFIG.get_solr_server()
-SCORELIMIT = 0.0002  # Filter for friends/enemies
+SCORELIMIT = 0.008  # Filter for friends/enemies
 
 
 def connect_to_solr():
@@ -231,7 +231,7 @@ def test_get_frienemies_by_id(username):
         common_friend_hatekeywords = get_and_sort_common_keywords(userhatekeywords, single_friend.hatekeywords_list)
         single_friend.set_hatekeywords(common_friend_hatekeywords) # Set and sort friend hatekeywords to common keywords
 
-    enemies = filter(lambda enemy: enemy > SCORELIMIT, enemies)
+    enemies = filter(lambda enemy: enemy.score > SCORELIMIT, enemies)
     enemies = filter(lambda test: "SSDummy" in test.id, enemies)
     for single_enemy in enemies:
         common_enemy_keywords = get_and_sort_common_keywords(userhatekeywords, single_enemy.lovekeywords_list)
