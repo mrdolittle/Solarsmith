@@ -49,7 +49,8 @@ def add_to_solr(username):
         return "UserNotOnTwitter"
     except addalyse.AddalyseProtectedUserError:
         return "ProtectedUser"
-    except addalyse.AddalyseUnableToProcureTweetsError:
+    except addalyse.AddalyseUnableToProcureTweetsError as err:
+        sys.stderr.write("Couldn't get tweets for some reason:" + err)
         return "OtherError"
     except:
         sys.stderr.write("Unhandled exception:\n")
