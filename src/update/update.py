@@ -22,7 +22,7 @@ import traceback
 import sys
 
 #The configuration instance containing the basic configuration methods.
-CONFIG = configHandler.Config(setting = 1)
+CONFIG = configHandler.Config()
 SOLR_SERVER = CONFIG.get_solr_server()
 
 # Every UPDATE_N:th update of a profile do a full analysis throwing away the old one
