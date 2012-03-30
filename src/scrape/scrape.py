@@ -92,6 +92,8 @@ def gather_data_loop(request_per_hour = 3600, users_to_add = 21):
                     if addalyse.addalyse(SOLR_SERVER, user):
                         users_added.add(user)
                         added_users += 1
+                except AddalyseError as err:
+                    sys.stderr.write("Addalyse threw an error: "  + str(err))
                 except:
                     # ignore errors non-silently (we print tracebacks!)
                     # TODO: use the logger for this?
