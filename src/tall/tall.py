@@ -254,7 +254,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         ################
         ######TEST######
         ################
-        if command == "testuser":
+        if command == "testusername":
             frienemy_result = tallstore.test_get_frienemies_by_id(data)
             self.send_result(create_xml(frienemy_result))
             return
