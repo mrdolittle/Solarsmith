@@ -84,7 +84,7 @@ def gather_data_loop(request_per_hour = 3600, users_to_add = 21):
         try: 
             set_to_add = th.get_public_tweeters()
         except twitter.TwitterError as err:
-            sys.stderr("Got TwitterError while trying to get public timeline " + str(err) + "\n")
+            sys.stderr.write("Got TwitterError while trying to get public timeline " + str(err) + "\n")
             traceback.print_exc()
             time.sleep(100)
             continue            # retry the loop
