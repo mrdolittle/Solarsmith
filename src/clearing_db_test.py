@@ -9,6 +9,7 @@ Created on Mar 29, 2012
 from storageHandler import *
 import addalyse
 import configHandler
+import traceback
 
 CONFIG = configHandler.Config()
 SOLR_SERVER = CONFIG.get_solr_server()
@@ -26,9 +27,16 @@ def clear_database_and_add_users(usernames=["SSDummy_Janet", "ssdummy_henry", "s
         sh.delete_all()
     users_left_to_add = len(usernames)
     for username in usernames:
-        print "Adding: " + username + " Left to add: " +str(users_left_to_add)
-        users_left_to_add = users_left_to_add - 1
-        addalyse.addalyse(sh, username)
+        try:
+            print "Adding: " + username + " Left to add: " +str(users_left_to_add)
+            users_left_to_add = users_left_to_add - 1
+            addalyse.addalyse(sh, username)
+        except addalyse.AddalyseError as err:
+            sys.stderr("Got error from addalyse: " + str(err) : "\n")
+        except Exception:
+            sys.stderr("Unhandled exception\n")
+            traceback.print_exc()
+            
     print "Done adding test users!"
     
 # testing
