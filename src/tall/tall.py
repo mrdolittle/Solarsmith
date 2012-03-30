@@ -8,14 +8,15 @@ Created on Mar 21, 2012
 '''
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from SocketServer import ThreadingMixIn
-from configHandler import configuration
 from xml.sax.saxutils import escape
 import select
 import socket
-import tallstore
 import urlparse
 
-CONFIG = configuration.Config(setting=1)
+import tallstore
+import configHandler
+
+CONFIG = configHandler.Config()
 REQUEST_SERVER = CONFIG.get_request_server()
 REQUEST_SERVER_PORT = 1337
 

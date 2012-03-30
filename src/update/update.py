@@ -21,7 +21,7 @@ import time
 import traceback
 import sys
 
-CONFIG = configuration.Config(setting = 1)
+CONFIG = configuration.Config()
 SOLR_SERVER = CONFIG.get_solr_server()
 
 # Every UPDATE_N:th update of a profile do a full analysis throwing away the old one

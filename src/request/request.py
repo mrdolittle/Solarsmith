@@ -6,17 +6,20 @@ Created on Mar 20, 2012
 @author: Jimmy Larsson, Lucas Taubert
 @version: 0.9
 
-Request will create an instance of the Server class which can be found in request.py.
-The Server will handle the traffic and create threads accordingly.
-For each socket client that connects to the server, the server will spawn a Client thread.
+Request will create an instance of the Server class which can be found
+in request.py.  The Server will handle the traffic and create threads
+accordingly.  For each socket client that connects to the server, the
+server will spawn a Client thread.
 
-The Client class is a modification of a normal thread and can also be found in request.py.
-A Client will read the data from the socket and append the data as well as the client itself,
-into a list for further use.
+The Client class is a modification of a normal thread and can also be
+found in request.py.  A Client will read the data from the socket and
+append the data as well as the client itself, into a list for further
+use.
 
-A main thread will continuously check a list to make sure that it is empty.
-If it is not empty, the thread will pop the first element and process it by sending it through the
-addalyse package and then expect an answer. This will be done untill the list is empty again.  
+A main thread will continuously check a list to make sure that it is
+empty.  If it is not empty, the thread will pop the first element and
+process it by sending it through the addalyse package and then expect
+an answer. This will be done untill the list is empty again.
 '''
 
 import addalyse 
@@ -29,7 +32,7 @@ import sys
 from configHandler import configuration
 import traceback
 
-CONFIG = configuration.Config(setting = 1)
+CONFIG = configuration.Config()
 SOLR_SERVER = CONFIG.get_solr_server()
 
         

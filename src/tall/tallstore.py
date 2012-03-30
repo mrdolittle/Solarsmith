@@ -6,9 +6,9 @@ Created on Mar 22, 2012
 '''
 import sunburnt
 import ast
-from configHandler import configuration
+import configHandler
 
-CONFIG = configuration.Config(setting=2)
+CONFIG = configHandler.Config()
 SOLR_SERVER = CONFIG.get_solr_server()
 SCORELIMIT = 0.0002  # Filter for friends/enemies
 

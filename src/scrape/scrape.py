@@ -18,7 +18,7 @@ from twitterHelp import *
 import time
 from configHandler import configuration
 
-CONFIG = configuration.Config(setting = 1)
+CONFIG = configuration.Config()
 SOLR_SERVER = CONFIG.get_solr_server()
     
 def main():
