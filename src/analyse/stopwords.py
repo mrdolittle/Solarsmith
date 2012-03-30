@@ -529,7 +529,9 @@ def strip_tweet(tweet):
     def transform(a):
         if a[0:2] == '<3':
             # convert hearts to: love 
-            return "love " + a[2:]
+            return u'love ' + a[2:]
+        if a[0] == u'\u2665':   # unicode heart !
+            return u'love' + a[1:]
         else:
             return a
 
