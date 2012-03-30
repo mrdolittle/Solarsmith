@@ -86,7 +86,7 @@ def gather_data_loop(request_per_hour = 3600, users_to_add = 21):
             print s
         
         for user in set_to_add:
-            if(not sh.contains(user)):
+            if not sh.contains(user):
                 time.sleep(sleep_time)
                 try:
                     if addalyse.addalyse(SOLR_SERVER, user):
