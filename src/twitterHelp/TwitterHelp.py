@@ -58,7 +58,7 @@ class TwitterHelp:
         return status_dic
         
     
-    def get_public_twitters(self):
+    def get_public_tweeters(self):
         tweets = self.get_public_tweets()
         return set(tweets.keys())
     
