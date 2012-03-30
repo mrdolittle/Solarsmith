@@ -50,7 +50,7 @@ def main():
                              (update_count % UPDATE_N) == 0,
                              update_count + 1)
                 except addalyse.AddalyseUserNotOnTwitterError as err:
-                    sys.stderr.write("Got: " + str(err) + ". Twitter acount deleted. Deleting from database.\n")
+                    sys.stderr.write("Got: " + str(err) + ". Twitter acount deleted. Deleting from SOLR.\n")
                     sh.delete(username)
                 except addalyse.AddalyseUnableToProcureTweetsError as err:
                     sys.stderr.write(str(err) + "\n")
