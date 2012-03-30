@@ -72,14 +72,13 @@ def non_aggresive_stemmer(word):
     return word
     
 
-def explicit_keywords(words):
+def explicit_keywords(words, keywords = set(['google', 'microsoft', 'apple', 'adobe', 'flash', 'internet', 'tv'])):
     '''Recognizes certain hard-coded keywords that extract_keywords
     just might miss. If extract_keywords will find them this gives
     them a higher priority so this can also be seen as a sort of boost
     to certain keywords.'''
 
     # TODO: more?
-    keywords = set(['google', 'microsoft', 'apple', 'adobe', 'flash', 'internet', 'tv'])
     return map(lambda x: (x, 1.1), filter(lambda x: x.lower() in keywords, words))
     
 
