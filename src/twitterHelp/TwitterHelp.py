@@ -47,10 +47,7 @@ class TwitterHelp:
         '''Retrieves a dictionary of recent tweets from the public twitter feed.
         '''
         status_dic = {}
-        try:
-            statuses = self.twitter_API.GetPublicTimeline()
-        except twitter.TwitterError:
-            return None
+        statuses = self.twitter_API.GetPublicTimeline()
         for s in statuses:
             status_dic[s.GetUser().GetScreenName()] = s.text
         return status_dic
