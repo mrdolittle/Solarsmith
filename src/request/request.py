@@ -52,7 +52,7 @@ def add_to_solr(username):
     except addalyse.AddalyseUnableToProcureTweetsError as err:
         sys.stderr.write("Couldn't get tweets for some reason:" + str(err) + "\n")
         return "OtherError"
-    except:
+    except Exception:
         sys.stderr.write("Unhandled exception:\n")
         traceback.print_exc()
         return "OtherError"

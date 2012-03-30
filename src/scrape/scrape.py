@@ -95,7 +95,7 @@ def gather_data_loop(request_per_hour = 3600, users_to_add = 21):
                         added_users += 1
                 except addalyse.AddalyseError as err: # we use polymorphism here, WEE
                     sys.stderr.write("Addalyse threw an error: "  + str(err) + "\n")
-                except:
+                except Exception:
                     # ignore errors non-silently (we print tracebacks!)
                     # TODO: use the logger for this?
                     sys.stderr.write("Unhandled exception\n")

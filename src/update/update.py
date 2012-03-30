@@ -54,7 +54,7 @@ def main():
                     print err
                 except addalyse.AddalyseUnableToProcureTweetsError as err:
                     print err
-                except:
+                except Exception:
                         sys.stderr.write("Unhandled exception:\n")
                         traceback.print_exc()
                 time.sleep(sleep_time) # sleep for ten seconds, to not make to many requests to twitter                
