@@ -2,13 +2,17 @@
 Created on Mar 28, 2012
 
 @author: jimmy
+
+Module to handle configuration of the servers. Mainly where to find other servers
 '''
 
-'''Documentation goes here!!!!!!!!'''  
 
 class Config():
+    '''TODO: DOCUMENT ME CLASS HERE'''
+
     
     def __init__(self, conf_file="../../configuration_file.conf", setting=3):
+        ''' TODO: DOCUMENT MY CONSTRUCTOR ''
             
         self.SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"
             
