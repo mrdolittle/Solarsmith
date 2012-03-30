@@ -66,10 +66,13 @@ class TwitterHelp:
         @param since_id: [optional] The ID of the earliest tweet that will be included
         @return: A list of status objects
         re-throws exceptions from self.twitter_API.GetUserTimeline(id=username, count=200, since_id=since_id) '''
+        
         all_statuses = []
         page = 1
         view_size = 140
         # get statuses and append to all_statuses
+
+        
         while True:
             statuses = self.twitter_API.GetUserTimeline(id=username, count=view_size, since_id=since_id, page=page)
             if statuses:
@@ -82,6 +85,7 @@ class TwitterHelp:
             if len(statuses) < view_size: # avoid doing an extra call to GetUserTimeline if we already have all tweets 
                 break
             page = page + 1  # next page
+            
         return all_statuses    
         
     def get_all_tweets(self, username, since_id=None):
@@ -91,15 +95,15 @@ class TwitterHelp:
         @return: A dictionary containing the tweet IDs mapped to their corresponding tweets in string 
         form. None if the user was not found'''
 
+        statuses = self.get_all_statuses(username, since_id)
+
+        if not statuses:        # handle getting no tweets
+            return None
+
         status_dic = {}
-        try:
-            statuses = self.get_all_statuses(username, since_id)
-        except twitter.TwitterError:
-            return None
-        except urllib2.HTTPError:
-            return None
         for s in statuses:
-            status_dic[s.id] = unescape(s.text) # handling &blah; sequences
+            status_dic[s.id] = s.text
+            
         return status_dic
 
     def get_latest_tweet_id(self, username):
