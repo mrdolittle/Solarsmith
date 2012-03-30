@@ -16,7 +16,7 @@ import nltk
 import ast
 import tweet_features, tweet_pca
 CORPUS1="../analyse/sentiment.csv"
-CORPUS2="../analyse/corpusnew"
+CORPUS2="analyse/corpusnew"
 
 def analyse_sentiment(sentence):
     '''Analyses sentence sentiment. Returns a number of size
