@@ -34,7 +34,7 @@ def extract_keywords_grammar(text):
         elif t.node == "ToVerb":
             words.append((t[1][0],1.0))
         elif t.node == "Name":
-            if len(t[0][0])>1:
+            if len(t)>1:
                 words.append((reduce(lambda x,y: x + " " + y if len(y)>2 else x, map(lambda (x,_1): x, t)), 1.0))
                 for x in t:
                     words.append((x[0],0.5))   
@@ -99,6 +99,6 @@ def extract_keywords(sentence):
 nltk.data.load(_POS_TAGGER)
 
 if __name__ == '__main__':
-    text = "Star Wars is awesome"
+    text = "Star is a nice guy"
     print extract_keywords_grammar(text)
     

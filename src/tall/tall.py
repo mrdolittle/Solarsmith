@@ -250,6 +250,20 @@ class RequestHandler(BaseHTTPRequestHandler):
 #        data = data.lower()
         print "Command: " + command
         print "Data: " + data
+        
+        ################
+        ######TEST######
+        ################
+        if command == "testusername":
+            frienemy_result = tallstore.test_get_frienemies_by_id(data)
+            self.send_result(create_xml(frienemy_result))
+            return
+        ################
+        ######TEST######
+        ################
+        
+        
+        
         if command == "username":
             frienemy_result = tallstore.get_frienemies_by_id(data) # Ska ersÃ¤ttas med anrop till storage handler
             if frienemy_result == False:
