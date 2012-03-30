@@ -12,7 +12,7 @@ class Config():
 
     
     def __init__(self, conf_file="../../configuration_file.conf", setting=3):
-        ''' TODO: DOCUMENT MY CONSTRUCTOR ''
+        ''' TODO: DOCUMENT MY CONSTRUCTOR '''
             
         self.SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"
             
