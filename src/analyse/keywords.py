@@ -89,7 +89,9 @@ def extract_keywords(sentence):
     some sort (currently hard-coded to 1.0. But might change in
     future, or might not and just be really stupid).
 
-    TODO: per
+    TODO: perhaps try to filter hashtags from the explicit_keywords
+          and extract_keywords_grammar stuff in the same manner as we
+          don't count names doubly.
     '''
     
     def concat(*a):
