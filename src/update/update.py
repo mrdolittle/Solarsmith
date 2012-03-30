@@ -16,10 +16,11 @@ from twitterHelp import *
 from mx import DateTime as mxDateTime
 import addalyse
 import time
+from configHandler import configuration
 from logger import logger
 
-# TODO: read this from some configuration file in a smart way?
-SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"
+CONFIG = configuration.Config(setting = 1)
+SOLR_SERVER = CONFIG.get_solr_server()
 
 # Every UPDATE_N:th update of a profile do a full analysis throwing away the old one
 UPDATE_N = 100

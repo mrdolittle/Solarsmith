@@ -16,9 +16,10 @@ import urllib2
 from twitterHelp import *
 #from addalyse import *
 import time
+from configHandler import configuration
 
-# TODO: read this from some configuration file in a smart way?
-SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"
+CONFIG = configuration.Config(setting = 1)
+SOLR_SERVER = CONFIG.get_solr_server()
     
 def main():
     '''Finds new user to add to database.'''
