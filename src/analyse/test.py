@@ -2,7 +2,7 @@
 '''test script for fast and convienient test of alot of data
 '''
 from compiler import analyse
-from keywords import extract_keywords
+
 
 tweet="i dislike this apple"
 print analyse(tweet)
