@@ -73,12 +73,12 @@ class TwitterHelp:
         return statuses
         
     def get_all_tweets(self, username, since_id=None):
-        all_added_users = {}
         '''Retrieves all tweets from a twitter user.
         @param username: The username of which to find tweets, either ID or aliases is accepted.
         @param since_id: [optional] The ID of the earliest tweet that will be included. 
         @return: A dictionary containing the tweet IDs mapped to their corresponding tweets in string 
         form. None if the user was not found'''
+
         status_dic = {}
         try:
             statuses = self.get_all_statuses(username, since_id)
