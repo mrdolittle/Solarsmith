@@ -511,6 +511,7 @@ TWEET_STOPSMILEYS = set([":)", ":(", ":<", ":>", ":-)", ":-(", ":-<", ";-)", ";)
                          "}:3"]) # elk
 
 URL_REGEX = re.compile(r'https?:(?:(//)|(\\\\))+[!\w\d:#@%/;$()~_?\+\-=\\\.,&]*', re.I)
+DOTS_REGEX = re.compile(r'\.{2,}')
 def strip_tweet(tweet):
     '''Strips tweet of scary features like hashtags at the start or
     end of a tweet as well as some smileys etc.
@@ -535,8 +536,7 @@ def strip_tweet(tweet):
         else:
             return a
 
-    urlless_tweet = URL_REGEX.sub("URLYBURLYSMURLYPURLY", tweet)
-    words = split_tweet(urlless_tweet)
+    words = split_tweet(URL_REGEX.sub("URLYBURLYSMURLYPURLY", DOTS_REGEX.sub(" ... ", tweet)))
 
     # # strip leading hashtags
     # while words != [] and words[0][0] == '#':
