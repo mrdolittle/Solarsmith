@@ -80,7 +80,7 @@ def main():
                 time.sleep(sleep_time)                 
             else:
                 print "This user has recently been updated."
-        print "A cycle has been done. Initiating a " + str(cycle_time) + " seconds sleep"
+        print "Completed one update cycle. Sleeping for " + str(cycle_time) + " seconds."
         time.sleep(cycle_time)       
 
 if __name__ == "__main__":
