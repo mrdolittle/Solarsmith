@@ -93,15 +93,17 @@ def extract_keywords(sentence):
         return reduce(operator.add, a, [])
 
     stripped = strip_tweet(sentence)
+
+    names    = set(get_names(sentence)) # made into sets to speed up the filtering below
+    hashtags = set(get_hashtags(sentence))
                     
     return concat(map(lambda (a,b): (a.lower(), b),
-                      concat(explicit_keywords(map(non_aggresive_stemmer, nltk.word_tokenize(stripped))),
-                             map(non_aggresive_stemmer, filter_keywords(extract_keywords_grammar(stripped),
-                                                                        key = lambda a: a[0])))),
-                  map(lambda x: (x.lower(), 5.0),
-                      get_hashtags(sentence)),
-                  map(lambda x: (x.lower(), 1.6),
-                      get_names(sentence)))
+                      filter(lambda (a,_1): a not in names and a not in hashtags,
+                             concat(explicit_keywords(map(non_aggresive_stemmer, nltk.word_tokenize(stripped))),
+                                    map(non_aggresive_stemmer, filter_keywords(extract_keywords_grammar(stripped),
+                                                                               key = lambda a: a[0]))))),
+                  map(lambda x: (x.lower(), 5.0), hashtags),
+                  map(lambda x: (x.lower(), 1.6), names))
 
 #Initialize _POS_TAGGER
 nltk.data.load(_POS_TAGGER)
