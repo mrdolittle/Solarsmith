@@ -69,20 +69,21 @@ class TwitterHelp:
         
         all_statuses = []
         page = 1
-        page_ultimate_limit = 10
+        page_ultimate_limit = 3
         view_size = 140
         # get statuses and append to all_statuses
         
         while True:
             statuses = self.twitter_API.GetUserTimeline(id=username, count=view_size, since_id=since_id, page=page)
-            if statuses and not page >= page_ultimate_limit:
+            if statuses: 
                 for status in statuses:
                     status.text = unescape(status.text)
                     all_statuses.append(status)
             else:
                 break
             
-            if len(statuses) < view_size: # avoid doing an extra call to GetUserTimeline if we already have all tweets 
+            # avoid doing an extra call to GetUserTimeline if we already have all tweets 
+            if len(statuses) < view_size or page >= page_ultimate_limit: 
                 break
             page = page + 1  # next page
             
