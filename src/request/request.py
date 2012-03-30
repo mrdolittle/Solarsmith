@@ -27,6 +27,7 @@ import threading
 import socket
 import sys
 from configHandler import configuration
+import traceback
 
 CONFIG = configuration.Config(setting = 1)
 SOLR_SERVER = CONFIG.get_solr_server()
@@ -47,7 +48,10 @@ def add_to_solr(username):
         return "ProtectedUser"
     except addalyse.AddalyseUnableToProcureTweetsError:
         return "OtherError"
-    
+    except:
+        sys.stderr.write("Unhandled exception:\n")
+        traceback.print_exc()
+        return "OtherError"
     return None
 
     
