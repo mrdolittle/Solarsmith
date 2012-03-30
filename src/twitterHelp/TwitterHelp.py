@@ -51,8 +51,6 @@ class TwitterHelp:
             statuses = self.twitter_API.GetPublicTimeline()
         except twitter.TwitterError:
             return None
-        except urllib2.HTTPError:
-            return None
         for s in statuses:
             status_dic[s.GetUser().GetScreenName()] = s.text
         return status_dic
