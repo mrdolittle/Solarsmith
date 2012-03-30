@@ -6,6 +6,7 @@
 #Importing the Twitter library.
 import twitter
 import urllib2
+import time
 from xml.sax.saxutils import unescape
 
 class TwitterHelp:
@@ -74,7 +75,20 @@ class TwitterHelp:
         # get statuses and append to all_statuses
         
         while True:
-            statuses = self.twitter_API.GetUserTimeline(id=username, count=view_size, since_id=since_id, page=page)
+            retry = True
+            while retry:
+                try:
+                    statuses = self.twitter_API.GetUserTimeline(id=username, count=view_size, since_id=since_id, page=page)
+                    retry = False
+                except twitter.TwitterError as e:
+                    # for anything that isn't capacity error pass it on. For capacity error: try again after sleeping a while
+                    if e.message != "Capacity Error":
+                        raise
+                    print "Got capacity error. Retrying page ", page, " for user ", username, " in 10 seconds"
+                    time.sleep(10)
+                        
+                    
+                    
             if statuses: 
                 for status in statuses:
                     status.text = unescape(status.text)

@@ -20,6 +20,9 @@ A main thread will continuously check a list to make sure that it is
 empty.  If it is not empty, the thread will pop the first element and
 process it by sending it through the addalyse package and then expect
 an answer. This will be done untill the list is empty again.
+
+
+TODO: FIXME: This program consumes excessive CPU when idling. Why? FIX IT!
 '''
 
 import addalyse 
