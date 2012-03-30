@@ -44,8 +44,8 @@ class TwitterHelp:
         return None
     
     def get_public_tweets(self):
-        '''Retrieves a dictionary of recent tweets from the public twitter feed.
-        '''
+        '''Retrieves a dictionary of recent tweets from the public twitter feed.'''
+        
         status_dic = {}
         statuses = self.twitter_API.GetPublicTimeline()
         for s in statuses:
@@ -63,15 +63,11 @@ class TwitterHelp:
         @param since_id: [optional] The ID of the earliest tweet that will be included
         @return: A list of status objects
         re-throws exceptions from self.twitter_API.GetUserTimeline(id=username, count=200, since_id=since_id) '''
-        #try:
+        
         statuses = self.twitter_API.GetUserTimeline(id=username, count=200, since_id=since_id)
         for i in statuses:
             i.text = unescape(i.text) # handle &blah; sequences
         return statuses
-        #except twitter.TwitterError:
-        #    raise #Skickar vidare felet. Kan skicka eget exception om man vill.
-        #except urllib2.HTTPError:
-            #raise twitter.TwitterError("Fel i get_all_statuses")
         
     def get_all_tweets(self, username, since_id=None):
         all_added_users = {}
