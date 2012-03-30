@@ -2,13 +2,13 @@
 '''
 Created on Mar 22, 2012
 
-@author: jonas
+@author: Jonas & Petter
 '''
 import sunburnt
 import ast
 
 SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"
-SCORELIMIT = 0.0002 # Filter for friends/enemies
+SCORELIMIT = 0.0002  # Filter for friends/enemies
 
 
 def connect_to_solr():
