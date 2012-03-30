@@ -16,9 +16,9 @@ import urllib2
 from twitterHelp import *
 #from addalyse import *
 import time
-from configHandler import configuration
+import configHandler
 
-CONFIG = configuration.Config()
+CONFIG = configHandler.Config()
 SOLR_SERVER = CONFIG.get_solr_server()
     
 def main():

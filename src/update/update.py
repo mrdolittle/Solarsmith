@@ -14,14 +14,14 @@ TODO: WRITE MORE DESCRIPTION OF ME?
 from storageHandler import *
 from twitterHelp import *
 from mx import DateTime as mxDateTime
-from configHandler import configuration
 from logger import logger
+import configHandler
 import addalyse
 import time
 import traceback
 import sys
 
-CONFIG = configuration.Config()
+CONFIG = configHandler.Config()
 SOLR_SERVER = CONFIG.get_solr_server()
 
 # Every UPDATE_N:th update of a profile do a full analysis throwing away the old one

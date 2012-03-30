@@ -29,10 +29,10 @@ from sys import *
 import threading
 import socket
 import sys
-from configHandler import configuration
 import traceback
+import configHandler
 
-CONFIG = configuration.Config()
+CONFIG = configHandler.Config()
 SOLR_SERVER = CONFIG.get_solr_server()
 
         
