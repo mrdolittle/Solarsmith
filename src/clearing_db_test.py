@@ -7,7 +7,7 @@ Created on Mar 29, 2012
 '''
 
 from storageHandler import *
-from addalyse import *
+import addalyse
 
 # TODO: read this from some configuration file in a smart way?
 SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"
@@ -27,7 +27,7 @@ def clear_database_and_add_users(usernames=["SSDummy_Janet", "ssdummy_henry", "s
     for username in usernames:
         print "Adding: " + username + " Left to add: " +str(users_left_to_add)
         users_left_to_add = users_left_to_add - 1
-        addalyse(sh,username)
+        addalyse.addalyse(sh,username)
     print "Done adding test users!"
     
 # testing
