@@ -11,15 +11,18 @@ TODO: handle exceptions (like when we've been making too many twitter requests s
 TODO: WRITE MORE DESCRIPTION OF ME?
 '''
 
-from addalyse import *
 from storageHandler import *
 from twitterHelp import *
 from mx import DateTime as mxDateTime
-import time
+from configHandler import configuration
 from logger import logger
+import addalyse
+import time
+import traceback
+import sys
 
-# TODO: read this from some configuration file in a smart way?
-SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"
+CONFIG = configuration.Config(setting = 1)
+SOLR_SERVER = CONFIG.get_solr_server()
 
 # Every UPDATE_N:th update of a profile do a full analysis throwing away the old one
 UPDATE_N = 100
@@ -41,7 +44,7 @@ def main():
             if diff.hours > update_time:     #Continue if it was more than 1 hour ago since the document was updated
                 print("Updating...")
                 try:
-                    addalyse(SOLR_SERVER,
+                    addalyse.addalyse(SOLR_SERVER,
                              username,
                              since_id,
                              (update_count % UPDATE_N) == 0,
@@ -51,6 +54,9 @@ def main():
                     print err
                 except addalyse.AddalyseUnableToProcureTweetsError as err:
                     print err
+                except:
+                        sys.stderr.write("Unhandled exception:\n")
+                        traceback.print_exc()
                 time.sleep(sleep_time) # sleep for ten seconds, to not make to many requests to twitter                
             else:
                 print("This user has recently been updated ( " + str(diff.minutes) + " minutes ago).")

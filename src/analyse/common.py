@@ -15,13 +15,19 @@ def split_tweet(text):
     '''Splits tweets neater than regular splitting at whitespace (for
     instance whenever we encounter a hashtag or @-notation we split
     away any punctuation at the end. Doesn't split punctuation from
-    words outside of hashtags/@-notation however.'''
+    words outside of hashtags/@-notation however.
+
+    TODO: COMPLETE REWRITE OF THIS POS (it stands for piece of shit and not parts of speech)
+    '''
 
     def split_tag(tag):
-        if len(tag) < 2:        # avoid blowing up 
+        try: 
+            [(a, b)] = re.findall(r'([#@]\w+)(.*)', tag) # this will blow up if more than one match (but it won't due to the regex...)
+            return [a] if b == '' else [a,b]
+        except ValueError:
+            # KLUDGE: When we had a too short string or otherwise failed return a string with a space (to not confuse the for loops!)
+            
             return [" "]
-        [(a, b)] = re.findall(r'([#@]\w+)(.*)', tag) # this will blow up if more than one match (but it won't due to the regex...)
-        return [a] if b == '' else [a,b]
 
     wordsplit = text.split()
     result = []
