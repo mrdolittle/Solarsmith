@@ -14,9 +14,9 @@ import addalyse
 import urllib2
 from twitterHelp import TwitterHelp
 from storageHandler import StorageHandler
-#from addalyse import *
 import time
 import configHandler
+import traceback
 
 CONFIG = configHandler.Config()
 SOLR_SERVER = CONFIG.get_solr_server()
@@ -92,8 +92,11 @@ def gather_data_loop(request_per_hour = 3600, users_to_add = 21):
                     if addalyse.addalyse(SOLR_SERVER, user):
                         users_added.add(user)
                         added_users += 1
-                except urllib2.HTTPError:
-                    'do nothing'
+                except:
+                    # ignore errors non-silently (we print tracebacks!)
+                    # TODO: use the logger for this?
+                    sys.stderr.write("Unhandled exception\n")
+                    traceback.print_exc()
                 
     # For debugging purposes, displays all users found in this session.
     for key in users_added:
