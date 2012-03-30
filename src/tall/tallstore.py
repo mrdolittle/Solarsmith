@@ -6,13 +6,11 @@ Created on Mar 22, 2012
 '''
 import sunburnt
 import ast
+from configHandler import configuration
 
-SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"
-<<<<<<< HEAD
+CONFIG = configuration.Config(setting=2)
+SOLR_SERVER = CONFIG.get_solr_server()
 SCORELIMIT = 0.0002  # Filter for friends/enemies
-=======
-SCORELIMIT = 3.0002 # Filter for friends/enemies
->>>>>>> branch 'master' of https://dollittle@github.com:443/dollittle/Solarsmith.git
 
 
 def connect_to_solr():
