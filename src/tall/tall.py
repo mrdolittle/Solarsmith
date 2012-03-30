@@ -15,7 +15,7 @@ import socket
 import tallstore
 import urlparse
 
-CONFIG = configuration.Config(setting=2)
+CONFIG = configuration.Config(setting=1)
 REQUEST_SERVER = CONFIG.get_request_server()
 REQUEST_SERVER_PORT = 1337
 
