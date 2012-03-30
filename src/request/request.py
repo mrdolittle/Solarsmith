@@ -19,7 +19,7 @@ If it is not empty, the thread will pop the first element and process it by send
 addalyse package and then expect an answer. This will be done untill the list is empty again.  
 '''
 
-from addalyse import *
+import addalyse 
 from twitterHelp import *
 from select import *
 from sys import *
@@ -28,7 +28,7 @@ import socket
 import sys
 from configHandler import configuration
 
-CONFIG = configuration.Config()
+CONFIG = configuration.Config(setting = 2)
 SOLR_SERVER = CONFIG.get_solr_server()
 
         
@@ -39,7 +39,7 @@ def add_to_solr(username):
     message, either: "UserNotOnTwitter" or "OtherError".'''
     
     try:
-        addalyse(SOLR_SERVER, username)
+        addalyse.addalyse(SOLR_SERVER, username)
         return "UserAdded"
     except addalyse.AddalyseUserNotOnTwitterError:
         return "UserNotOnTwitter"
@@ -190,7 +190,7 @@ class UsernameHandler(threading.Thread):
         '''Initiate the variables used by the UsernameHandler'''
         threading.Thread.__init__(self)
         self.size = 1024
-        self.request_list_empty = True 
+        # self.request_list_empty = True 
         self.request_list = request_list_input
         self.stop_thread = False
         
