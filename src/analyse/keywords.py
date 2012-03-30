@@ -11,6 +11,7 @@ import nltk
 from nltk.tag import _POS_TAGGER
 from stopwords import filter_keywords, strip_tweet
 from common import *
+import operator
 
 def extract_keywords_grammar(text):
     '''Uses chunks matching to identify keywords in a tweet. The code looks much nicer this way :P'''
@@ -51,14 +52,16 @@ def extract_keywords_grammar(text):
 #     return extract_keywords_grammar(hashtagreturn[0], hashtagreturn[1])
 
 def get_hashtags(tweet):
-    '''Splits tweet on whitespace (this is ok, since hashtags are rarely combined together with
-    punctuation in scary ways that other words might be... I think... (TODO: investigate this)) and
-    finds hashtags in it.
-
-    TODO: use split_tweets
-    '''
+    '''Splits tweet and finds hashtags in it.'''
     
-    return filter(lambda x: x[0] == '#', split_tweet(tweet))
+    return filter(lambda x: x[0:1] == '#', split_tweet(tweet))
+
+def get_names(tweet):
+    '''Splits tweet and finds @username usage in it. Returns names
+    without leading @'''
+    
+    return [x[1:] for x in split_tweet(tweet) if x[0:1] == '@']
+
 
 
 def non_aggresive_stemmer(word):
@@ -85,8 +88,8 @@ def extract_keywords(sentence):
     keyword and a confidence factor of some sort (currently hard-coded to 1.0. But might change in
     future, or might not and just be really stupid). '''
     
-    def concat(a,b):
-        return a+b
+    def concat(*a):
+        return reduce(operator.add, a, [])
 
     stripped = strip_tweet(sentence)
                     
@@ -95,7 +98,9 @@ def extract_keywords(sentence):
                              map(non_aggresive_stemmer, filter_keywords(extract_keywords_grammar(stripped),
                                                                         key = lambda a: a[0])))),
                   map(lambda x: (x.lower(), 5.0),
-                      get_hashtags(sentence)))
+                      get_hashtags(sentence)),
+                  map(lambda x: (x.lower(), 1.6),
+                      get_names(sentence)))
 
 #Initialize _POS_TAGGER
 nltk.data.load(_POS_TAGGER)
