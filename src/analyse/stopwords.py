@@ -533,6 +533,8 @@ def strip_tweet(tweet):
             return u'love ' + a[2:]
         if a[0] == u'\u2665':   # unicode heart !
             return u'love' + a[1:]
+        if a == "thanx":        # correct an internet spelling (TODO: more of these :/)
+            return "thanks"
         else:
             return a
 
