@@ -35,6 +35,8 @@ class AddalyseUserNotOnTwitterError(AddalyseError): pass
 # subclass of AddalyseError...
 class AddalyseUnableToProcureTweetsError(AddalyseError): pass
 
+class AddalyseProtectedUserError(AddalyseError): pass
+
 def addalyse(*args):
     try:
         return apply(_addalyse, args)
@@ -123,7 +125,7 @@ def _addalyse(solr_server, username, since_id=0, remake_profile=True, update_cou
         # send to analysis
         #(lovekeywords, hatekeywords) = ([("cat", 44), ("bear hunting", 22), ("dog", 33)], [("fishing", 55), ("bear grylls", 33)])
         (lovekeywords, hatekeywords) = compiler.analyse(map(lambda x: x.GetText(), tweets))
-        
+
         
         # get a users old hatekeywords_list and lovekeywords_list
         doc = sh.get_user_documents(username, 'lovekeywords_list', 'hatekeywords_list')[0]
