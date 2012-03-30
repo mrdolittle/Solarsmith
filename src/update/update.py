@@ -11,10 +11,10 @@ TODO: handle exceptions (like when we've been making too many twitter requests s
 TODO: WRITE MORE DESCRIPTION OF ME?
 '''
 
-from addalyse import *
 from storageHandler import *
 from twitterHelp import *
 from mx import DateTime as mxDateTime
+import addalyse
 import time
 from logger import logger
 
@@ -41,7 +41,7 @@ def main():
             if diff.hours > update_time:     #Continue if it was more than 1 hour ago since the document was updated
                 print("Updating...")
                 try:
-                    addalyse(SOLR_SERVER,
+                    addalyse.addalyse(SOLR_SERVER,
                              username,
                              since_id,
                              (update_count % UPDATE_N) == 0,
