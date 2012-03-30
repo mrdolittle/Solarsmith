@@ -32,9 +32,9 @@ def clear_database_and_add_users(usernames=["SSDummy_Janet", "ssdummy_henry", "s
             users_left_to_add = users_left_to_add - 1
             addalyse.addalyse(sh, username)
         except addalyse.AddalyseError as err:
-            sys.stderr("Got error from addalyse: " + str(err) : "\n")
+            sys.stderr.write("Got error from addalyse: " + str(err) : "\n")
         except Exception:
-            sys.stderr("Unhandled exception\n")
+            sys.stderr.write("Unhandled exception\n")
             traceback.print_exc()
             
     print "Done adding test users!"
