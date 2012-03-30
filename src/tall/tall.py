@@ -56,14 +56,11 @@ def send_to_request(username):
             arrived = soc.recv(1024)  # Recieves a response of at most 1k
             print "Arrived to request: " + arrived
         else:
-            print "Error: Timeout"
             return (False, "Error: Timeout")
-        print "Arrived to request: " + arrived
         ready = select.select([soc], [], [], 10)
         if ready[0]:
             response = soc.recv(1024)  # Recieves a response of at most 1k
         else:
-            print "Error: Timeout"
             return (False, "Error: Timeout")
     except:
         "Error: Could not read from request"
@@ -80,14 +77,14 @@ def send_to_request(username):
         # Tala om att användaren är skyddad
         return (False, "Error: User is hidden and cannot be shown.")
     else:
-        # Response was 3 or 4
+        # Response was something else
 #        print response
         return (False, "Error: Unknown error.")
         # Tala om för gui att nånting pajade
 
     # 1 = user added
     # 2 = user does not exist
-    # 3 = timeout
+    # 3 = user is hidden
     # 4 = unknown error
 
 

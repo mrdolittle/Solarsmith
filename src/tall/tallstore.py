@@ -6,9 +6,12 @@ Created on Mar 22, 2012
 '''
 import sunburnt
 import ast
+from configHandler import configuration
 
-SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"
+CONFIG = configuration.Config(setting=2)
+SOLR_SERVER = CONFIG.get_solr_server()
 SCORELIMIT = 0.0002  # Filter for friends/enemies
+
 
 def connect_to_solr():
     global SOLR_INTERFACE
