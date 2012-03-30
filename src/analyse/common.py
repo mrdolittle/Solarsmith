@@ -2,6 +2,9 @@
 Some routines used throughout the analyse modules
 '''
 
+from nltk.corpus import wordnet
+import re
+
 def nop(a):
     '''The identity function'''
     
