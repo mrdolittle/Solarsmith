@@ -190,7 +190,7 @@ class UsernameHandler(threading.Thread):
         '''Initiate the variables used by the UsernameHandler'''
         threading.Thread.__init__(self)
         self.size = 1024
-        self.request_list_empty = True 
+        # self.request_list_empty = True 
         self.request_list = request_list_input
         self.stop_thread = False
         
