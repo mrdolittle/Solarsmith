@@ -540,6 +540,12 @@ def strip_tweet(tweet):
     # while words != [] and words[0][0] == '#':
     #     del words[0]
 
+    # strip leading @Usage (fetching these is handled separately
+    # anyhow, so less confusion for the POS tagger is good. Albeit
+    # names in the middle of the tweet will thus be prioritated.)
+    while words != [] and words[0][0] == '@':
+        del words[0]
+
     # strip trailing hashtags
     while words != [] and words[-1][0] == '#':
         del words[-1]
