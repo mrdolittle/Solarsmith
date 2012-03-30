@@ -95,7 +95,7 @@ def _addalyse(solr_server, username, since_id=0, remake_profile=True, update_cou
         if not tweets: 
             e = AddalyseUnableToProcureTweetsError("I couldn't for the love of me extract some tweets for '" +
                                                    username +
-                                                   "'. Maybe he just doesn't have any?")
+                                                   "'. Maybe they just doesn't have any?")
             e.remake_profile = True
             raise e
         
@@ -114,7 +114,7 @@ def _addalyse(solr_server, username, since_id=0, remake_profile=True, update_cou
         if not tweets:
             e = AddalyseUnableToProcureTweetsError("I couldn't for the love of me extract some tweets for '" +
                                                    username +
-                                                   "'. Maybe he just doesn't have any new ones?")
+                                                   "'. Maybe they just doesn't have any new ones?")
             e.remake_profile = False
             raise e
            
