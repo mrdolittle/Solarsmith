@@ -75,6 +75,8 @@ class TwitterHelp:
         # get statuses and append to all_statuses
         
         while True:
+            print "TwitterHelp.get_all_statuses(): Pulling page", page
+            
             retry = True
             while retry:
                 try:
@@ -84,7 +86,7 @@ class TwitterHelp:
                     # for anything that isn't capacity error pass it on. For capacity error: try again after sleeping a while
                     if e.message != "Capacity Error":
                         raise
-                    print "Got capacity error. Retrying page ", page, " for user ", username, " in 10 seconds"
+                    print "Got capacity error. Retrying page", page, "for user", username, "in 10 seconds."
                     time.sleep(10)
                         
                     
