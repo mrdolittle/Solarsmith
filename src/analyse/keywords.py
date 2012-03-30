@@ -12,7 +12,6 @@ from nltk.tag import _POS_TAGGER
 from stopwords import filter_keywords, strip_tweet
 from common import *
 import operator
-import string
 
 def extract_keywords_grammar(text):
     '''Uses chunks matching to identify keywords in a tweet. The code looks much nicer this way :P'''
