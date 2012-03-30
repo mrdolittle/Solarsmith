@@ -16,6 +16,7 @@ Uses: analysis, storageHandler, twitter help
 Used by: request, update, scrape 
 '''
 
+import twitter
 from twitterHelp import *
 from storageHandler import *
 from analyse import *
@@ -34,7 +35,16 @@ class AddalyseUserNotOnTwitterError(AddalyseError): pass
 # subclass of AddalyseError...
 class AddalyseUnableToProcureTweetsError(AddalyseError): pass
 
-def addalyse(solr_server, username, since_id=0, remake_profile=True, update_count=1):
+def addalyse(*args):
+    try:
+        return apply(_addalyse, args)
+    except twitter.TwitterError as e:
+        if e.message == 'Not authorized':
+            raise AddalyseProtectedUserError('Not authorized')
+        else:
+            raise               # else pass it on 
+
+def _addalyse(solr_server, username, since_id=0, remake_profile=True, update_count=1):
     '''
     Description:
     If remakeProfile is true then it will disregard since_id and analyse as many tweets as possible

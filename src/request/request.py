@@ -44,10 +44,12 @@ def add_to_solr(username):
         return "UserAdded"
     except addalyse.AddalyseUserNotOnTwitterError:
         return "UserNotOnTwitter"
+    except addalyse.AddalyseProtectedUserError:
+        return "ProtectedUser"
     except addalyse.AddalyseUnableToProcureTweetsError:
         return "OtherError"
-    #except:
-        #return "OtherError"
+    except:
+        return "OtherError"
     return None
 
     
