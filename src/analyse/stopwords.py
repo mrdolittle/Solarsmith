@@ -557,6 +557,6 @@ def strip_tweet(tweet):
     words = filter(lambda x: x not in TWEET_STOPSMILEYS, words) # strip the smileys etc. out of the tweet
 
     result = ' '.join(words)
-    print "strip_tweet():", tweet, "=>", result
+    # print "strip_tweet():", tweet, "=>", result
     return result
     
