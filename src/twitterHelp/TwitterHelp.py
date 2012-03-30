@@ -68,7 +68,6 @@ class TwitterHelp:
         @param since_id: [optional] The ID of the earliest tweet that will be included
         @return: A list of status objects'''
         try:
-            print(username)
             statuses = self.twitter_API.GetUserTimeline(id=username, count=200, since_id=since_id)
             for i in statuses:
                 i.text = unescape(i.text) # handle &blah; sequences

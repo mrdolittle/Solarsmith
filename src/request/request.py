@@ -47,26 +47,23 @@ def add_to_solr(username):
         return "ProtectedUser"
     except addalyse.AddalyseUnableToProcureTweetsError:
         return "OtherError"
-    except:
-        return "OtherError"
+    
     return None
 
     
 def main():
     '''The main procedure will create the necessary lists, set up the
     instances and await termination'''
-    # create a lock
-    lock = threading.Lock()
     
     #Create the request list
     request_list = []
     
     #Start the username handler
-    username_handle_instance = UsernameHandler(request_list,lock)
+    username_handle_instance = UsernameHandler(request_list)
     username_handle_instance.start()
     
     #Create a new Server instance
-    server_instance = Server(request_list, lock)
+    server_instance = Server(request_list)
     
     #Start listening:
     server_instance.run()
@@ -80,7 +77,7 @@ class Server():
             database. This parameter will be sent to each client
             thread that is spawned'''
     
-    def __init__(self, request_list_input,lock):
+    def __init__(self, request_list_input):
         '''Setting up default variables for the server socket.'''
         
         #Server values
@@ -91,7 +88,6 @@ class Server():
         #A list of threads (clients) and the request list
         self.threads = []
         self.request_list = request_list_input
-        self.lock=lock
     
     def open_server_socket(self):
         '''Opens a server socket. 
@@ -153,7 +149,7 @@ class Client(threading.Thread):
         into a list for further use. The client will also send a response back when the received data
         has been processed.'''
     
-    def __init__(self, (client, address), request_list_input,lock):
+    def __init__(self, (client, address), request_list_input):
         '''Used to initiate the values and set the input arguments'''
         
         #Initiate according to the threading.Thread.__init__
@@ -164,7 +160,6 @@ class Client(threading.Thread):
         self.address = address
         self.size = 1024
         self.request_list = request_list_input
-        self.lock=lock
         
     def run(self):
         '''This method will run continuously until the client is shut down or until the
@@ -182,11 +177,8 @@ class Client(threading.Thread):
                 
                 #Send the response
                 self.client.send("Server response: Received username: " + data)
-                # lock when changing or accessing request_list
-                with self.lock:
-                    #If the data does not exist in the list, then append it with the client.
-                    if not self.request_list.__contains__(data):
-                        self.request_list.append((data, self.client))
+                if data not in self.request_list:
+                    self.request_list.append((data, self.client))
 #            else:
 #                #self.client.close()
                 running = False
@@ -195,23 +187,20 @@ class UsernameHandler(threading.Thread):
     '''A class that will handle all of the usernames and their client threads and 
         make sure that they are sent and processed one by one. '''
     
-    def __init__(self, request_list_input,lock):
+    def __init__(self, request_list_input):
         '''Initiate the variables used by the UsernameHandler'''
         threading.Thread.__init__(self)
         self.size = 1024
         # self.request_list_empty = True 
         self.request_list = request_list_input
         self.stop_thread = False
-        self.lock=lock
         
     def run(self):
         #Set the while parameter.
         running = True
         while(running):
             if self.request_list != []:
-                # lock
-                with self.lock:
-                    data = self.request_list.pop() #data[0] = username, data[1] = socket
+                data = self.request_list.pop() #data[0] = username, data[1] = socket
                 sys.stdout.write("Processing username: " + data[0] + "\n")
                 res = add_to_solr(data[0])
                 #On response:

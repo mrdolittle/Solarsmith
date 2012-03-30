@@ -43,8 +43,11 @@ def addalyse(*args):
     except twitter.TwitterError as e:
         if e.message == 'Not authorized':
             raise AddalyseProtectedUserError('Not authorized')
+        if e.message == "Capacity Error":
+            raise AddalyseUnableToProcureTweetsError
         else:
-            raise               # else pass it on 
+            raise               # else pass it on
+        
 
 def _addalyse(solr_server, username, since_id=0, remake_profile=True, update_count=1):
     '''
