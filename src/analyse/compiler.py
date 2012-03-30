@@ -77,7 +77,7 @@ def analyse(tweets):
     #reduce(lambda x,y: x+y,map(nltk.sent_tokenize, tweets))
 
     # split the list of tweets to a list of sentences and send it to analyse_sentences
-    return map(lambda x: filter(lambda (_1,y): y>=1.0, x) ,analyse_sentences_var_1(reduce(lambda x,y: x+y, map(nltk.sent_tokenize, filter(isenglish, tweets)))))
+    return map(lambda x: filter(lambda (_1,y): y>=1.0, x) ,analyse_sentences_var_1(reduce(lambda x,y: x+y, map(nltk.sent_tokenize, filter(isenglish, tweets)), [])))
 
 if __name__ == "__main__":
     print analyse(["Star Wars is the movie of the century","Bear Grylls is being tortured by us more and more"])
