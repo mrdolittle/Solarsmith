@@ -31,10 +31,10 @@ def get_and_sort_common_keywords(userskeywords, otherkeywords):
     return commonkeywords
 
 def get_common_keywords(userskeywords, otherkeywords):
-    commonkeywors = []
+    commonkeywords = []
     for key, weight in otherkeywords:
         if key in userskeywords:
-            commonkeywords = commonkeywors + [(key, weight)]
+            commonkeywords = commonkeywords + [(key, weight)]
     return commonkeywords
 
 
@@ -91,7 +91,7 @@ def get_frienemies_by_id(username):
         for searchee in query.execute(constructor=SolrUser):
             print "Query executed on username: " + username + ", result: "
             print searchee
-        if searchee == '':  # Ändrade kollen, definierade searchee som en tom sträng. searchee existerar inte om användaren inte finns i Solr och man inte definierar den själv
+        if searchee == '':  # Ã„ndrade kollen, definierade searchee som en tom strÃ¤ng. searchee existerar inte om anvÃ¤ndaren inte finns i Solr och man inte definierar den sjÃ¤lv
             return False # User is not in Solr
     except:
         return "Error: Connection to Solr lost."
@@ -162,9 +162,11 @@ def get_frienemies_by_keywords(keywords):
     for single_friend in friends:
         common_friend_lovekeywords = get_common_keywords(keywords, single_friend.lovekeywords_list)
         single_friend.set_lovekeywords(common_friend_lovekeywords) # Set and sort friend lovekeywords to common keywords
+        single_friend.set_hatekeywords([]) # Not interested in their hatekeywords
         
     for single_enemy in enemies:
         common_enemy_keywords = get_common_keywords(keywords, single_enemy.hatekeywords_list)
         single_enemy.set_hatekeywords(common_enemy_keywords) # Set and sort enemy hatekeywords to common keywords
+        single_enemy.set_lovekeywords([]) # Not interested in their lovekeywords
     
     return friends, enemies

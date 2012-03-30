@@ -39,8 +39,8 @@ def extract_keywords_grammar(text):
                 words.append((reduce(lambda x,y: x + " " + y if len(y)>2 else x, map(lambda (x,_1): x, t)), 1.0))
                 for x in t:
                     words.append((x[0],0.5))   
-                else:
-                    words.append((t[0][0],1.0))
+            else:
+                words.append((t[0][0],1.0))
                 
     for s in chunksSingular.parse(sequence).subtrees():
         if s.node == "Noun":
@@ -100,6 +100,6 @@ def extract_keywords(sentence):
 nltk.data.load(_POS_TAGGER)
 
 if __name__ == '__main__':
-    text = ""
+    text = "Star Wars is awesome"
     print extract_keywords_grammar(text)
     
