@@ -44,7 +44,7 @@ def addalyse(*args):
         if e.message == 'Not authorized':
             raise AddalyseProtectedUserError('Not authorized')
         if e.message == "Capacity Error":
-            raise AddalyseUnableToProcureTweetsError
+            raise AddalyseUnableToProcureTweetsError('Twitter is lazy: Capacity error')
         else:
             raise               # else pass it on
         
