@@ -28,7 +28,7 @@ class AddalyseError(Exception):
     def __init__(self, value):
         self.value = value
     def __str__(self):
-        return repr(self.value)
+        return repr(self)[:-1] + repr(self.value) + ')'
 
 # subclass of AddalyseError...
 class AddalyseUserNotOnTwitterError(AddalyseError): pass
