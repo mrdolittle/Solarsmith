@@ -25,7 +25,7 @@ class TwitterHelp:
     
     def twitter_contains(self, username):
         '''checks if a username exists on Twitter.
-        This method is rather slow, but does _not_ user up any API calls.
+        This method is rather slow, but does _not_ use up any API calls.
         @return: True if the user exists, else False'''
         try:
             urllib2.urlopen("http://www.twitter.com/" + username)
