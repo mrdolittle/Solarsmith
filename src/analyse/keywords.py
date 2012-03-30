@@ -84,9 +84,10 @@ def explicit_keywords(words):
     
 
 def extract_keywords(sentence):
-    '''Extracts hashtags and keywords from a tweet, stores them in a neat little list of tuples of
-    keyword and a confidence factor of some sort (currently hard-coded to 1.0. But might change in
-    future, or might not and just be really stupid). '''
+    '''Extracts hashtags and keywords from a tweet, stores them in a
+    neat little list of tuples of keyword and a confidence factor of
+    some sort (currently hard-coded to 1.0. But might change in
+    future, or might not and just be really stupid).'''
     
     def concat(*a):
         return reduce(operator.add, a, [])
