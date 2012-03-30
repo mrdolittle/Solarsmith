@@ -87,10 +87,12 @@ def extract_keywords(sentence):
     
     def concat(a,b):
         return a+b
+
+    stripped = strip_tweet(sentence)
                     
     return concat(map(lambda (a,b): (a.lower(), b),
-                      concat(explicit_keywords(map(non_aggresive_stemmer, nltk.word_tokenize(sentence))),
-                             map(non_aggresive_stemmer, filter_keywords(extract_keywords_grammar(strip_tweet(sentence)),
+                      concat(explicit_keywords(map(non_aggresive_stemmer, nltk.word_tokenize(stripped))),
+                             map(non_aggresive_stemmer, filter_keywords(extract_keywords_grammar(stripped),
                                                                         key = lambda a: a[0])))),
                   map(lambda x: (x.lower(), 5.0),
                       get_hashtags(sentence)))
