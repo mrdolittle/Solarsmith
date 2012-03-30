@@ -2,13 +2,17 @@
 '''
 Created on Mar 22, 2012
 
-@author: jonas
+@author: Jonas & Petter
 '''
 import sunburnt
 import ast
 
 SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"
+<<<<<<< HEAD
+SCORELIMIT = 0.0002  # Filter for friends/enemies
+=======
 SCORELIMIT = 3.0002 # Filter for friends/enemies
+>>>>>>> branch 'master' of https://dollittle@github.com:443/dollittle/Solarsmith.git
 
 
 def connect_to_solr():

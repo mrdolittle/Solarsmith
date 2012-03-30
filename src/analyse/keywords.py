@@ -13,8 +13,7 @@ from stopwords import filter_keywords, strip_tweet
 from common import *
 
 def extract_keywords_grammar(text):
-    '''Uses chunks matching to identify keywords in a tweet. The code looks much nicer this way :P
-    Matches grammar in a sentence for potential keywords'''
+    '''Uses chunks matching to identify keywords in a tweet. The code looks much nicer this way :P'''
     
     sequence = nltk.pos_tag(nltk.word_tokenize(text))
     words = []

@@ -15,7 +15,7 @@ import socket
 import tallstore
 import urlparse
 
-CONFIG = configuration.Config()
+CONFIG = configuration.Config(setting=2)
 REQUEST_SERVER = CONFIG.get_request_server()
 REQUEST_SERVER_PORT = 1337
 
@@ -34,8 +34,10 @@ def create_socket(address):
 
 
 def send_to_request(username):
-    '''Sends a username to Request and awaits an answer. Returns different values depending on the 
-    answer from Request.'''
+    '''
+    Sends a username to Request and awaits an answer.
+    Returns different values depending on the answer from Request.
+    '''
     global REQUEST_SERVER, REQUEST_SERVER_PORT
     print "Trying to connect to request"
     try:
@@ -51,32 +53,36 @@ def send_to_request(username):
     try:
         ready = select.select([soc], [], [], 10)
         if ready[0]:
-            arrived = soc.recv(1024) # Recieves a response of at most 1k
+            arrived = soc.recv(1024)  # Recieves a response of at most 1k
+            print "Arrived to request: " + arrived
         else:
+            print "Error: Timeout"
             return (False, "Error: Timeout")
         print "Arrived to request: " + arrived
         ready = select.select([soc], [], [], 10)
         if ready[0]:
-            response = soc.recv(1024) # Recieves a response of at most 1k
+            response = soc.recv(1024)  # Recieves a response of at most 1k
         else:
+            print "Error: Timeout"
             return (False, "Error: Timeout")
     except:
         "Error: Could not read from request"
     soc.close()
-    print "response from request: " + response
     if response == "1":
-        print (True, "User added")
         return (True, "User added, retrieving frienemies.")
         # Anropa storage igen med användarnamnet
 
     elif response == "2":
 #        print response
-        return (False, "User does not exist.")
+        return (False, "Error: User does not exist.")
         # Tala om för gui att användaren inte finns
+    elif response == "3":
+        # Tala om att användaren är skyddad
+        return (False, "Error: User is hidden and cannot be shown.")
     else:
         # Response was 3 or 4
 #        print response
-        return (False, "ERROR")
+        return (False, "Error: Unknown error.")
         # Tala om för gui att nånting pajade
 
     # 1 = user added
@@ -176,7 +182,7 @@ def create_xml(result):
     tosend = tosend + endenemiestag
     # End of Search result
     tosend = tosend + endsearchtag
-   
+
     print "Response: " + tosend
 
     return tosend.encode('UTF-8')
@@ -255,6 +261,7 @@ class RequestHandler(BaseHTTPRequestHandler):
 #                message = "Request is not online. Cannot retrieve new users from Twitter."
 #                print message
                 print "Succeeded: " + str(succeeded)
+                print message
                 if succeeded == True:
                     # Hämta från storage
                     frienemy_result = tallstore.get_frienemies_by_id(data)
