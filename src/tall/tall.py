@@ -256,7 +256,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         ################
         # ignore anything but the SSDummies
         if command == "testusername":
-            frienemy_result = tallstore.test_get_frienemies_by_id(data)
+            frienemy_result = tallstore.get_frienemies_by_id(data, test_mode=True)
             self.send_result(create_xml(frienemy_result))
             return
         ################
@@ -291,6 +291,9 @@ class RequestHandler(BaseHTTPRequestHandler):
             return
         if frienemy_result == "Error: Connection to Solr lost.":
             self.send_result("Error: Connection to Solr lost.")
+            return
+        elif frienemy_result == "Error: Unknown error.":
+            self.send_result("Error: Unknown error.")
             return
         self.send_result(create_xml(frienemy_result))
 
