@@ -490,7 +490,11 @@ STOPWORDS = set(["something",
                  "yes",
                  "sorry",        # WUT?
                  "fascinating",
-                 "talkin"
+                 "talkin",
+                 "thanks",
+                 "row",
+                 "yeah",
+                 "etc"
                  ])
 
 def filter_keywords(keywords, key=nop):
