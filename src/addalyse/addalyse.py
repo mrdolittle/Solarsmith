@@ -104,11 +104,13 @@ def _addalyse(solr_server, username, since_id=0, remake_profile=True, update_cou
         new_since_id = tweets[0].id # assumes that the 
         
         # send to analysis
-        #(lovekeywords, hatekeywords) = ([("cat", 44), ("bear hunting", 22), ("dog", 33)], [("fishing", 55), ("bear grylls", 33)])
+        print "addalyse(remake_profile=" + str(remake_profile) + "): analyzing, '" + username + "'"
         (lovekeywords, hatekeywords) = analyse(map(lambda x: x.GetText(), tweets))# TODO:implement in analyse
         
         # store result in sunburnt
+        print "addalyse(remake_profile=" + str(remake_profile) + "): adding, '" + username + "'"
         sh.add_profile(username, lovekeywords, hatekeywords, new_since_id, update_count)
+        print "addalyse(remake_profile=" + str(remake_profile) + "): done"
         
     else:
         tweets = th.get_all_statuses(username, since_id) # get all tweets since since_id
@@ -124,9 +126,8 @@ def _addalyse(solr_server, username, since_id=0, remake_profile=True, update_cou
         # MERGING
 
         # send to analysis
-        #(lovekeywords, hatekeywords) = ([("cat", 44), ("bear hunting", 22), ("dog", 33)], [("fishing", 55), ("bear grylls", 33)])
+        print "addalyse(remake_profile=" + str(remake_profile) + "): analyzing, '" + username + "'"
         (lovekeywords, hatekeywords) = analyse(map(lambda x: x.GetText(), tweets))
-
         
         # get a users old hatekeywords_list and lovekeywords_list
         doc = sh.get_user_documents(username, 'lovekeywords_list', 'hatekeywords_list')[0]
@@ -139,7 +140,9 @@ def _addalyse(solr_server, username, since_id=0, remake_profile=True, update_cou
         hatemerge = merge_tuples(hatekeywords + hatekeywords_old)
         
         # add merged result to database
-        sh.add_profile(username, lovemerge, hatemerge, new_since_id, update_count)    
+        print "addalyse(remake_profile=" + str(remake_profile) + "): adding, '" + username + "'"
+        sh.add_profile(username, lovemerge, hatemerge, new_since_id, update_count)
+        print "addalyse(remake_profile=" + str(remake_profile) + "): done"
         
     # returns true if added to database   
     return True #TODO: should this return True?

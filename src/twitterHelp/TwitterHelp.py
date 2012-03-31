@@ -70,7 +70,7 @@ class TwitterHelp:
         
         all_statuses = []
         page = 1
-        page_ultimate_limit = 5
+        page_ultimate_limit = 3
         view_size = 140
         # get statuses and append to all_statuses
         
