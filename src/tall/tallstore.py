@@ -10,7 +10,8 @@ import configHandler
 
 CONFIG = configHandler.Config()
 SOLR_SERVER = CONFIG.get_solr_server()
-SCORELIMIT = 0.008  # Filter for friends/enemies
+SCORELIMIT_FRIEND = 0.008    # Filter for friends
+SCORELIMIT_ENEMY  = 0.008   # filter for enemies
 
 
 def connect_to_solr():
@@ -129,14 +130,14 @@ def get_frienemies_by_id(username):
 #    print enemies
 
     # Filter friends and enemies on score and on keywords the searchee and they have in common
-    friends = filter(lambda friend: friend.score > SCORELIMIT, friends)   
+    friends = filter(lambda friend: friend.score > SCORELIMIT_FRIEND, friends)   
     for single_friend in friends:
         common_friend_lovekeywords = get_and_sort_common_keywords(userlovekeywords, single_friend.lovekeywords_list)
         single_friend.set_lovekeywords(common_friend_lovekeywords) # Set and sort friend lovekeywords to common keywords
         common_friend_hatekeywords = get_and_sort_common_keywords(userhatekeywords, single_friend.hatekeywords_list)
         single_friend.set_hatekeywords(common_friend_hatekeywords) # Set and sort friend hatekeywords to common keywords
 
-    enemies = filter(lambda enemy: enemy > SCORELIMIT, enemies)
+    enemies = filter(lambda enemy: enemy.score > SCORELIMIT_ENEMY, enemies)
     for single_enemy in enemies:
         common_enemy_keywords = get_and_sort_common_keywords(userhatekeywords, single_enemy.lovekeywords_list)
         single_enemy.set_lovekeywords(common_enemy_keywords) # Set and sort enemy lovekeywords to common keywords
@@ -180,7 +181,9 @@ def get_frienemies_by_keywords(keywords):
 
 #######TEST#########
 def test_get_frienemies_by_id(username):
-    '''Retrieves a users friends and enemies from Solr.'''
+    '''Retrieves a users friends and enemies from Solr.
+
+    TEST VERSION: Filters out everything but the SSDummies'''
 
     query = SOLR_INTERFACE.query(id_ci=username).field_limit(score=True)
     searchee = ''
@@ -223,7 +226,7 @@ def test_get_frienemies_by_id(username):
 #    print enemies
 
     # Filter friends and enemies on score and on keywords the searchee and they have in common
-    friends = filter(lambda friend: friend.score > SCORELIMIT, friends)   
+    friends = filter(lambda friend: friend.score > SCORELIMIT_FRIEND, friends)   
     friends = filter(lambda test: "SSDummy" in test.id, friends)
     for single_friend in friends:
         common_friend_lovekeywords = get_and_sort_common_keywords(userlovekeywords, single_friend.lovekeywords_list)
@@ -231,7 +234,7 @@ def test_get_frienemies_by_id(username):
         common_friend_hatekeywords = get_and_sort_common_keywords(userhatekeywords, single_friend.hatekeywords_list)
         single_friend.set_hatekeywords(common_friend_hatekeywords) # Set and sort friend hatekeywords to common keywords
 
-    enemies = filter(lambda enemy: enemy.score > SCORELIMIT, enemies)
+    enemies = filter(lambda enemy: enemy.score > SCORELIMIT_ENEMY, enemies)
     enemies = filter(lambda test: "SSDummy" in test.id, enemies)
     for single_enemy in enemies:
         common_enemy_keywords = get_and_sort_common_keywords(userhatekeywords, single_enemy.lovekeywords_list)
