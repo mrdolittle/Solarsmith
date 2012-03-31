@@ -24,7 +24,7 @@ from operator import itemgetter
 import math
 
 
-KEYWORD_CUTOFF = 1.1.            # keywords weighted lower than this will not be included in the final results
+KEYWORD_CUTOFF = 1.1            # keywords weighted lower than this will not be included in the final results
 
 class AddalyseError(Exception):
     '''Base class for all variants of errors Addalyse wants to raise.'''
