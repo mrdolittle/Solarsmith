@@ -64,7 +64,7 @@ def main():
                 #If the user can no longer be found on Twitter: Remove from Solr
                 except addalyse.AddalyseUserNotOnTwitterError as err:
                     sys.stderr.write("Got: " + str(err) + ". Twitter acount deleted. Deleting from SOLR.\n")
-                    sh.delete(username)
+                    sh.delete_ci(username)
                 
                 #If Solr can not be updated with new Tweet data at the time of the update. Wait for 1h with this user.
                 except addalyse.AddalyseUnableToProcureTweetsError as err:
