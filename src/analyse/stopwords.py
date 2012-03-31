@@ -517,6 +517,7 @@ TWEET_STOPSMILEYS = set([":)", ":(", ":<", ":>", ":-)", ":-(", ":-<", ";-)", ";)
 
 URL_REGEX = re.compile(r'https?:(?:(//)|(\\\\))+[!\w\d:#@%/;$()~_?\+\-=\\\.,&]*', re.I)
 DOTS_REGEX = re.compile(r'\.{2,}')
+AT_REGEX = re.compile(r'\s+@\s+')
 def strip_tweet(tweet):
     '''Strips tweet of scary features like hashtags at the start or
     end of a tweet as well as some smileys etc.
@@ -529,7 +530,7 @@ def strip_tweet(tweet):
           (seems common) (maybe be wholly crazy and get fullname from twitter?)
           * Strip URLS at the very end or so (like hashtags)
           '''
-    global TWEET_STOPSMILEYS, URL_REGEX, DOTS_REGEX
+    global TWEET_STOPSMILEYS, URL_REGEX, DOTS_REGEX, AT_REGEX
 
 
     def transform(a):
@@ -543,7 +544,7 @@ def strip_tweet(tweet):
         else:
             return a
 
-    words = split_tweet(re.sub(r'\s+@\s+', " at " , URL_REGEX.sub("URLYBURLYSMURLYPURLY", DOTS_REGEX.sub(" ... ", tweet))))
+    words = split_tweet(AT_REGEX.sub(" at " , URL_REGEX.sub("URLYBURLYSMURLYPURLY", DOTS_REGEX.sub(" ... ", tweet))))
 
     # # strip leading hashtags
     # while words != [] and words[0][0] == '#':
