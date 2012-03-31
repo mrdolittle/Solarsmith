@@ -26,7 +26,7 @@ CONFIG = configHandler.Config()
 SOLR_SERVER = CONFIG.get_solr_server()
 
 # Every UPDATE_N:th update of a profile do a full analysis throwing away the old one
-UPDATE_N = 100
+UPDATE_N = 20
 
 def main():
     '''Gets profiles from storageHandler and checks if they need updating, and if so updates those.'''
