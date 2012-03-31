@@ -24,7 +24,7 @@ from operator import itemgetter
 import math
 
 
-KEYWORD_CUTOFF = 1.1            # keywords weighted lower than this will not be included in the final results
+KEYWORD_CUTOFF = 1.1.            # keywords weighted lower than this will not be included in the final results
 
 class AddalyseError(Exception):
     '''Base class for all variants of errors Addalyse wants to raise.'''
@@ -139,7 +139,7 @@ def _addalyse(solr_server, username, since_id=0, remake_profile=True, update_cou
         hatekeywords_old = doc.hatekeywords_pylist
         
         # merge tuples. Also now that we are done mergeing we can start looking for keywords with a too low weight
-        (lovemerge, hatemerge) = filter_analysis(merge_tuples(lovekeywords + lovekeywords_old), merge_tuples(hatekeywords + hatekeywords_old))
+        (lovemerge, hatemerge) = filter_analysis((merge_tuples(lovekeywords + lovekeywords_old), merge_tuples(hatekeywords + hatekeywords_old)))
         
         # add merged result to database
         print "addalyse(remake_profile=" + str(remake_profile) + "): adding, '" + username + "'"
