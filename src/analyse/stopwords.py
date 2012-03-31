@@ -528,7 +528,7 @@ def strip_tweet(tweet):
             at the end of hashtag when removing it, instead of completely nuking it.
           * DONE? strip at-sign and maybe even split those names at camelCase
           (seems common) (maybe be wholly crazy and get fullname from twitter?)
-          * Strip URLS at the very end or so (like hashtags)
+          * Strip URLS completely at the very end or so (like hashtags)
           '''
     global TWEET_STOPSMILEYS, URL_REGEX, DOTS_REGEX, AT_REGEX
 
