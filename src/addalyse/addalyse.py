@@ -23,6 +23,9 @@ from analyse import analyse
 from operator import itemgetter
 import math
 
+
+KEYWORD_CUTOFF = 1.0            # keywords weighted lower than this will not be included in the final results
+
 class AddalyseError(Exception):
     '''Base class for all variants of errors Addalyse wants to raise.'''
     
@@ -105,7 +108,7 @@ def _addalyse(solr_server, username, since_id=0, remake_profile=True, update_cou
         
         # send to analysis
         print "addalyse(remake_profile=" + str(remake_profile) + "): analyzing, '" + username + "'"
-        (lovekeywords, hatekeywords) = analyse(map(lambda x: x.GetText(), tweets))# TODO:implement in analyse
+        (lovekeywords, hatekeywords) = filter_analysis(analyse(map(lambda x: x.GetText(), tweets)))
         
         # store result in sunburnt
         print "addalyse(remake_profile=" + str(remake_profile) + "): adding, '" + username + "'"
@@ -127,7 +130,7 @@ def _addalyse(solr_server, username, since_id=0, remake_profile=True, update_cou
 
         # send to analysis
         print "addalyse(remake_profile=" + str(remake_profile) + "): analyzing, '" + username + "'"
-        (lovekeywords, hatekeywords) = analyse(map(lambda x: x.GetText(), tweets))
+        (lovekeywords, hatekeywords) = analyse(map(lambda x: x.GetText(), tweets)) # Don't filter the new analysis just yet, merge it first!
         
         # get a users old hatekeywords_list and lovekeywords_list
         doc = sh.get_user_documents(username, 'lovekeywords_list', 'hatekeywords_list')[0]
@@ -135,9 +138,8 @@ def _addalyse(solr_server, username, since_id=0, remake_profile=True, update_cou
         lovekeywords_old = doc.lovekeywords_pylist
         hatekeywords_old = doc.hatekeywords_pylist
         
-        # merge tuples
-        lovemerge = merge_tuples(lovekeywords + lovekeywords_old)# gives an exception if lovekeywords==None
-        hatemerge = merge_tuples(hatekeywords + hatekeywords_old)
+        # merge tuples. Also now that we are done mergeing we can start looking for keywords with a too low weight
+        (lovemerge, hatemerge) = filter_analysis(merge_tuples(lovekeywords + lovekeywords_old), merge_tuples(hatekeywords + hatekeywords_old))
         
         # add merged result to database
         print "addalyse(remake_profile=" + str(remake_profile) + "): adding, '" + username + "'"
@@ -150,20 +152,24 @@ def _addalyse(solr_server, username, since_id=0, remake_profile=True, update_cou
     #return math.ceil(len(tweets)/140.0)
 
 def merge_tuples(list_of_only_love_or_only_hate_tuples):
-    '''Gets a list of love tuples or a list of hate tuples, it merges
-    and adds the values of all tuples with the same name.
+    '''Merge all tuples with the same keyword and sum the values.
     
     E.g [('tjoo',1),('hi',3),('hi',2),('tjoo',3)] gives [('hi',5),('tjoo',2)]'''
     
     myDict = {}
-    # merge all tuples with the same keyword and sum the values
     for (keyword,value) in list_of_only_love_or_only_hate_tuples:
-        # if exist increment by value else add (keyword, value)
-        myDict[keyword] = myDict.get(keyword, 0.0) + value
-    # returns a list of all (key, value) tuples in the dictionary
-    return myDict.items()
+        myDict[keyword] = myDict.get(keyword, 0.0) + value         # if exist increment by value else add (keyword, value)
+    return myDict.items()                                          # returns a list of all (key, value) tuples in the dictionary
 
 
+def filter_analysis(lovekeywords_hatekeywords_tuple):
+    '''Takes a pair of keyword lists and filters them both for
+    keywords with a weight below KEYWORD_CUTOFF. Returns tuple with
+    filtered keyword lists.'''
+    global KEYWORD_CUTOFF
+    
+    foo = lambda x: filter(lambda (a,b): b >= KEYWORD_CUTOFF, x)
+    return (foo(lovekeywords_hatekeywords_tuple[0]), foo(lovekeywords_hatekeywords_tuple[1]))
 
 # TEST
 def unduplicate_and_sort_tweets(old_tweets, new_tweets):
