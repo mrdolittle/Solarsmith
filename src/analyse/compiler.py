@@ -13,8 +13,9 @@ from sentiment import analyse_sentiment
 from common import *
 
 def analyse_sentence(sentence):
-    '''Takes a tweet and performs sentimentanalysis on the given tweet, then gives the weight that
-    was returned from the sentiment analysis
+    '''Takes a tweet and performs sentiment analysis on the given
+    tweet, then gives the weight that was returned from the sentiment
+    analysis
 
     TODO: Is this function neccesary? HALF-DEPRECATED'''
     
