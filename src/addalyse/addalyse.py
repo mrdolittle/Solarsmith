@@ -60,7 +60,7 @@ def _addalyse(solr_server, username, since_id=0, remake_profile=True, update_cou
     merge the result with the profile in Solr, else add a new profile.
     
     Input: 
-    @arg solr_server: A String with the address to the Solr server.
+    @arg solr_server: A String with the address to the Solr server, or optionally a StorageHandler object.
     @arg username: A String with the username of the user that is to be analysed.
     @arg since_id: A long that contains the unique id number of the latest analysed tweet of the 
         targeted profile in Solr. This an optional argument which is 0 as default.
