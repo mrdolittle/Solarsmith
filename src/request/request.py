@@ -213,6 +213,7 @@ class UsernameHandler(threading.Thread):
         #Set the while parameter.
         running = True
         while(running):
+            print "hej"
             if self.request_list != []:
                 data = self.request_list.pop() #data[0] = username, data[1] = socket
                 sys.stdout.write("Processing username: " + data[0] + "\n")
