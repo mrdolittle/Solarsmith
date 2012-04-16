@@ -147,7 +147,7 @@ class Server():
                 elif s == sys.stdin:
                     #Handle the server console input
                     server_input = sys.stdin.readline()
-                    sys.stdout.write("Server input: " + server_input)
+                    sys.stdout.write("Server terminated")
                     LISTEN = False
         
         #Close down all the threads
