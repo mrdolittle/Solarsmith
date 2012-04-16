@@ -1,1 +1,1 @@
-from .addalyse import addalyse, AddalyseError, AddalyseUserNotOnTwitterError, AddalyseUnableToProcureTweetsError, AddalyseProtectedUserError
+from .addalyse import addalyse, AddalyseError, AddalyseUserNotOnTwitterError, AddalyseUnableToProcureTweetsError, AddalyseProtectedUserError, AddalyseRateLimitExceededError
