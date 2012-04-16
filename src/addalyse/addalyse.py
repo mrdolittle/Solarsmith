@@ -60,7 +60,7 @@ def _addalyse(solr_server, username, since_id=0, remake_profile=True, update_cou
     merge the result with the profile in Solr, else add a new profile.
     
     Input: 
-    @arg solr_server: A String with the address to the Solr server.
+    @arg solr_server: A String with the address to the Solr server, or optionally a StorageHandler object.
     @arg username: A String with the username of the user that is to be analysed.
     @arg since_id: A long that contains the unique id number of the latest analysed tweet of the 
         targeted profile in Solr. This an optional argument which is 0 as default.
@@ -85,10 +85,7 @@ def _addalyse(solr_server, username, since_id=0, remake_profile=True, update_cou
     username = th.get_screen_name(username) # canonicalize the name like a bawz  (in the future, though, th.twitter_contains(sdf) might just return this canonical stuffs)
     
     # solr_server can now optionally be a StorageHandler object
-    if isinstance(solr_server, StorageHandler):
-        sh=solr_server
-    else: 
-        sh = StorageHandler(solr_server)
+    sh = solr_server if isinstance(solr_server, StorageHandler) else StorageHandler(solr_server)
 
     # remake if not in Solr
     remake_profile = remake_profile or not sh.contains(username)
