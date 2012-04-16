@@ -36,6 +36,7 @@ class AddalyseError(Exception):
 
 class AddalyseUserNotOnTwitterError(AddalyseError): pass
 class AddalyseUnableToProcureTweetsError(AddalyseError): pass
+class AddalyseCapacityError(AddalyseError): pass
 class AddalyseProtectedUserError(AddalyseError): pass
 
 def addalyse(*args):
@@ -44,8 +45,8 @@ def addalyse(*args):
     except twitter.TwitterError as e:
         if e.message == 'Not authorized':
             raise AddalyseProtectedUserError('Not authorized')
-        if e.message == "Capacity Error":
-            raise AddalyseUnableToProcureTweetsError('Twitter is lazy: Capacity error')
+        elif e.message == "Capacity Error":
+            raise AddalyseCapacityError('Capacity error')
         else:
             raise               # else pass it on
         
