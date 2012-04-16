@@ -50,6 +50,8 @@ def add_to_solr(username):
         return "UserNotOnTwitter"
     except addalyse.AddalyseProtectedUserError:
         return "ProtectedUser"
+    except addalyse.AddalyseRateLimitExceededError:
+        return "RateLimitExceeded"        
     except addalyse.AddalyseUnableToProcureTweetsError as err:
         sys.stderr.write("Couldn't get tweets for some reason:" + str(err) + "\n")
         return "OtherError"
@@ -132,24 +134,18 @@ class Server():
                 #If input comes from a connection:
                 if s == self.server:
                     #Create a client on an incoming connection
-                    client = Client(self.server.accept(), self.request_list)
-                    
+                    client = Client(self.server.accept(), self.request_list)                    
                     #Print out console information
-                    sys.stdout.write("Server: A connection has been established\n")
-                    
+                    sys.stdout.write("Server: A connection has been established\n")                    
                     #Start the thread
-                    client.start()
-                    
+                    client.start()                    
                     #Append the thread to a list of threads
-                    self.threads.append(client)
-                
+                    self.threads.append(client)                
                 #If input comes from the server console:
                 elif s == sys.stdin:
-                    #Handle the server console input
-                    server_input = sys.stdin.readline()
+                    #Terminate the server
                     sys.stdout.write("Server terminated")
                     LISTEN = False
-        
         #Close down all the threads
         self.server.close()
         for c in self.threads:
@@ -227,6 +223,11 @@ class UsernameHandler(threading.Thread):
                 elif res == "ProtectedUser":
                     print "ProtectedUser"
                     data[1].send("3")       #3 = Protected User (hidden from public requests)
+                elif res == "RateLimitExceeded":
+                    print "RateLimitExceeded"
+                    data[1].send("4")       #4 = Other error, send this and wait for 1h.
+                    time.sleep(3600)
+                    self.request_list.append(data[0], data[1])
                 else:
                     print "OtherError"
                     data[1].send("4")       #4 = Other error
