@@ -30,6 +30,13 @@ def get_words_list(sentence, words_in_feature):
         num_words = num_words + 1
     return res
 
+def word_true_tuples(words):
+    '''takes a list of words, returns [(word1,True),(word2,True)...]'''
+    tuples=[]
+    for word in words:
+        tuples.append((word,True))
+    return tuples
+
 #test      
 #print get_words_list("hej pa lilla dej", 1)
 #print get_words_list("hej pa lilla dej", 2)
