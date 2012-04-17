@@ -106,7 +106,7 @@ def gather_data_loop(request_per_hour = 3600, users_to_add = 21):
                             added_users += 1
                             retry = False
                     except addalyse.AddalyseRateLimitExceededError as err: #Halt for 1 hour if the rate limit is exceeded
-                        sys.stderr.write("RateLimitExceeded")
+                        sys.stderr.write("RateLimitExceeded, trying again in " + str(CONFIG.get_rate_limit_exceeded_time()) + " seconds.")
                         time.sleep(CONFIG.get_rate_limit_exceeded_time())
                         retry = True
                     except addalyse.AddalyseError as err: # we use polymorphism here, WEE
