@@ -36,8 +36,13 @@ def word_true_tuples(words):
     for word in words:
         tuples.append((word,True))
     return tuples
+def word_true_dict(words):
+    feat={}
+    for word in words:
+        feat[word]=True
+    return feat
 
 #test      
-#print get_words_list("hej pa lilla dej", 1)
-#print get_words_list("hej pa lilla dej", 2)
-#print get_words_list("hej pa lilla dej", 3)
+print word_true_dict(get_words_list("hej pa lilla dej", 1))
+print get_words_list("hej pa lilla dej", 2)
+print get_words_list("hej pa lilla dej", 3)

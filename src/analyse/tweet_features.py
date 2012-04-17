@@ -11,13 +11,17 @@ import numpy
 # search patterns for features
 testFeatures = \
     [('hasAddict',     (' addict',)), \
+     ('hasAmazing',     (' amazing,amazingly',)), \
      ('hasAwesome',    ('awesome',)), \
      ('hasBroken',     ('broke',)), \
+     ('hasBetter',     ('better',)), \
+     ('hasBest',     ('best',)), \
      ('hasBad',        (' bad',)), \
      ('hasBug',        (' bug',)), \
      ('hasCant',       ('cant','can\'t')), \
      ('hasCrash',      ('crash',)), \
      ('hasCool',       ('cool',)), \
+     ('hasCute',        ('cute',)), \
      ('hasDifficult',  ('difficult',)), \
      ('hasDisaster',   ('disaster',)), \
      ('hasDown',       (' down',)), \
@@ -27,8 +31,10 @@ testFeatures = \
      ('hasExcite',     (' excite',)), \
      ('hasExpense',    ('expense','expensive')), \
      ('hasFail',       (' fail',)), \
+     ('hasFew',       (' few',)), \
      ('hasFast',       (' fast',)), \
      ('hasFix',        (' fix',)), \
+     ('hasFine',        (' fine',)), \
      ('hasFree',       (' free',)), \
      #('hasFrowny',     (':(', '):')), \
      ('hasFuck',       ('fuck',)), \
@@ -36,6 +42,7 @@ testFeatures = \
      ('hasHappy',      (' happy',' happi')), \
      ('hasHate',       ('hate',)), \
      ('hasHeart',      ('heart', '<3')), \
+     ('hasHonest',     ('honest',)), \
      ('hasIssue',      (' issue',)), \
      ('hasIncredible', ('incredible',)), \
      ('hasInterest',   ('interest',)), \
@@ -49,15 +56,22 @@ testFeatures = \
      ('hasPoor',       ('poor',)), \
      ('hasPerfect',    ('perfect',)), \
      ('hasPlease',     ('please',)), \
+     ('hasPretty',        ('pretty',)), \
+     ('hasReliable',       ('reliable',)), \
      ('hasSerious',    ('serious',)), \
+     ('hasSecure',     ('secure',)), \
+     ('hasStable',     ('stable',)), \
+     ('hasSuperior',     ('superior',)), \
      ('hasShit',       ('shit',)), \
-     ('hasSlow',       (' slow',)), \
+     ('hasSlow',       (' simple',)), \
+     ('hasSimple',       (' slow','simplicity')), \
      #('hasSmiley',     (':)', ':D', '(:')), \
      ('hasSuck',       ('suck',)), \
      ('hasTerrible',   ('terrible',)), \
      ('hasThanks',     ('thank',)), \
      ('hasTrouble',    ('trouble',)), \
      ('hasUnhappy',    ('unhapp',)), \
+     ('hasUse',        ('use',)), \
      ('hasWin',        (' win ','winner','winning')), \
      #('hasWinky',      (';)',)), \
      ('hasWorse',      ('worse','worst')), \
