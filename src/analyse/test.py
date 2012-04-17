@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 '''test script for fast and convienient test of alot of data
 '''
-from compiler import analyse
 
+from compiler import analyse
 
 tweet="i dislike this apple"
 print analyse(tweet)
