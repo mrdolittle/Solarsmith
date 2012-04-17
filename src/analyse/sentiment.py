@@ -26,7 +26,7 @@ def word_true_dict(words):
         feat[word]=True
     return feat
 
-def get_words_list(sentence, words_in_feature=3):
+def get_words_list(sentence, words_in_feature=4):
     '''Used to get all features/words up to the specified
     words_in_feature. 
     Ex. 
@@ -116,7 +116,7 @@ CLASSIFIER = nltk.NaiveBayesClassifier.train(v_train);
 ## classify and dump results for interpretation
 #print "GOING TO PRINT ACCURACY"
 #print '\nAccuracy %f\n' % nltk.classify.accuracy(CLASSIFIER, v_test)
-print CLASSIFIER.show_most_informative_features(200)
+#print CLASSIFIER.show_most_informative_features(200)
 
 
 # build confusion matrix over test set
