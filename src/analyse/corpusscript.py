@@ -21,7 +21,7 @@ page=1
 
 # the loop which runs indefinatly to gather data
 while 1:
-    posstatuses=api.GetSearch(term=":-)",per_page=100,lang="en")
+    posstatuses=api.GetSearch(term=":-)",per_page=100,lang="en",page=page)
     negstatuses=api.GetSearch(term=":-(",per_page=100,lang="en",page=page)
     page=page+1
     for s in posstatuses:

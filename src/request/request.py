@@ -22,8 +22,8 @@ process it by sending it through the addalyse package and then expect
 an answer. This will be done untill the list is empty again.
 '''
 
-import addalyse 
-from twitterHelp import *
+#import addalyse 
+#from twitterHelp import *
 from select import *
 from sys import *
 import threading
