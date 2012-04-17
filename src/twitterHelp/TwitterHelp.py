@@ -102,8 +102,11 @@ class TwitterHelp:
             else:
                 break
             
-            # avoid doing an extra call to GetUserTimeline if we already have all tweets 
-            if len(statuses) < view_size or page >= page_ultimate_limit: 
+            # # avoid doing an extra call to GetUserTimeline if we already have all tweets 
+            # if len(statuses) < view_size:
+            #     break
+            
+            if page >= page_ultimate_limit: 
                 break
             page = page + 1  # next page
             
