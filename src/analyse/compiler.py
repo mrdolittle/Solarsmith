@@ -56,7 +56,7 @@ def splittify(keywords):
     # Homework for the ones interested in the perversions of lists and functional
     # programming. (This just might be the Haskell way to do it..., or Lisp for that matter).
 
-    return map(lambda x: filter(lambda a: a != None, x), apply(zip, [((k,w), None) if w > 0.0 else (None, (k,-w)) for (k,w) in keywords]))
+    return tuple(map(lambda x: list(filter(lambda a: a != None, x)), apply(zip, [((k,w), None) if w > 0.0 else (None, (k,-w)) for (k,w) in keywords])))
 
 def analyse_sentences_var_2(sentences):
     '''This doesn't count love and hate separately but tries to, for each keyword, get only one
@@ -64,7 +64,7 @@ def analyse_sentences_var_2(sentences):
     wierd...).'''
     
     a = splittify(analyse_sentences_var_2_helper(sentences))
-    return ([], []) if a == [] else a
+    return ([], []) if not a else a
 
 def analyse(tweets):
     '''Do the whole analysis shebang and return the results as one lovekeyword list and one
