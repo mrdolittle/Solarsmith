@@ -496,7 +496,12 @@ STOPWORDS = set(["something",
                  "yeah",
                  "etc",
                  "join",
-                 "omg"
+                 "omg",
+                 "shit",
+                 "fucking",
+                 "stuff",
+                 "fuck",
+                 "thank"
                  ])
 
 def filter_keywords(keywords, key=nop):
@@ -512,7 +517,7 @@ def filter_keywords(keywords, key=nop):
 # smileys and other words that shouldn't be left intact as to not confuse the keyword-exrctracty shit
 # TODO: generate this in some function or something instead, so many combinations!
 #       lotsa more smileys and other words that are wierd and stuff.
-TWEET_STOPSMILEYS = set([":)", ":(", ":<", ":>", ":-)", ":-(", ":-<", ";-)", ";)", ";(", ";-(", ":D", "D:", ":-D", "D-:",
+TWEET_STOPSMILEYS = set(["T_T", "^^", "^_^", ":)", ":(", ":<", ":>", ":-)", ":-(", ":-<", ";-)", ";)", ";(", ";-(", ":D", "D:", ":-D", "D-:",
                          ":3",   # cat
                          ">:3",  # lion
                          "}:3"]) # elk

@@ -20,9 +20,6 @@ A main thread will continuously check a list to make sure that it is
 empty.  If it is not empty, the thread will pop the first element and
 process it by sending it through the addalyse package and then expect
 an answer. This will be done untill the list is empty again.
-
-
-TODO: FIXME: This program consumes excessive CPU when idling. Why? FIX IT!
 '''
 
 import addalyse 
@@ -34,10 +31,11 @@ import socket
 import sys
 import traceback
 import configHandler
+import time
 
 CONFIG = configHandler.Config()
 SOLR_SERVER = CONFIG.get_solr_server()
-
+LISTEN = True
         
 def add_to_solr(username):
     '''Requests a certain Twitter username to be added.  @argument
@@ -52,6 +50,8 @@ def add_to_solr(username):
         return "UserNotOnTwitter"
     except addalyse.AddalyseProtectedUserError:
         return "ProtectedUser"
+    except addalyse.AddalyseRateLimitExceededError:
+        return "RateLimitExceeded"        
     except addalyse.AddalyseUnableToProcureTweetsError as err:
         sys.stderr.write("Couldn't get tweets for some reason:" + str(err) + "\n")
         return "OtherError"
@@ -65,9 +65,7 @@ def add_to_solr(username):
 def main():
     '''The main procedure will create the necessary lists, set up the
     instances and await termination
-
-    TODO: Be better at awaiting termination (KeyboardInterrupts, that
-    is CTRL+C-s are being eaten somehow)'''
+    '''
     
     #Create the request list
     request_list = []
@@ -121,38 +119,33 @@ class Server():
         '''Listens for incomming connections and creates threads (for
         the clients) accordingly.'''
         
+        global LISTEN
+        
         #Call the open_server_socket and set start variables.
         self.open_server_socket()
         input = [self.server, sys.stdin]
-        listen = True
         
         #Print out console information
         sys.stdout.write("Waiting for connections.\n")
         
-        while(listen):
+        while(LISTEN):
             ready_for_input, ready_for_output, ready_for_except = select(input, [], [])
-            
             for s in ready_for_input:
                 #If input comes from a connection:
                 if s == self.server:
                     #Create a client on an incoming connection
-                    client = Client(self.server.accept(), self.request_list)
-                    
+                    client = Client(self.server.accept(), self.request_list)                    
                     #Print out console information
-                    sys.stdout.write("Server: A connection has been established\n")
-                    
+                    sys.stdout.write("Server: A connection has been established\n")                    
                     #Start the thread
-                    client.start()
-                    
+                    client.start()                    
                     #Append the thread to a list of threads
-                    self.threads.append(client)
-                
+                    self.threads.append(client)                
                 #If input comes from the server console:
                 elif s == sys.stdin:
-                    #Handle the server console input
-                    server_input = sys.stdin.readline()
-                    sys.stdout.write("Server input: " + server_input)
-        
+                    #Terminate the server
+                    sys.stdout.write("Server terminated")
+                    LISTEN = False
         #Close down all the threads
         self.server.close()
         for c in self.threads:
@@ -189,8 +182,7 @@ class Client(threading.Thread):
             data = self.client.recv(self.size)
             
             #If there is any data:
-            if data:
-                
+            if data:                
                 #Send the response
                 self.client.send("Server response: Received username: " + data)
                 if data not in self.request_list:
@@ -213,6 +205,7 @@ class UsernameHandler(threading.Thread):
         self.stop_thread = False
         
     def run(self):
+        global LISTEN
         #Set the while parameter.
         running = True
         while(running):
@@ -230,6 +223,11 @@ class UsernameHandler(threading.Thread):
                 elif res == "ProtectedUser":
                     print "ProtectedUser"
                     data[1].send("3")       #3 = Protected User (hidden from public requests)
+                elif res == "RateLimitExceeded":
+                    print "RateLimitExceeded"
+                    data[1].send("4")       #4 = Other error, send this and wait for 1h.
+                    time.sleep(3600)
+                    self.request_list.append(data[0], data[1])
                 else:
                     print "OtherError"
                     data[1].send("4")       #4 = Other error
@@ -239,6 +237,9 @@ class UsernameHandler(threading.Thread):
 #                else:
                 data[1].close()
                 print "Closed the connection"
-                
+            else:
+                if not LISTEN:
+                    running = False
+            time.sleep(0.1)
 if __name__ == "__main__":
     main()

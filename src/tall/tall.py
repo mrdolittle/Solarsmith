@@ -227,9 +227,14 @@ class RequestHandler(BaseHTTPRequestHandler):
     '''
     This Handler defines what to do with incoming HTTP requests.
     '''
-    def _writeheaders(self):
+    def _writexmlheaders(self):
         self.send_response(200)
         self.send_header('Content-type', 'application/xml')
+        self.end_headers()
+    
+    def _writetextheaders(self):
+        self.send_response(200)
+        self.send_header('Content-type', 'text/plain')
         self.end_headers()
 
     def do_HEAD(self):
@@ -239,7 +244,6 @@ class RequestHandler(BaseHTTPRequestHandler):
         self.wfile.write(result)
 
     def do_GET(self):
-        self._writeheaders()
         print self.requestline
         print self.path
         if self.path == "/favicon.ico":
@@ -281,20 +285,25 @@ class RequestHandler(BaseHTTPRequestHandler):
                     if frienemy_result == False:
                         return # BÃ¶r ersÃ¤ttas med felkod. Kommer vi hit Ã¤r nÃ¥got allvarligt fel
                 else:
+                    self._writetextheaders()
                     self.send_result(message)
                     return
         elif command == "keywords":
             keys = data.split(",")
             frienemy_result = tallstore.get_frienemies_by_keywords(keys)                
         else:
+            self._writetextheaders()
             self.send_result("Error: bad argument") 
             return
         if frienemy_result == "Error: Connection to Solr lost.":
+            self._writetextheaders()
             self.send_result("Error: Connection to Solr lost.")
             return
         elif frienemy_result == "Error: Unknown error.":
+            self._writetextheaders()
             self.send_result("Error: Unknown error.")
             return
+        self._writexmlheaders()
         self.send_result(create_xml(frienemy_result))
 
 

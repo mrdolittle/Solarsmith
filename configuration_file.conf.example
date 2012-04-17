@@ -1,5 +1,6 @@
 #SOLR Server:
-SOLR_SERVER = http://xantoz.failar.nu:8080/solr/
+# SOLR_SERVER = http://xantoz.failar.nu:8080/solr/
+SOLR_SERVER = http://localhost:8888/solr/
 
 #Request Server:
 REQUEST_SERVER = 130.229.168.86
