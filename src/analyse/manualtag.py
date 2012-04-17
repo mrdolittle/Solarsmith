@@ -1,4 +1,5 @@
 import twitter
+import sys
 from xml.sax.saxutils import unescape
 writefile = open('manual', 'a')
 api = twitter.Api()
@@ -24,10 +25,9 @@ while option !="":
             writefile.write(repr(a))
             writefile.write("\n")
         if var == 'q':
-            break
-            
-    print "DONE!"
-    
+            print "DONE!"
+            sys.exit
+print "DONE!"    
 writefile.close()
 
         
