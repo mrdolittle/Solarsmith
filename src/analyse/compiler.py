@@ -63,7 +63,8 @@ def analyse_sentences_var_2(sentences):
     value which is the total amount of love minus the total amount of hate (typing this felt kind of
     wierd...).'''
     
-    return splittify(analyse_sentences_var_2_helper(sentences))
+    a = splittify(analyse_sentences_var_2_helper(sentences))
+    return ([], []) if a == [] else a
 
 def analyse(tweets):
     '''Do the whole analysis shebang and return the results as one lovekeyword list and one
