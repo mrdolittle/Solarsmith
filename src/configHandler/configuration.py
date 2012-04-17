@@ -15,6 +15,7 @@ class Config():
         ''' TODO: DOCUMENT MY CONSTRUCTOR '''
             
         self.SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"
+        self.RATE_LIMIT_EXCEEDED_TIME = 3660
             
         #Run using Localhost
         if setting == 1:            
@@ -59,6 +60,13 @@ class Config():
                     location_as_string = str(location[2])
                     location_as_string = location_as_string.lstrip()
                     self.TALL_SERVER = location_as_string
+                    
+                #If the line starts with rate then set the rate_limit_exceeded_time
+                elif current_line.startswith("RATE_LIMIT_EXCEEDED_TIME"):
+                    location = current_line.rpartition('=')
+                    location_as_string = str(location[2])
+                    location_as_string = location_as_string.lstrip()
+                    self.RATE_LIMIT_EXCEEDED_TIME = location_as_string
                 
     def get_solr_server(self):
         '''Will return the location of the Solr Server given in the configuration_file.conf
@@ -77,3 +85,9 @@ class Config():
         @return: The location of the Tall Server'''
         
         return self.TALL_SERVER
+    
+    def get_rate_limit_exceeded_time(self):
+        '''Will return the rate_limit_exceeded_time
+        @return: rate_limit_exceeded'''
+        
+        return self.RATE_LIMIT_EXCEEDED_TIME
