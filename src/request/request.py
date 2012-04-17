@@ -36,6 +36,7 @@ import time
 CONFIG = configHandler.Config()
 SOLR_SERVER = CONFIG.get_solr_server()
 LISTEN = True
+RATE_LIMIT_EXCEEDED = CONFIG.get_rate_limit_exceeded_time()
         
 def add_to_solr(username):
     '''Requests a certain Twitter username to be added.  @argument
@@ -66,7 +67,6 @@ def main():
     '''The main procedure will create the necessary lists, set up the
     instances and await termination
     '''
-    
     #Create the request list
     request_list = []
     
@@ -206,37 +206,45 @@ class UsernameHandler(threading.Thread):
         
     def run(self):
         global LISTEN
+        global RATE_LIMIT_EXCEEDED
+        
         #Set the while parameter.
         running = True
         while(running):
             if self.request_list != []:
                 data = self.request_list.pop() #data[0] = username, data[1] = socket
-                sys.stdout.write("Processing username: " + data[0] + "\n")
-                res = add_to_solr(data[0])
-                #On response:
-                if res == "UserAdded":
-                    print "UserAdded"
-                    data[1].send("1")      #1 = User added
-                elif res == "UserNotOnTwitter":
-                    print "UserNotOnTwitter"
-                    data[1].send("2")      #2 = User does not exist on Twitter
-                elif res == "ProtectedUser":
-                    print "ProtectedUser"
-                    data[1].send("3")       #3 = Protected User (hidden from public requests)
-                elif res == "RateLimitExceeded":
-                    print "RateLimitExceeded"
-                    data[1].send("4")       #4 = Other error, send this and wait for 1h.
-                    time.sleep(3600)
-                    self.request_list.append(data[0], data[1])
-                else:
-                    print "OtherError"
-                    data[1].send("4")       #4 = Other error
-                #Was the message sent?
-#                if sent == 0:
-#                    raise RuntimeError("Socket connection broken")
-#                else:
-                data[1].close()
-                print "Closed the connection"
+                retry = True
+                while(retry):
+                    sys.stdout.write("Processing username: " + data[0] + "\n")
+                    res = add_to_solr(data[0])
+                    #On response:
+                    if res == "UserAdded":
+                        print "UserAdded"
+                        data[1].send("1")      #1 = User added
+                        retry = False
+                    elif res == "UserNotOnTwitter":
+                        print "UserNotOnTwitter"
+                        data[1].send("2")      #2 = User does not exist on Twitter
+                        retry = False
+                    elif res == "ProtectedUser":
+                        print "ProtectedUser"
+                        data[1].send("3")       #3 = Protected User (hidden from public requests)
+                        retry = False
+                    elif res == "RateLimitExceeded":
+                        print "RateLimitExceeded"
+                        data[1].send("4")       #4 = Other error, send this and wait for 1h1min.
+                        time.sleep(RATE_LIMIT_EXCEEDED)
+                        retry = True
+                    else:
+                        print "OtherError"
+                        data[1].send("4")       #4 = Other error
+                        retry = False
+                    #Was the message sent?
+    #                if sent == 0:
+    #                    raise RuntimeError("Socket connection broken")
+    #                else:
+                    data[1].close()
+                    print "Closed the connection"
             else:
                 if not LISTEN:
                     running = False
