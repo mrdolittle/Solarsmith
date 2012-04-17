@@ -26,7 +26,7 @@ def word_true_dict(words):
         feat[word]=True
     return feat
 
-def get_words_list(sentence, words_in_feature=4):
+def get_words_list(sentence, words_in_feature=3):
     '''Used to get all features/words up to the specified
     words_in_feature. 
     Ex. 
@@ -95,7 +95,7 @@ fvecs = [(word_true_dict(get_words_list(t)),s) for (t,s) in tweets]
 #fvecs = [(tweet_features.make_tweet_dict(t),s) for (t,s) in tweets]
 v_train = fvecs
 #v_test  = fvecs[2000:]
-print fvecs[1]
+#print fvecs[1]
 
 
 #dump tweets which our feature selector found nothing
