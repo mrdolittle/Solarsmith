@@ -13,9 +13,13 @@ class Config():
     
     def __init__(self, conf_file="../../configuration_file.conf", setting=3):
         ''' TODO: DOCUMENT MY CONSTRUCTOR '''
-            
+        
+        #Default values
         self.SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"
         self.RATE_LIMIT_EXCEEDED_TIME = 3660
+        self.TH_GET_ALL_STATUSES_PAGE_ULTIMATE_LIMIT = 3
+        self.TH_GET_ALL_STATUSES_VIEW_SIZE = 140
+        self.TH_GET_ALL_STATUSES_SLEEP_TIME = 60
             
         #Run using Localhost
         if setting == 1:            
@@ -61,12 +65,33 @@ class Config():
                     location_as_string = location_as_string.lstrip()
                     self.TALL_SERVER = location_as_string
                     
-                #If the line starts with rate then set the rate_limit_exceeded_time
+                #If the line starts with RATE... then set the rate_limit_exceeded_time
                 elif current_line.startswith("RATE_LIMIT_EXCEEDED_TIME"):
                     location = current_line.rpartition('=')
                     location_as_string = str(location[2])
                     location_as_string = location_as_string.lstrip()
                     self.RATE_LIMIT_EXCEEDED_TIME = location_as_string
+                
+                #If the line starts with TH_P... then set the th_page_ultimate_limit
+                elif current_line.startswith("TH_GET_ALL_STATUSES_PAGE_ULTIMATE_LIMIT"):
+                    location = current_line.rpartition('=')
+                    location_as_string = str(location[2])
+                    location_as_string = location_as_string.lstrip()
+                    self.TH_GET_ALL_STATUSES_PAGE_ULTIMATE_LIMIT = location_as_string
+                    
+                #If the line starts with TH_P... then set the th_page_ultimate_limit
+                elif current_line.startswith("TH_GET_ALL_STATUSES_VIEW_SIZE"):
+                    location = current_line.rpartition('=')
+                    location_as_string = str(location[2])
+                    location_as_string = location_as_string.lstrip()
+                    self.TH_GET_ALL_STATUSES_VIEW_SIZE = location_as_string
+                    
+                #If the line starts with TH_P... then set the th_page_ultimate_limit
+                elif current_line.startswith("TH_GET_ALL_STATUSES_SLEEP_TIME"):
+                    location = current_line.rpartition('=')
+                    location_as_string = str(location[2])
+                    location_as_string = location_as_string.lstrip()
+                    self.TH_GET_ALL_STATUSES_SLEEP_TIME = location_as_string
                 
     def get_solr_server(self):
         '''Will return the location of the Solr Server given in the configuration_file.conf
