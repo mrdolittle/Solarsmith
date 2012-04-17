@@ -94,7 +94,7 @@ def main():
             else:
                 print "This user has recently been updated."
         print "Completed one update cycle. Sleeping for " + str(cycle_time) + " seconds."
-        time.sleep(cycle_time)       
+        time.sleep(cycle_time)
 
 if __name__ == "__main__":
     main()
