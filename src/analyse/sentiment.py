@@ -26,7 +26,7 @@ def word_true_dict(words):
         feat[word]=True
     return feat
 
-def get_words_list(sentence, words_in_feature=10):
+def get_words_list(sentence, words_in_feature=4):
     '''Used to get all features/words up to the specified
     words_in_feature. 
     Ex. 
