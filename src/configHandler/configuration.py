@@ -70,28 +70,28 @@ class Config():
                     location = current_line.rpartition('=')
                     location_as_string = str(location[2])
                     location_as_string = location_as_string.lstrip()
-                    self.RATE_LIMIT_EXCEEDED_TIME = location_as_string
+                    self.RATE_LIMIT_EXCEEDED_TIME = float(location_as_string)
                 
                 #If the line starts with TH_P... then set the th_page_ultimate_limit
                 elif current_line.startswith("TH_GET_ALL_STATUSES_PAGE_ULTIMATE_LIMIT"):
                     location = current_line.rpartition('=')
                     location_as_string = str(location[2])
                     location_as_string = location_as_string.lstrip()
-                    self.TH_GET_ALL_STATUSES_PAGE_ULTIMATE_LIMIT = location_as_string
+                    self.TH_GET_ALL_STATUSES_PAGE_ULTIMATE_LIMIT = int(location_as_string)
                     
                 #If the line starts with TH_P... then set the th_page_ultimate_limit
                 elif current_line.startswith("TH_GET_ALL_STATUSES_VIEW_SIZE"):
                     location = current_line.rpartition('=')
                     location_as_string = str(location[2])
                     location_as_string = location_as_string.lstrip()
-                    self.TH_GET_ALL_STATUSES_VIEW_SIZE = location_as_string
+                    self.TH_GET_ALL_STATUSES_VIEW_SIZE = int(location_as_string)
                     
                 #If the line starts with TH_P... then set the th_page_ultimate_limit
                 elif current_line.startswith("TH_GET_ALL_STATUSES_SLEEP_TIME"):
                     location = current_line.rpartition('=')
                     location_as_string = str(location[2])
                     location_as_string = location_as_string.lstrip()
-                    self.TH_GET_ALL_STATUSES_SLEEP_TIME = location_as_string
+                    self.TH_GET_ALL_STATUSES_SLEEP_TIME = float(location_as_string)
                 
     def get_solr_server(self):
         '''Will return the location of the Solr Server given in the configuration_file.conf
