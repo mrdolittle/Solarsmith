@@ -4,8 +4,6 @@
 from compiler import analyse
 
 
-tweet="i dislike this apple"
-print analyse(tweet)
 
 tweet=["Google is fast, reliable, easy to use and user friendly. It relies on a simplicity that many other search engines lack. Need I say more? "]
 print analyse(tweet)
