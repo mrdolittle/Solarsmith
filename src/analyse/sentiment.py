@@ -104,8 +104,6 @@ v_train = fvecs
         #print tweets[i][1] + ': ' + tweets[i][0]
 
 
-## apply PCA reduction
-# (v_train, v_test) = tweet_pca.tweet_pca_reduce( v_train, v_test, output_dim=1.0 )
 
 
 ## train CLASSIFIER
