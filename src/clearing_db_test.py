@@ -47,4 +47,4 @@ def redo_all_users():
     
 # testing
 if __name__ == '__main__':
-    add_users(clear=True)
+    add_users(clear=len(sys.argv) > 1 and sys.argv[1] == 'clear')
