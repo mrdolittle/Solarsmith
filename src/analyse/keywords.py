@@ -121,6 +121,7 @@ def extract_keywords(sentence):
 nltk.data.load(_POS_TAGGER)
 
 if __name__ == '__main__':
-    text = "Star is a nice guy"
-    print extract_keywords_grammar(text)
+    text = "Google Chrome is by far the most secure browser I've ever used"
+    #print extract_keywords_grammar(text)
+    print get_names(text);
     
