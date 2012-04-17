@@ -79,7 +79,7 @@ def main():
                     
                     #If the rate limit was exceeded, pause for 1h1min and try again.
                     except addalyse.AddalyseRateLimitExceededError as err:
-                        sys.stderr.write("RateLimitExceeded, trying again in " + str(CONFIG.get_rate_limit_exceeded_time()) + " seconds.")
+                        sys.stderr.write("RateLimitExceeded, trying again in " + str(CONFIG.get_rate_limit_exceeded_time()) + " seconds.\n")
                         time.sleep(CONFIG.get_rate_limit_exceeded_time())
                         retry = True
                     
