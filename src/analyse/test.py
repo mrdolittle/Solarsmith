@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 '''test script for fast and convienient test of alot of data
 '''
-from compiler import analyse
 
+from compiler import analyse
 
 
 tweet=["Google is fast, reliable, easy to use and user friendly. It relies on a simplicity that many other search engines lack. Need I say more? "]
