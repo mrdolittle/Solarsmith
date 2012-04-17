@@ -19,11 +19,10 @@ import time
 import configHandler
 import traceback
 import sys
-from request.request import RATE_LIMIT_EXCEEDED
 
 CONFIG = configHandler.Config()
 SOLR_SERVER = CONFIG.get_solr_server()
-RATE_LIMIT_EXCEEDED = CONFIG.get_rate_limit_exceeded_time()
+
 
 def main():
     '''Finds new user to add to database.'''
@@ -69,7 +68,7 @@ def load_existing_users():
 def gather_data_loop(request_per_hour = 3600, users_to_add = 21):
     '''Gathers data about twitter IDs, and sends the data to the
     storage handler.'''
-    global RATE_LIMIT_EXCEEDED
+    global CONFIG
     
     # TODO: Change for real implementation!
     sleep_time = 3600 / request_per_hour
@@ -108,7 +107,7 @@ def gather_data_loop(request_per_hour = 3600, users_to_add = 21):
                             retry = False
                     except addalyse.AddalyseRateLimitExceededError as err: #Halt for 1 hour if the rate limit is exceeded
                         sys.stderr.write("RateLimitExceeded")
-                        time.sleep(RATE_LIMIT_EXCEEDED)
+                        time.sleep(CONFIG.get_rate_limit_exceeded_time())
                         retry = True
                     except addalyse.AddalyseError as err: # we use polymorphism here, WEE
                         sys.stderr.write("Addalyse threw an error: "  + str(err) + "\n")

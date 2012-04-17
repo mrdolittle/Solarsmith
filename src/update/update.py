@@ -20,18 +20,18 @@ import addalyse
 import time
 import traceback
 import sys
-from request.request import RATE_LIMIT_EXCEEDED
 
 #The configuration instance containing the basic configuration methods.
 CONFIG = configHandler.Config()
 SOLR_SERVER = CONFIG.get_solr_server()
-#RATE_LIMIT_EXCEEDED = CONFIG.get_rate_limit_exceeded_time()
 
 # Every UPDATE_N:th update of a profile do a full analysis throwing away the old one
 UPDATE_N = 20
 
 def main():
     '''Gets profiles from storageHandler and checks if they need updating, and if so updates those.'''
+    global CONFIG
+    
     th = TwitterHelp() 
     sh = StorageHandler(SOLR_SERVER)
     temporarly_ignore_user = {}
@@ -80,7 +80,7 @@ def main():
                     #If the rate limit was exceeded, pause for 1h1min and try again.
                     except addalyse.AddalyseRateLimitExceededError as err:
                         sys.stderr.write("RateLimitExceeded, trying again in 1h")
-                        time.sleep(RATE_LIMIT_EXCEEDED)
+                        time.sleep(CONFIG.get_rate_limit_exceeded_time())
                         retry = True
                     
                     #If an unhandled exception is found, a traceback will be made so that the programmer can take care of it.

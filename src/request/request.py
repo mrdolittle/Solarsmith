@@ -22,8 +22,8 @@ process it by sending it through the addalyse package and then expect
 an answer. This will be done untill the list is empty again.
 '''
 
-#import addalyse 
-#from twitterHelp import *
+import addalyse 
+from twitterHelp import *
 from select import *
 from sys import *
 import threading
@@ -36,7 +36,6 @@ import time
 CONFIG = configHandler.Config()
 SOLR_SERVER = CONFIG.get_solr_server()
 LISTEN = True
-RATE_LIMIT_EXCEEDED = CONFIG.get_rate_limit_exceeded_time()
         
 def add_to_solr(username):
     '''Requests a certain Twitter username to be added.  @argument
@@ -206,7 +205,7 @@ class UsernameHandler(threading.Thread):
         
     def run(self):
         global LISTEN
-        global RATE_LIMIT_EXCEEDED
+        global CONFIG
         
         #Set the while parameter.
         running = True
@@ -233,7 +232,7 @@ class UsernameHandler(threading.Thread):
                     elif res == "RateLimitExceeded":
                         print "RateLimitExceeded"
                         data[1].send("4")       #4 = Other error, send this and wait for 1h1min.
-                        time.sleep(RATE_LIMIT_EXCEEDED)
+                        time.sleep(CONFIG.get_rate_limit_exceeded_time())
                         retry = True
                     else:
                         print "OtherError"
