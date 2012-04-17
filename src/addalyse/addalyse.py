@@ -135,8 +135,7 @@ def _addalyse(solr_server, username, since_id=0, remake_profile=True, update_cou
         # get a users old hatekeywords_list and lovekeywords_list
         doc = sh.get_user_documents(username, 'lovekeywords_list', 'hatekeywords_list')[0]
         
-        lovekeywords_old = doc.lovekeywords_pylist
-        hatekeywords_old = doc.hatekeywords_pylist
+        (lovekeywords_old, hatekeywords_old) = (doc.lovekeywords_pylist, doc.hatekeywords_pylist)
         
         # merge tuples. Also now that we are done mergeing we can start looking for keywords with a too low weight
         (lovemerge, hatemerge) = filter_analysis((merge_tuples(lovekeywords + lovekeywords_old), merge_tuples(hatekeywords + hatekeywords_old)))
