@@ -1,10 +1,21 @@
 #SOLR Server:
-# SOLR_SERVER = http://xantoz.failar.nu:8080/solr/
 SOLR_SERVER = http://localhost:8888/solr/
 
 #Request Server:
-REQUEST_SERVER = 130.229.168.86
+REQUEST_SERVER = localhost
 
 #Tall Server:
-TALL_SERVER = 130.229.185.90
+TALL_SERVER = localhost
 
+#RateLimitExceededTime used in request/scrape/update
+RATE_LIMIT_EXCEEDED_TIME = 3660
+
+#TwitterHelp specific variables
+#page_ultimate_limit
+TH_GET_ALL_STATUSES_PAGE_ULTIMATE_LIMIT = 3
+
+#view_size
+TH_GET_ALL_STATUSES_VIEW_SIZE = 140
+
+#sleep_time in get_all_statuses
+TH_GET_ALL_STATUSES_SLEEP_TIME = 60 
