@@ -23,7 +23,7 @@ while option !="":
             a = (line, "neutral")
             writefile.write(repr(a))
             writefile.write("\n")
-        if var == 'Q':
+        if var == 'q':
             break
             
     print "DONE!"
