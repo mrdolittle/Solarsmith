@@ -479,6 +479,7 @@ STOPWORDS = set(["something",
                  "anymore",
                  "look",
                  "looking",
+                 "yup",
                  "'ve", # stupid keyword coming from whatever
                  "disgusting",
                  "cause",
