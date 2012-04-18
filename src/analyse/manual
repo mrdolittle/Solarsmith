@@ -1888,3 +1888,27 @@
 (u"It didn't work before.so why you trying to repeat?.lol I'm just mad because there's no way somebody is that stupid", 'negative')
 (u"Come to my house :)", "positive") # manualsplit
 (u"I'm so mad! I can't watch the webcast! Stupid Internet", 'negative') # manualsplit
+(u'Yummie! http://t.co/6N6Yh0Oq', 'positive')
+(u'Yummie cant wait to be home', 'positive')
+(u'&&...Orange juice Yummie', 'positive')
+(u'@courtyleighpray was sooooo yummie!!! #missyooh', 'positive')
+(u"Seeing @ImSo_Yummie happy makes me happy. I'm proud of her <3.", 'positive')
+(u'@Yummie_Thickems follow back woman.', 'neutral')
+(u'Mozambiquens know their cashew nuts. Home made, salted, peri-peri!! Yummie!!!', 'positive')
+(u'My yummie lunch! >_< http://t.co/LoJN5zDR', 'neutral')
+(u'yummie. \nhttp://t.co/r4sSuLBM', 'positive')
+(u'yummie ....my B-day cake was just so good <3 http://t.co/I2p4B84y', 'positive')
+(u'Nothings better then the usual yummie shakes for lunch :) #Healthyistheway', 'positive')
+(u'Hurry to @chayabeverlyhills for the Alaskan Wild Fish Fair. Try the Alaskan Sunset and Halibut&Scallop Tartare. Yummie! http://t.co/XRPgWzch', 'positive')
+(u'@Yummie_Cakes Just picked up your tweet sooo glad your Dad is safe...what a worry for you! Take care. xxx :)', 'neutral')
+(u"'bajs' means 'poo' in swedish, haha", 'neutral')
+(u"@Real_Liam_Payne i caaaan't cuz i'm on on my phone bajs. :(", 'negative')
+(u'Bajs', 'neutral')
+(u'Bajs', 'neutral')
+(u"I'll do it anyway, bye bajs hihi :)", 'neutral')
+(u"I hate that bajs isn't the word for poo in English too as it is in Swedish.", 'negative') #manualsplit
+(u"I'd love to be able to say bye bajs cuz it rhyme", 'positive') #manualsplit
+(u'Bajs', 'neutral')
+(u'bajs', 'neutral')
+(u'Bajs', 'neutral')
+(u'@joshuatopolsky He\'s clearly a bias! Or bajs, as we would say in Swedish. Which means "poop".', 'neutral')
