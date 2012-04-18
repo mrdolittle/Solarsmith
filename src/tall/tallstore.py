@@ -11,8 +11,10 @@ import sys
 import traceback
 import httplib2
 
-CONFIG = configHandler.Config()
-SOLR_SERVER = CONFIG.get_solr_server()
+CONFIG = configHandler.Config(setting=1)
+#SOLR_SERVER = CONFIG.get_solr_server()
+# Running via tunnel...
+SOLR_SERVER = "http://localhost:8888/solr/"
 SCORELIMIT_FRIEND = 0.008       # Filter for friends
 SCORELIMIT_ENEMY  = 0.008       # filter for enemies
 QUERY_ROWS = 30                 # number of results to ask solr for

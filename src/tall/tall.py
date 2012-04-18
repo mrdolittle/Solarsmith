@@ -16,7 +16,7 @@ import urlparse
 import tallstore
 import configHandler
 
-CONFIG = configHandler.Config()
+CONFIG = configHandler.Config(setting=1)
 REQUEST_SERVER = CONFIG.get_request_server()
 REQUEST_SERVER_PORT = 1337
 
