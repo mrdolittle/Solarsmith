@@ -5,7 +5,7 @@ Created on Apr 16, 2012
 '''
 import re
 
-def get_words_list(sentence, words_in_feature):
+def get_words_list(sentence, num_words = 1,words_in_feature=3):
     '''Used to get all features/words up to the specified
     words_in_feature. 
     Ex. 
@@ -19,7 +19,6 @@ def get_words_list(sentence, words_in_feature):
     # the number of words in the sentence
     words_in_feature = min(words_in_feature, len(words))
     res = []
-    num_words = 1
     # for each num_words
     while num_words <= words_in_feature:
         # add all features with num_words
