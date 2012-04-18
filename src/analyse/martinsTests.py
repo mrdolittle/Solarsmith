@@ -5,7 +5,7 @@ This file is for experimental code!
 Copy paste the code to where it can be used.
 
 ideas
-train, replace nofeatures with "." and train an additional bayesian thing on these sentences
+train, replace non-features with "." and train an additional bayesian thing on these sentences
 get_words_list2 # not tested enough
 
 if larger feature is a real feature and contains real smaller feature then only use the larger when classifying.
@@ -14,6 +14,10 @@ get_significant_features # not tested enough
 normalize the points of the features so that a feature can't dominate the sentiment as easily.
 
 give more points to features consisting of multiple words because they are more likely to be correct.
+
+Use the ratio between positive, neutral and negative as a very strong factor when calculating points.
+Neutral is also important.
+
 
 @author: mbernt
 '''
