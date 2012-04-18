@@ -54,7 +54,8 @@ def get_words_list(sentence, num_words = 1,words_in_feature=3):
     return res
 
 def get_significant_features(sentence,features_dict, num_words = 1,words_in_feature=3):
-    '''Can be used when classifying, so that "don't like" don't become positive.
+    '''Can be used when classifying, so that "don't like" isn't affected by like.
+    
     Returns the features but without the sub features like the like in "don't like".
     
     This method can be rewritten to use some other way to check if a candidate feature is a 
@@ -83,27 +84,41 @@ def get_significant_features(sentence,features_dict, num_words = 1,words_in_feat
         while end <= len(words):
             # construct feature and strip commas from beginning and end
             candidate_feature=" ".join(words[start:end]).strip(",")
+            # only add features
             if features_dict.has_key(candidate_feature):
                 print candidate_feature
                 # add the word and the index to tmpRes
-                tmpRes.append((start, candidate_feature))
+                tmpRes.append((start, end, candidate_feature))
             start = start + 1
             end = start + num_words
-            
-        #remove if sub-feature
+        
+         
+        # remove if sub-feature
+        # warning! bad time complexity! O(len(res)*len(tmpRes))
+        keepList=[]
         if num_words>1:
-            for (i,word) in res:
-                #if features_dict.has_key(word):
-                for (i2,word2) in tmpRes:
-                    if i==i2:
-                        #if features_dict.has_key(word2):# is a feature so word must be a subfeature
-                        res.remove((i,word))
+            for (i,j,word) in res:
+                add=True
+                for (i2,j2,word2) in tmpRes:
+                    # must be in the same place to be a sub feature
+                    if i2<=i and j<=j2:
+                        # must be in the larger feature to be a sub feature
+                        if word2.find(word)!=-1:
+                            # it's a sub feature so remove it from the result list
+                            add=False
+                            #res.remove((i,j,word))
+                # is not a sub feature so keep it
+                if add:
+                    keepList.append((i,j,word))
+        res=keepList
+                            
         res=res+tmpRes
+        print res
         # next number of words
         num_words = num_words + 1
         
     #return only the words without the start indexes
-    return [word for (x,word) in res]
+    return [word for (x,y,word) in res]
     
         
     
@@ -214,7 +229,7 @@ dicti={}.fromkeys(features,None)
 #print dicti
 #print get_words_list2("I really like to play with the new wonderful mac air",dicti,1,3)
 #print get_words_list2("I really like the wonderful mac-air",{}.fromkeys(["really","really like","wonderful"]))
-print get_significant_features("I really like the wonderful mac-air",{}.fromkeys(["really","really like","wonderful"]))
+print get_significant_features("I really like the wonderful mac-air",{}.fromkeys(["really","like","really like","wonderful"]))
 #re.split(r'\W')
 #print filter(lambda x: not re., re.split(re.compile(r"([^a-z])+"), "hej.pa.lilla."))
 #print re.findall(re.compile(r"[a-z.]+"), "hej ,g. pa . lilla .")
