@@ -552,7 +552,10 @@ def strip_tweet(tweet):
         else:
             return a
 
-    words = split_tweet(AT_REGEX.sub(" at " , URL_REGEX.sub("URLYBURLYSMURLYPURLY", DOTS_REGEX.sub(" ... ", tweet))))
+    words = split_tweet(AT_REGEX.sub(" at ",
+                                     URL_REGEX.sub("URLYBURLYSMURLYPURLY",
+                                                   DOTS_REGEX.sub(" ... ",
+                                                                  tweet.replace(u'\u2026', "...")))))
 
     # # strip leading hashtags
     # while words != [] and words[0][0] == '#':

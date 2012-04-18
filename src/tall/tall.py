@@ -261,6 +261,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         # ignore anything but the SSDummies
         if command == "testusername":
             frienemy_result = tallstore.get_frienemies_by_id(data, test_mode=True)
+            self._writexmlheaders()
             self.send_result(create_xml(frienemy_result))
             return
         ################

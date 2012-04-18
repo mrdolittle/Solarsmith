@@ -40,27 +40,15 @@ class AddalyseProtectedUserError(AddalyseError): pass
 class AddalyseRateLimitExceededError(AddalyseError): pass
 
 def addalyse(*args):
-    try:
-        return apply(_addalyse, args)
-    except twitter.TwitterError as e:
-        if e.message == 'Not authorized':
-            raise AddalyseProtectedUserError('Not authorized')
-        elif e.message == "Capacity Error":
-            raise AddalyseUnableToProcureTweetsError('Twitter is lazy: Capacity error')
-        elif e.message[0:19] == 'Rate limit exceeded':
-            raise AddalyseRateLimitExceededError(e.message)
-        else:
-            raise               # else pass it on
-        
-
-def _addalyse(solr_server, username, since_id=0, remake_profile=True, update_count=1):
     '''
-    Description:
-    If remakeProfile is true then it will disregard since_id and analyse as many tweets as possible
-    and then replace the profile in Solr. With only solr_server and username as input this will happen.
+    Description: If the argument remake_profile is true then it will
+    disregard since_id and analyse as many tweets as possible and then
+    replace the profile in Solr. With only solr_server and username as
+    input this will happen.
     
-    If remakeProfile is false it will analyse tweets newer than since_id and if there was a profile in Solr
-    merge the result with the profile in Solr, else add a new profile.
+    If remakeProfile is false it will analyse tweets newer than
+    since_id and if there was a profile in Solr merge the result with
+    the profile in Solr, else add a new profile.
     
     Input: 
     @arg solr_server: A String with the address to the Solr server, or optionally a StorageHandler object.
@@ -79,6 +67,21 @@ def _addalyse(solr_server, username, since_id=0, remake_profile=True, update_cou
     no tweets on that user or if remake is false, no new tweets are on Twitter.
 
     '''
+    try:
+        return apply(_addalyse, args)
+    except twitter.TwitterError as e:
+        if e.message == 'Not authorized':
+            raise AddalyseProtectedUserError('Not authorized')
+        elif e.message == "Capacity Error":
+            raise AddalyseUnableToProcureTweetsError('Twitter is lazy: Capacity error')
+        elif e.message[0:19] == 'Rate limit exceeded':
+            raise AddalyseRateLimitExceededError(e.message)
+        else:
+            raise               # else pass it on
+        
+
+def _addalyse(solr_server, username, since_id=0, remake_profile=True, update_count=1):
+
     th = TwitterHelp()
     
     # does not use a Twitter API call
@@ -135,11 +138,10 @@ def _addalyse(solr_server, username, since_id=0, remake_profile=True, update_cou
         # get a users old hatekeywords_list and lovekeywords_list
         doc = sh.get_user_documents(username, 'lovekeywords_list', 'hatekeywords_list')[0]
         
-        lovekeywords_old = doc.lovekeywords_pylist
-        hatekeywords_old = doc.hatekeywords_pylist
+        (lovekeywords_old, hatekeywords_old) = (doc.lovekeywords_pylist, doc.hatekeywords_pylist)
         
         # merge tuples. Also now that we are done mergeing we can start looking for keywords with a too low weight
-        (lovemerge, hatemerge) = filter_analysis((merge_tuples(lovekeywords + lovekeywords_old), merge_tuples(hatekeywords + hatekeywords_old)))
+        (lovemerge, hatemerge) = filter_analysis((merge_keywords(lovekeywords, lovekeywords_old), merge_keywords(hatekeywords, hatekeywords_old)))
         
         # add merged result to database
         print "addalyse(remake_profile=" + str(remake_profile) + "): adding, '" + username + "'"
@@ -151,15 +153,27 @@ def _addalyse(solr_server, username, since_id=0, remake_profile=True, update_cou
     # return the number of requests to twitter
     #return math.ceil(len(tweets)/140.0)
 
-def merge_tuples(list_of_only_love_or_only_hate_tuples):
+def merge_keywords(a, b):
     '''Merge all tuples with the same keyword and sum the values.
     
-    E.g [('tjoo',1),('hi',3),('hi',2),('tjoo',3)] gives [('hi',5),('tjoo',2)]'''
+    E.g merge_keywords([('tjoo',1),('hi',3)], [('hi',2),('tjoo',3)]) gives [('hi',5),('tjoo',2)]'''
+
+    dic = {}
+    for (k,w) in a:
+        dic[k] = dic.get(k, 0.0) + w
+    for (k,w) in b:
+        dic[k] = dic.get(k, 0.0) + w
+    return dic.items()
+
+# def merge_tuples(list_of_only_love_or_only_hate_tuples):
+#     '''Merge all tuples with the same keyword and sum the values.
     
-    myDict = {}
-    for (keyword,value) in list_of_only_love_or_only_hate_tuples:
-        myDict[keyword] = myDict.get(keyword, 0.0) + value         # if exist increment by value else add (keyword, value)
-    return myDict.items()                                          # returns a list of all (key, value) tuples in the dictionary
+#     E.g [('tjoo',1),('hi',3),('hi',2),('tjoo',3)] gives [('hi',5),('tjoo',2)]'''
+    
+#     myDict = {}
+#     for (keyword,value) in list_of_only_love_or_only_hate_tuples:
+#         myDict[keyword] = myDict.get(keyword, 0.0) + value         # if exist increment by value else add (keyword, value)
+#     return myDict.items()                                          # returns a list of all (key, value) tuples in the dictionary
 
 
 def filter_analysis(lovekeywords_hatekeywords_tuple):
