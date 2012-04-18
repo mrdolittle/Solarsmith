@@ -1886,4 +1886,5 @@
 (u"I'm so stupid :(", 'negative')
 (u"You actually think I'm so brain dead, might be stupid but I know when someone is playing a game", 'neutral')
 (u"It didn't work before.so why you trying to repeat?.lol I'm just mad because there's no way somebody is that stupid", 'negative')
-(u"Come to my house :) RT @cindy07110: I'm so mad! I can't watch the webcast! Stupid Internet", 'negative')
+(u"Come to my house :)", "positive") # manualsplit
+(u"I'm so mad! I can't watch the webcast! Stupid Internet", 'negative') # manualsplit
