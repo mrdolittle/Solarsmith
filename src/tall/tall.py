@@ -231,7 +231,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-type', 'application/xml')
         self.end_headers()
-    
+
     def _writetextheaders(self):
         self.send_response(200)
         self.send_header('Content-type', 'text/plain')
@@ -254,7 +254,7 @@ class RequestHandler(BaseHTTPRequestHandler):
 #        data = data.lower()
         print "Command: " + command
         print "Data: " + data
-        
+
         ################
         ######TEST######
         ################
@@ -267,13 +267,10 @@ class RequestHandler(BaseHTTPRequestHandler):
         ################
         ######TEST######
         ################
-        
-        
-        
+
         if command == "username":
             frienemy_result = tallstore.get_frienemies_by_id(data) # Ska ersÃ¤ttas med anrop till storage handler
             if frienemy_result == False:
-#                self.send_result('User not found, attempting to add.')
                 succeeded, message = send_to_request(data)
 #                succeeded = False
 #                message = "Request is not online. Cannot retrieve new users from Twitter."
@@ -291,7 +288,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                     return
         elif command == "keywords":
             keys = data.split(",")
-            frienemy_result = tallstore.get_frienemies_by_keywords(keys)                
+            frienemy_result = tallstore.get_frienemies_by_keywords(keys)
         else:
             self._writetextheaders()
             self.send_result("Error: bad argument") 
