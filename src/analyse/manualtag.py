@@ -26,7 +26,7 @@ while option !="":
             writefile.write("\n")
         if var == 'q':
             print "DONE!"
-            sys.exit
+            sys.exit()
 print "DONE!"    
 writefile.close()
 
