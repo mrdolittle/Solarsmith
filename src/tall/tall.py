@@ -16,9 +16,10 @@ import urlparse
 import tallstore
 import configHandler
 
-CONFIG = configHandler.Config(setting=1)
+CONFIG = configHandler.Config()
 REQUEST_SERVER = CONFIG.get_request_server()
 REQUEST_SERVER_PORT = 1337
+TIMEOUT_FOR_REQUEST = 15
 
 
 def get_pic_link(username):
@@ -52,13 +53,13 @@ def send_to_request(username):
         return False, "Error: Could not send to request"
     print "username sent: " + username
     try:
-        ready = select.select([soc], [], [], 10)
+        ready = select.select([soc], [], [], TIMEOUT_FOR_REQUEST)
         if ready[0]:
             arrived = soc.recv(1024)  # Recieves a response of at most 1k
             print "Arrived to request: " + arrived
         else:
             return (False, "Error: Timeout")
-        ready = select.select([soc], [], [], 10)
+        ready = select.select([soc], [], [], TIMEOUT_FOR_REQUEST)
         if ready[0]:
             response = soc.recv(1024)  # Recieves a response of at most 1k
         else:
@@ -287,6 +288,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                     self.send_result(message)
                     return
         elif command == "keywords":
+            data = data.replace('*', ' ')
             keys = data.split(",")
             frienemy_result = tallstore.get_frienemies_by_keywords(keys)
         else:
