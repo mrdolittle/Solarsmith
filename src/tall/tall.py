@@ -131,7 +131,7 @@ def create_xml(result):
         friendusername = friends.getId()
         # Start of friends
         tosend = tosend + entrytag + nametag + escape(friendusername) + endnametag
-        tosend = tosend + scoretag + str(friends.score) + endscoretag 
+        tosend = tosend + scoretag + str(friends.score) + endscoretag
         tosend = tosend + piclinktag + escape(get_pic_link(friendusername)) + endpiclinktag
         tosend = tosend + lovekeywordstag
 

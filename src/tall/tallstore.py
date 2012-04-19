@@ -25,22 +25,25 @@ def solr_fail(e):
     traceback.print_exc()
     return "Error: Connection to Solr lost."
 
+
 def other_fail(e):
     sys.stderr.write("Unhandled exception\n")
     traceback.print_exc()
     return "Error: Unknown error."
+
 
 def connect_to_solr():
     global SOLR_INTERFACE
     try:
         SOLR_INTERFACE = sunburnt.SolrInterface(SOLR_SERVER)
     except sunburnt.SolrError as e:
-        sys.stderr.write("Cannot connect to Solr. Got SolrError: "  + str(e) + "\nStack trace:\n")
+        sys.stderr.write("Cannot connect to Solr. Got SolrError: " + str(e) + "\nStack trace:\n")
         traceback.print_exc()
         exit(1)
     except httplib2.ServerNotFoundError as e:
-        sys.stderr.write("Cannot connect to Solr. Got: "  + str(e) + "\n")
+        sys.stderr.write("Cannot connect to Solr. Got: " + str(e) + "\n")
         exit(1)
+
 
 def get_and_sort_common_keywords(userskeywords, otherkeywords):
 #    print "other keywords: "
