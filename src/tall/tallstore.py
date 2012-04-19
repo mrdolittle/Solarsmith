@@ -147,7 +147,7 @@ def get_frienemies_by_id(username, test_mode=False):
         except Exception as e:
             return other_fail(e)
         
-    elif hatekeywords:
+    elif userhatekeywords:
         query = SOLR_INTERFACE.Q(hatekeywords=userhatekeywords[0][0]) ** userhatekeywords[0][1]
         for keyword, weight in userhatekeywords:
             query = query | SOLR_INTERFACE.Q(hatekeywords=keyword) ** weight
