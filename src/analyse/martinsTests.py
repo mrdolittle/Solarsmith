@@ -25,8 +25,12 @@ My hypothesis is that larger features are more likely to be correct.
 6. Use the ratio between positive, neutral and negative as a very strong factor when calculating points.
 Neutral is also important.
 
+7. Train on neutral sentences also, but remove neutral features from naive bayes after training, 
+so that neutral features (like "ice-cream") are removed.
+
 Special cases
 1. If a not or similar negating statement is before a postive feature, maybe the whole feature is negative?
+
 
 2. maybe use bayesian thing to find negating statements
 
@@ -239,6 +243,6 @@ def get_words_list2(sentence,
 dicti={}.fromkeys(["really","like","really like","wonderful"])
 
 #print replace_nonfeatures("I really like the wonderful mac-air",dicti,1,3)
-print get_words_list2("I really like the wonderful mac-air",{}.fromkeys(["really","like","really like","wonderful"]))
-#print get_significant_features("I really like the wonderful mac-air",{}.fromkeys(["really","like","really like","wonderful"]))
+#print get_words_list2("I really like the wonderful mac-air",{}.fromkeys(["really","like","really like","wonderful"]))
+print get_significant_features("I really like the wonderful mac-air",{}.fromkeys(["really","like","really like","wonderful"]))
 
