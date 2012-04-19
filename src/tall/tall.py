@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+#!/usr/bin/env python2.7
+
 '''
 Created on Mar 21, 2012
 
@@ -6,15 +8,18 @@ Created on Mar 21, 2012
 '''
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from SocketServer import ThreadingMixIn
-import socket
-import tallstore
-import urlparse
-from configHandler import configuration
 from xml.sax.saxutils import escape
+import select
+import socket
+import urlparse
 
-CONFIG = configuration.Config()
+import tallstore
+import configHandler
+
+CONFIG = configHandler.Config()
 REQUEST_SERVER = CONFIG.get_request_server()
 REQUEST_SERVER_PORT = 1337
+TIMEOUT_FOR_REQUEST = 15
 
 
 def get_pic_link(username):
@@ -31,45 +36,61 @@ def create_socket(address):
 
 
 def send_to_request(username):
-    '''Sends a username to Request and awaits an answer. Returns different values depending on the 
-    answer from Request.'''
+    '''
+    Sends a username to Request and awaits an answer.
+    Returns different values depending on the answer from Request.
+    '''
     global REQUEST_SERVER, REQUEST_SERVER_PORT
     print "Trying to connect to request"
     try:
         soc = create_socket((REQUEST_SERVER, REQUEST_SERVER_PORT))
     except:
-        return "Error: Cannot connect to request."
+        return False, "Error: Cannot connect to request."
     print "Connected"
     try:
         soc.sendall(username)
     except:
-        return "Error: Could not send to request"
+        return False, "Error: Could not send to request"
     print "username sent: " + username
-    response = soc.recv(1024) # Recieves a response of at most 1k
+    try:
+        ready = select.select([soc], [], [], TIMEOUT_FOR_REQUEST)
+        if ready[0]:
+            arrived = soc.recv(1024)  # Recieves a response of at most 1k
+            print "Arrived to request: " + arrived
+        else:
+            return (False, "Error: Timeout")
+        ready = select.select([soc], [], [], TIMEOUT_FOR_REQUEST)
+        if ready[0]:
+            response = soc.recv(1024)  # Recieves a response of at most 1k
+        else:
+            return (False, "Error: Timeout")
+    except:
+        "Error: Could not read from request"
     soc.close()
-    print "response from request: " + response
-    if response == 1:
-#        print response
+    if response == "1":
         return (True, "User added, retrieving frienemies.")
-        # Anropa storage igen med användarnamnet
+        # Anropa storage igen med anvÃ¤ndarnamnet
 
-    elif response == 2:
+    elif response == "2":
 #        print response
-        return (False, "User does not exist.")
-        # Tala om för gui att användaren inte finns
+        return (False, "Error: User does not exist.")
+        # Tala om fÃ¶r gui att anvÃ¤ndaren inte finns
+    elif response == "3":
+        # Tala om att anvÃ¤ndaren Ã¤r skyddad
+        return (False, "Error: User is hidden and cannot be shown.")
     else:
-        # Response was 3 or 4
+        # Response was something else
 #        print response
-        return (False, "ERROR")
-        # Tala om för gui att nånting pajade
+        return (False, "Error: Unknown error.")
+        # Tala om fÃ¶r gui att nÃ¥nting pajade
 
     # 1 = user added
     # 2 = user does not exist
-    # 3 = timeout
+    # 3 = user is hidden
     # 4 = unknown error
 
 
-def get_common_keywords(userskeywords, otherkeywords):
+def get_and_sort_common_keywords(userskeywords, otherkeywords):
     commonkeywords = []
     for key in otherkeywords:
         if key in userskeywords:
@@ -81,13 +102,7 @@ def create_xml(result):
     '''
     Creates the xml-string that will be sent to the GUI.
     '''
-    friendresult = result[0]
-    foeresult = result[1]
-    userlovekeywords = result[2]
-    if len(result) == 4:
-        userhatekeywords = result[3]
-    else:
-        userhatekeywords = userlovekeywords
+    friendresult, foeresult = result
     # All xml-flags
     searchtag = "<searchResult>"
     friendtag = "<friends>"
@@ -97,6 +112,8 @@ def create_xml(result):
     piclinktag = "<piclink>"
     lovekeywordstag = "<lovekeywords>"
     hatekeywordstag = "<hatekeywords>"
+    scoretag = "<score>"
+    endscoretag = "</score>"
     endpiclinktag = "</piclink>"
     endlovekeywordstag = "</lovekeywords>"
     endhatekeywordstag = "</hatekeywords>"
@@ -115,10 +132,9 @@ def create_xml(result):
         friendusername = friends.getId()
         # Start of friends
         tosend = tosend + entrytag + nametag + escape(friendusername) + endnametag
+        tosend = tosend + scoretag + str(friends.score) + endscoretag
         tosend = tosend + piclinktag + escape(get_pic_link(friendusername)) + endpiclinktag
         tosend = tosend + lovekeywordstag
-
-        lovekeywords = get_common_keywords(userlovekeywords, lovekeywords)
 
         # Add friend's lovekeywords
         lkw_str = ""
@@ -126,8 +142,6 @@ def create_xml(result):
             lkw_str = lkw_str + keyword + ","
         lkw_str = escape(lkw_str.rstrip(","))
         tosend = tosend + lkw_str + endlovekeywordstag + hatekeywordstag
-
-        hatekeywords = get_common_keywords(userhatekeywords, hatekeywords)
 
         # Add friend's hatekeywords
         hkw_str = ""
@@ -147,8 +161,8 @@ def create_xml(result):
         enemyusername = enemies.getId()
         # Add a foe
         tosend = tosend + entrytag + nametag + escape(enemyusername) + endnametag
+        tosend = tosend + scoretag + str(enemies.score) + endscoretag 
         tosend = tosend + piclinktag + escape(get_pic_link(enemyusername)) + endpiclinktag
-        lovekeywords = get_common_keywords(userlovekeywords, lovekeywords)
         tosend = tosend + lovekeywordstag
         # Add foe's lovekeywords
         lkw_str = ""
@@ -156,7 +170,6 @@ def create_xml(result):
             lkw_str = lkw_str + keyword + ","
         lkw_str = escape(lkw_str.rstrip(","))
         tosend = tosend + lkw_str + endlovekeywordstag + hatekeywordstag
-        hatekeywords = get_common_keywords(userhatekeywords, hatekeywords)
         # add foe's hatekeywords
         hkw_str = ""
         for keyword in hatekeywords:
@@ -168,7 +181,7 @@ def create_xml(result):
     tosend = tosend + endenemiestag
     # End of Search result
     tosend = tosend + endsearchtag
-   
+
     print "Response: " + tosend
 
     return tosend.encode('UTF-8')
@@ -215,9 +228,14 @@ class RequestHandler(BaseHTTPRequestHandler):
     '''
     This Handler defines what to do with incoming HTTP requests.
     '''
-    def _writeheaders(self):
+    def _writexmlheaders(self):
         self.send_response(200)
         self.send_header('Content-type', 'application/xml')
+        self.end_headers()
+
+    def _writetextheaders(self):
+        self.send_response(200)
+        self.send_header('Content-type', 'text/plain')
         self.end_headers()
 
     def do_HEAD(self):
@@ -227,7 +245,6 @@ class RequestHandler(BaseHTTPRequestHandler):
         self.wfile.write(result)
 
     def do_GET(self):
-        self._writeheaders()
         print self.requestline
         print self.path
         if self.path == "/favicon.ico":
@@ -235,34 +252,58 @@ class RequestHandler(BaseHTTPRequestHandler):
         if self.path == '/':
             return
         command, data = get_arguments(self.path)
-        data = data.lower()
+#        data = data.lower()
         print "Command: " + command
         print "Data: " + data
+
+        ################
+        ######TEST######
+        ################
+        # ignore anything but the SSDummies
+        if command == "testusername":
+            frienemy_result = tallstore.get_frienemies_by_id(data, test_mode=True)
+            self._writexmlheaders()
+            self.send_result(create_xml(frienemy_result))
+            return
+        ################
+        ######TEST######
+        ################
+
         if command == "username":
-            frienemy_result = tallstore.get_frienemies_by_id(data) # Ska ersättas med anrop till storage handler
+            frienemy_result = tallstore.get_frienemies_by_id(data) # Ska ersÃ¤ttas med anrop till storage handler
             if frienemy_result == False:
-                self.send_result('User not found, attempting to add')
                 succeeded, message = send_to_request(data)
-                succeeded = False
-                message = "Request is not online. Cannot retrieve new users from Twitter."
+#                succeeded = False
+#                message = "Request is not online. Cannot retrieve new users from Twitter."
+#                print message
+                print "Succeeded: " + str(succeeded)
+                print message
                 if succeeded == True:
-                    self.send_result(message)
-                    # Hämta från storage
+                    # HÃ¤mta frÃ¥n storage
                     frienemy_result = tallstore.get_frienemies_by_id(data)
                     if frienemy_result == False:
-                        return # Bör ersättas med felkod. Kommer vi hit är något allvarligt fel
+                        return # BÃ¶r ersÃ¤ttas med felkod. Kommer vi hit Ã¤r nÃ¥got allvarligt fel
                 else:
+                    self._writetextheaders()
                     self.send_result(message)
                     return
         elif command == "keywords":
+            data = data.replace('*', ' ')
             keys = data.split(",")
-            frienemy_result = tallstore.get_frienemies_by_keywords(keys) + [keys]                
+            frienemy_result = tallstore.get_frienemies_by_keywords(keys)
         else:
+            self._writetextheaders()
             self.send_result("Error: bad argument") 
             return
         if frienemy_result == "Error: Connection to Solr lost.":
+            self._writetextheaders()
             self.send_result("Error: Connection to Solr lost.")
             return
+        elif frienemy_result == "Error: Unknown error.":
+            self._writetextheaders()
+            self.send_result("Error: Unknown error.")
+            return
+        self._writexmlheaders()
         self.send_result(create_xml(frienemy_result))
 
 

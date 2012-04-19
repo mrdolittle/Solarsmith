@@ -16,10 +16,15 @@ Uses: analysis, storageHandler, twitter help
 Used by: request, update, scrape 
 '''
 
-from twitterHelp import *
-from storageHandler import *
-from analyse import *
+import twitter
+from twitterHelp import TwitterHelp
+from storageHandler import StorageHandler
+from analyse import analyse
 from operator import itemgetter
+import math
+
+
+KEYWORD_CUTOFF = 1.1            # keywords weighted lower than this will not be included in the final results
 
 class AddalyseError(Exception):
     '''Base class for all variants of errors Addalyse wants to raise.'''
@@ -27,24 +32,26 @@ class AddalyseError(Exception):
     def __init__(self, value):
         self.value = value
     def __str__(self):
-        return repr(self.value)
+        return repr(self)[:-1] + repr(self.value) + ')'
 
-# subclass of AddalyseError...
 class AddalyseUserNotOnTwitterError(AddalyseError): pass
-# subclass of AddalyseError...
 class AddalyseUnableToProcureTweetsError(AddalyseError): pass
+class AddalyseProtectedUserError(AddalyseError): pass
+class AddalyseRateLimitExceededError(AddalyseError): pass
 
-def addalyse(solr_server, username, since_id=0, remake_profile=True, update_count=1):
+def addalyse(*args):
     '''
-    Description:
-    If remakeProfile is true then it will disregard since_id and analyse as many tweets as possible
-    and then replace the profile in Solr. With only solr_server and username as input this will happen.
+    Description: If the argument remake_profile is true then it will
+    disregard since_id and analyse as many tweets as possible and then
+    replace the profile in Solr. With only solr_server and username as
+    input this will happen.
     
-    If remakeProfile is false it will analyse tweets newer than since_id and if there was a profile in Solr
-    merge the result with the profile in Solr, else add a new profile.
+    If remakeProfile is false it will analyse tweets newer than
+    since_id and if there was a profile in Solr merge the result with
+    the profile in Solr, else add a new profile.
     
     Input: 
-    @arg solr_server: A String with the address to the Solr server.
+    @arg solr_server: A String with the address to the Solr server, or optionally a StorageHandler object.
     @arg username: A String with the username of the user that is to be analysed.
     @arg since_id: A long that contains the unique id number of the latest analysed tweet of the 
         targeted profile in Solr. This an optional argument which is 0 as default.
@@ -60,20 +67,31 @@ def addalyse(solr_server, username, since_id=0, remake_profile=True, update_coun
     no tweets on that user or if remake is false, no new tweets are on Twitter.
 
     '''
+    try:
+        return apply(_addalyse, args)
+    except twitter.TwitterError as e:
+        if e.message == 'Not authorized':
+            raise AddalyseProtectedUserError('Not authorized')
+        elif e.message == "Capacity Error":
+            raise AddalyseUnableToProcureTweetsError('Twitter is lazy: Capacity error')
+        elif e.message[0:19] == 'Rate limit exceeded':
+            raise AddalyseRateLimitExceededError(e.message)
+        else:
+            raise               # else pass it on
+        
+
+def _addalyse(solr_server, username, since_id=0, remake_profile=True, update_count=1):
+
     th = TwitterHelp()
-    
-    #since Solr is case sensitive and Twitter is not
-    username = username.lower()
     
     # does not use a Twitter API call
     if not th.twitter_contains(username):
         raise AddalyseUserNotOnTwitterError("Couldn't find any trace of '" + username + "'")
+
+    username = th.get_screen_name(username) # canonicalize the name like a bawz  (in the future, though, th.twitter_contains(sdf) might just return this canonical stuffs)
     
     # solr_server can now optionally be a StorageHandler object
-    if isinstance(solr_server, StorageHandler):
-        sh=solr_server
-    else: 
-        sh = StorageHandler(solr_server)
+    sh = solr_server if isinstance(solr_server, StorageHandler) else StorageHandler(solr_server)
 
     # remake if not in Solr
     remake_profile = remake_profile or not sh.contains(username)
@@ -84,7 +102,7 @@ def addalyse(solr_server, username, since_id=0, remake_profile=True, update_coun
         if not tweets: 
             e = AddalyseUnableToProcureTweetsError("I couldn't for the love of me extract some tweets for '" +
                                                    username +
-                                                   "'. Maybe he just doesn't have any?")
+                                                   "'. Maybe they just doesn't have any?")
             e.remake_profile = True
             raise e
         
@@ -92,18 +110,20 @@ def addalyse(solr_server, username, since_id=0, remake_profile=True, update_coun
         new_since_id = tweets[0].id # assumes that the 
         
         # send to analysis
-        #(lovekeywords, hatekeywords) = ([("cat", 44), ("bear hunting", 22), ("dog", 33)], [("fishing", 55), ("bear grylls", 33)])
-        (lovekeywords, hatekeywords) = compiler.analyse(map(lambda x: x.GetText(), tweets))# TODO:implement in analyse
+        print "addalyse(remake_profile=" + str(remake_profile) + "): analyzing, '" + username + "'"
+        (lovekeywords, hatekeywords) = filter_analysis(analyse(map(lambda x: x.GetText(), tweets)))
         
         # store result in sunburnt
+        print "addalyse(remake_profile=" + str(remake_profile) + "): adding, '" + username + "'"
         sh.add_profile(username, lovekeywords, hatekeywords, new_since_id, update_count)
+        print "addalyse(remake_profile=" + str(remake_profile) + "): done"
         
     else:
         tweets = th.get_all_statuses(username, since_id) # get all tweets since since_id
         if not tweets:
             e = AddalyseUnableToProcureTweetsError("I couldn't for the love of me extract some tweets for '" +
                                                    username +
-                                                   "'. Maybe he just doesn't have any new ones?")
+                                                   "'. Maybe they just doesn't have any new ones?")
             e.remake_profile = False
             raise e
            
@@ -112,41 +132,58 @@ def addalyse(solr_server, username, since_id=0, remake_profile=True, update_coun
         # MERGING
 
         # send to analysis
-        #(lovekeywords, hatekeywords) = ([("cat", 44), ("bear hunting", 22), ("dog", 33)], [("fishing", 55), ("bear grylls", 33)])
-        (lovekeywords, hatekeywords) = compiler.analyse(map(lambda x: x.GetText(), tweets))
-
+        print "addalyse(remake_profile=" + str(remake_profile) + "): analyzing, '" + username + "'"
+        (lovekeywords, hatekeywords) = analyse(map(lambda x: x.GetText(), tweets)) # Don't filter the new analysis just yet, merge it first!
         
         # get a users old hatekeywords_list and lovekeywords_list
         doc = sh.get_user_documents(username, 'lovekeywords_list', 'hatekeywords_list')[0]
         
-        lovekeywords_old = doc.lovekeywords_pylist
-        hatekeywords_old = doc.hatekeywords_pylist
+        (lovekeywords_old, hatekeywords_old) = (doc.lovekeywords_pylist, doc.hatekeywords_pylist)
         
-        # merge tuples
-        lovemerge = merge_tuples(lovekeywords + lovekeywords_old)# gives an exception if lovekeywords==None
-        hatemerge = merge_tuples(hatekeywords + hatekeywords_old)
+        # merge tuples. Also now that we are done mergeing we can start looking for keywords with a too low weight
+        (lovemerge, hatemerge) = filter_analysis((merge_keywords(lovekeywords, lovekeywords_old), merge_keywords(hatekeywords, hatekeywords_old)))
         
         # add merged result to database
-        sh.add_profile(username, lovemerge, hatemerge, new_since_id, update_count)    
+        print "addalyse(remake_profile=" + str(remake_profile) + "): adding, '" + username + "'"
+        sh.add_profile(username, lovemerge, hatemerge, new_since_id, update_count)
+        print "addalyse(remake_profile=" + str(remake_profile) + "): done"
         
     # returns true if added to database   
     return True #TODO: should this return True?
+    # return the number of requests to twitter
+    #return math.ceil(len(tweets)/140.0)
 
-def merge_tuples(list_of_only_love_or_only_hate_tuples):
-    '''Gets a list of love tuples or a list of hate tuples, it merges
-    and adds the values of all tuples with the same name.
+def merge_keywords(a, b):
+    '''Merge all tuples with the same keyword and sum the values.
     
-    E.g [('tjoo',1),('hi',3),('hi',2),('tjoo',3)] gives [('hi',5),('tjoo',2)]'''
+    E.g merge_keywords([('tjoo',1),('hi',3)], [('hi',2),('tjoo',3)]) gives [('hi',5),('tjoo',2)]'''
+
+    dic = {}
+    for (k,w) in a:
+        dic[k] = dic.get(k, 0.0) + w
+    for (k,w) in b:
+        dic[k] = dic.get(k, 0.0) + w
+    return dic.items()
+
+# def merge_tuples(list_of_only_love_or_only_hate_tuples):
+#     '''Merge all tuples with the same keyword and sum the values.
     
-    myDict = {}
-    # merge all tuples with the same keyword and sum the values
-    for (keyword,value) in list_of_only_love_or_only_hate_tuples:
-        # if exist increment by value else add (keyword, value)
-        myDict[keyword] = myDict.get(keyword, 0.0) + value
-    # returns a list of all (key, value) tuples in the dictionary
-    return myDict.items()
+#     E.g [('tjoo',1),('hi',3),('hi',2),('tjoo',3)] gives [('hi',5),('tjoo',2)]'''
+    
+#     myDict = {}
+#     for (keyword,value) in list_of_only_love_or_only_hate_tuples:
+#         myDict[keyword] = myDict.get(keyword, 0.0) + value         # if exist increment by value else add (keyword, value)
+#     return myDict.items()                                          # returns a list of all (key, value) tuples in the dictionary
 
 
+def filter_analysis(lovekeywords_hatekeywords_tuple):
+    '''Takes a pair of keyword lists and filters them both for
+    keywords with a weight below KEYWORD_CUTOFF. Returns tuple with
+    filtered keyword lists.'''
+    global KEYWORD_CUTOFF
+    
+    foo = lambda x: filter(lambda (a,b): b >= KEYWORD_CUTOFF, x)
+    return (foo(lovekeywords_hatekeywords_tuple[0]), foo(lovekeywords_hatekeywords_tuple[1]))
 
 # TEST
 def unduplicate_and_sort_tweets(old_tweets, new_tweets):

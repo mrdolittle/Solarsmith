@@ -10,22 +10,12 @@ TODO: Do some sort of stemming somewhere around here (at least stem
 import nltk
 from keywords import extract_keywords
 from sentiment import analyse_sentiment
-from nltk.corpus import wordnet
-
-
-def isenglish(tweet):
-    # wordlist=tweet.split(" ")
-    wordlist = tweet.split()
-    englishfactor = 0
-    for word in wordlist: 
-        if wordnet.synsets(word):
-            englishfactor = englishfactor + 1
-            #  a english word
-    return True if (englishfactor + 0.0)/len(wordlist) > 0.4 else False
+from common import *
 
 def analyse_sentence(sentence):
-    '''Takes a tweet and performs sentimentanalysis on the given tweet, then gives the weight that
-    was returned from the sentiment analysis
+    '''Takes a tweet and performs sentiment analysis on the given
+    tweet, then gives the weight that was returned from the sentiment
+    analysis
 
     TODO: Is this function neccesary? HALF-DEPRECATED'''
     
@@ -66,14 +56,15 @@ def splittify(keywords):
     # Homework for the ones interested in the perversions of lists and functional
     # programming. (This just might be the Haskell way to do it..., or Lisp for that matter).
 
-    return map(lambda x: filter(lambda a: a != None, x), apply(zip, [((k,w), None) if w > 0.0 else (None, (k,-w)) for (k,w) in keywords]))
+    return tuple(map(lambda x: list(filter(lambda a: a != None, x)), apply(zip, [((k,w), None) if w > 0.0 else (None, (k,-w)) for (k,w) in keywords])))
 
 def analyse_sentences_var_2(sentences):
     '''This doesn't count love and hate separately but tries to, for each keyword, get only one
     value which is the total amount of love minus the total amount of hate (typing this felt kind of
     wierd...).'''
     
-    return splittify(analyse_sentences_var_2_helper(sentences))
+    a = splittify(analyse_sentences_var_2_helper(sentences))
+    return ([], []) if not a else a
 
 def analyse(tweets):
     '''Do the whole analysis shebang and return the results as one lovekeyword list and one
@@ -82,10 +73,16 @@ def analyse(tweets):
     (love, hate) = analyse(tweets)
     print love => [("cat", 34), ("fishing", 22), ("bear grylls", 33)]
     print hate => [("dog", 123), ("bear hunting", 44)]'''
-   # print tweets
-   # print map(nltk.sent_tokenize,tweets)
-   # print reduce(lambda x,y: x+y,[['tweetlist'], ['lol dont like apples'], ['like reading books']])
+    # print tweets
+    # print map(nltk.sent_tokenize,tweets)
+    # print reduce(lambda x,y: x+y,[['tweetlist'], ['lol dont like apples'], ['like reading books']])
     #reduce(lambda x,y: x+y,map(nltk.sent_tokenize, tweets))
 
     # split the list of tweets to a list of sentences and send it to analyse_sentences
-    return analyse_sentences_var_1(reduce(lambda x,y: x+y, map(nltk.sent_tokenize, filter(isenglish, tweets))))
+    return analyse_sentences_var_1(reduce(lambda x,y: x+y,
+                                          map(nltk.sent_tokenize, filter(isenglish, tweets)),
+                                          []))
+
+if __name__ == "__main__":
+    print analyse(["Star Wars is the movie of the century","Bear Grylls is being tortured by us more and more"])
+    

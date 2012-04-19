@@ -40,8 +40,6 @@ def keyword_list_to_text(lst):
             
     return "\n".join(stringsies)
 
-
-
 class Document:
     '''Class for handling our Solr documents neatly together with Sunburnt.
 

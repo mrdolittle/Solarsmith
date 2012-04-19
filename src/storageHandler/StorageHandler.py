@@ -98,6 +98,18 @@ class StorageHandler:
         self.si.delete(id_or_list_of_id)
         self.si.commit()
 
+    def delete_ci(self, id_or_list_of_id):
+        '''Similar to regular delete, but also does case insensitive
+        matching as well as wildcards.'''
+
+        # We need to match documents with a query to delete case insensitively
+        id_list = id_or_list_of_id if isinstance(id_or_list_of_id, list) else [id_or_list_of_id]
+        query_list = map(lambda x: self.si.Q(id_ci=x), id_list)
+
+        self.si.delete(queries=query_list)
+        self.si.commit()
+
+
     def delete_all(self):
         '''BLOWS. UP. EVERYTHING!!!'''
 

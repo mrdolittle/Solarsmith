@@ -1,12 +1,47 @@
-WRITEME?!
+To get started begin by copying configuration_file.conf.example to configuration_file.conf.
+Then you can go on exploring all the other stuffs
 
+To run the programs in terminal you should first:
+    # export PYTHONPATH="<PATH-TO-GIT-FOLDER>/Solarsmith/src"
+
+then you can go (for example)
+    # cd <PATH-TO-GIT-FOLDER>/Solarsmith/src
+    # cd request
+    # python request.py
+
+what your current directory is is very important due to crazy relative paths
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CRAP:
 
 Random TODO-funderingar som inte hör hemma i denna fil egentligen:
 
 mest relevant för analysfolket tror jag...
 
 Kanske ska vi stopwordsa redan inuti extract_keywords_grammar så att multi-ord-keywords inte blir multi-ordiga när de inte bör. ex.: "hate apples". ifall hate nu faktisk ska vara i stopwordsiga listan.
+Kanske vill vi att "hate apples" eller "hating apples" som det också torde bli stemmat till (i alla fall internt i solr nu, eller?)
 
-Kanske vill vi att "hate apples" eller "hating apples" som det också torde bli stemmat till (i alla fall internt i solr nu)
-
-På keywords vikta upp fullständiga namn alt. vikta ner (kanske bättre) delnamn innan de mosas ut (nu får vi användning av att extract_keywords förväntas mosa ut vikter)
