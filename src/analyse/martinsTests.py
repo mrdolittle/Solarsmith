@@ -5,19 +5,30 @@ This file is for experimental code!
 Copy paste the code to where it can be used.
 
 ideas
-train, replace non-features with "." and train an additional bayesian thing on these sentences
+1. train on all words then use this to construct a important features dictionary. 
+Then replace non-features with "." and train an additional bayesian thing on these sentences 
+(could alternatively replace with POS-tags instead of ".", if the POS-tagging is good enough).
 get_words_list2 # not tested enough
 
-if larger feature is a real feature and contains real smaller feature then only use the larger when classifying.
+2. if larger feature is a real feature and contains real smaller feature then only use the larger when classifying.
 get_significant_features # not tested enough
 
-normalize the points of the features so that a feature can't dominate the sentiment as easily.
+3. combine 1 and 2, and use very large features in 2 (can still use relatively small features in 1). 
+The combination of these two give the effect that it tries to find as large features as possible 
+but falls back to smaller features if no larger features are found. 
+My hypothesis is that larger features are more likely to be correct.
 
-give more points to features consisting of multiple words because they are more likely to be correct.
+4. normalize the points of the features so that a feature can't dominate the sentiment as easily.
 
-Use the ratio between positive, neutral and negative as a very strong factor when calculating points.
+5. give more points to features consisting of multiple words because they are more likely to be correct.
+
+6. Use the ratio between positive, neutral and negative as a very strong factor when calculating points.
 Neutral is also important.
 
+Special cases
+1. If a not or similar negating statement is before a postive feature, maybe the whole feature is negative?
+
+2. maybe use bayesian thing to find negating statements
 
 @author: mbernt
 '''
@@ -77,7 +88,7 @@ def get_significant_features(sentence,features_dict, num_words = 1,words_in_feat
     
     # for each num_words
     while num_words <= words_in_feature:
-        tmpRes=[]
+        tmpList=[]
         # add all features with num_words
         start = 0
         end=start + num_words
@@ -87,19 +98,19 @@ def get_significant_features(sentence,features_dict, num_words = 1,words_in_feat
             # only add features
             if features_dict.has_key(candidate_feature):
                 print candidate_feature
-                # add the word and the index to tmpRes
-                tmpRes.append((start, end, candidate_feature))
+                # add the word and the index to tmpList
+                tmpList.append((start, end, candidate_feature))
             start = start + 1
             end = start + num_words
         
          
         # remove if sub-feature
-        # warning! bad time complexity! O(len(res)*len(tmpRes))
+        # warning! bad time complexity! O(len(res)*len(tmpList))
         keepList=[]
         if num_words>1:
             for (i,j,word) in res:
                 add=True
-                for (i2,j2,word2) in tmpRes:
+                for (i2,j2,word2) in tmpList:
                     # must be in the same place to be a sub feature
                     if i2<=i and j<=j2:
                         # must be in the larger feature to be a sub feature
@@ -112,7 +123,7 @@ def get_significant_features(sentence,features_dict, num_words = 1,words_in_feat
                     keepList.append((i,j,word))
         res=keepList
                             
-        res=res+tmpRes
+        res=res+tmpList
         print res
         # next number of words
         num_words = num_words + 1
@@ -129,6 +140,7 @@ def word_true_tuples(words):
     for word in words:
         tuples.append((word,True))
     return tuples
+
 def word_true_dict(words):
     feat={}
     for word in words:
@@ -147,6 +159,8 @@ def replace_nonfeatures(sentence, first_features_dict, num_words, words_in_featu
     
     Can later be used if replacing non_features with "." and training on that data 
     '''
+    print first_features_dict
+    print sentence
     # get words in sentence
     words = get_words(sentence)#sentence.lower().split()
     #print words
@@ -205,7 +219,6 @@ def get_words_list2(sentence,
     '''
     #print get_words_list(sentence,num_words,words_in_feature)
     #print sentence
-    print sentence
     sentence=replace_nonfeatures(sentence, first_features_dict, num_words_in_dict, words_in_feature_int_dict)
     print sentence
     #print sentence
@@ -223,13 +236,9 @@ def get_words_list2(sentence,
 #print get_words_list("hej pa lilla dej", 2)
 #print get_words_list("hej pa lilla dej", 3)
 
-features=["really","really like","wonderful"]
-dicti={}.fromkeys(features,None)
-#print replace_nonfeatures("hej pa, lilla dej",dicti,1,3)
-#print dicti
-#print get_words_list2("I really like to play with the new wonderful mac air",dicti,1,3)
-#print get_words_list2("I really like the wonderful mac-air",{}.fromkeys(["really","really like","wonderful"]))
-print get_significant_features("I really like the wonderful mac-air",{}.fromkeys(["really","like","really like","wonderful"]))
-#re.split(r'\W')
-#print filter(lambda x: not re., re.split(re.compile(r"([^a-z])+"), "hej.pa.lilla."))
-#print re.findall(re.compile(r"[a-z.]+"), "hej ,g. pa . lilla .")
+dicti={}.fromkeys(["really","like","really like","wonderful"])
+
+#print replace_nonfeatures("I really like the wonderful mac-air",dicti,1,3)
+print get_words_list2("I really like the wonderful mac-air",{}.fromkeys(["really","like","really like","wonderful"]))
+#print get_significant_features("I really like the wonderful mac-air",{}.fromkeys(["really","like","really like","wonderful"]))
+
