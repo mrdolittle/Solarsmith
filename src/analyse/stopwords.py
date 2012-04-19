@@ -502,7 +502,8 @@ STOPWORDS = set(["something",
                  "fucking",
                  "stuff",
                  "fuck",
-                 "thank"
+                 "thank",
+                 "excited"
                  ])
 
 def filter_keywords(keywords, key=nop):
