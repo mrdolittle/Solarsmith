@@ -14,6 +14,7 @@ the influence of covariant features.
 import  random
 import nltk
 import ast
+import csv
 import tweet_features, tweet_pca
 CORPUS1="../analyse/sentiment.csv"
 CORPUS2="../analyse/newcorpus3"
@@ -26,7 +27,7 @@ def word_true_dict(words):
         feat[word]=True
     return feat
 
-def get_words_list(sentence, words_in_feature=4):
+def get_words_list(sentence,num_words=2, words_in_feature=3):
     '''Used to get all features/words up to the specified
     words_in_feature. 
     Ex. 
@@ -39,7 +40,6 @@ def get_words_list(sentence, words_in_feature=4):
     # the number of words in the sentence
     words_in_feature = min(words_in_feature, len(words))
     res = []
-    num_words = 2
     # for each num_words
     while num_words <= words_in_feature:
         # add all features with num_words
@@ -57,9 +57,14 @@ def analyse_sentiment(sentence):
     representing sentiment with negative numbers meaning negative
     sentiment.'''
     global CLASSIFIER
-    
+    featureset=word_true_dict(get_words_list(sentence))
+    #probclass=CLASSIFIER.prob_classify(featureset)
+    #listig =probclass.samples()
+    #print probclass.max()
+    #for sample in listig:
+    #    print str(sample)+" "+str(probclass.prob(sample))
     #classification = CLASSIFIER.classify(tweet_features.make_tweet_dict(sentence))
-    classification = CLASSIFIER.classify(word_true_dict(get_words_list(sentence)))
+    classification = CLASSIFIER.classify(featureset)
     if classification == 'negative':
         return -1.0 # byts mot en riktig relevansmetod
     if classification == 'positive':
@@ -109,6 +114,26 @@ v_train = fvecs
 ## train CLASSIFIER
 
 CLASSIFIER = nltk.NaiveBayesClassifier.train(v_train);
+#cpdist = CLASSIFIER._feature_probdist 
+#for (fname, fval) in CLASSIFIER.most_informative_features(100):
+#        def labelprob(l):
+#            #print cpdist[l,fname].prob(fval)
+#            return cpdist[l,fname].prob(fval)
+#        labels = sorted([l for l in CLASSIFIER._labels
+#                  if fval in cpdist[l,fname].samples()],
+#                   key=labelprob) 
+#       if len(labels) == 1: continue
+#        l0 = labels[0]
+#        l1 = labels[-1]
+#        if cpdist[l0,fname].prob(fval) == 0:
+#            ratio = 'INF'
+#        else:
+#            ratio = '%8.1f' % (cpdist[l1,fname].prob(fval) /
+#                                 cpdist[l0,fname].prob(fval))
+       # print ('%24s = %-14r %6s : %-6s = %s : 1.0' % 
+        #              (fname, fval, str(l1)[:6], str(l0)[:6], ratio))
+
+print CLASSIFIER.most_informative_features(100)
 #CLASSIFIER = nltk.classify.maxent.train_maxent_CLASSIFIER_with_gis(v_train);
 
 
@@ -119,11 +144,5 @@ CLASSIFIER = nltk.NaiveBayesClassifier.train(v_train);
 #print CLASSIFIER.show_most_informative_features(200)
 
 
-# build confusion matrix over test set
-#test_truth   = [s for (t,s) in v_test]
-#test_predict = [CLASSIFIER.classify(t) for (t,s) in v_test]
-
-#print 'Confusion Matrix'
-#print nltk.ConfusionMatrix( test_truth, test_predict )
 
 
