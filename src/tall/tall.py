@@ -16,7 +16,7 @@ import urlparse
 import tallstore
 import configHandler
 
-CONFIG = configHandler.Config()
+CONFIG = configHandler.Config(setting=1)
 REQUEST_SERVER = CONFIG.get_request_server()
 REQUEST_SERVER_PORT = 1337
 
@@ -131,7 +131,7 @@ def create_xml(result):
         friendusername = friends.getId()
         # Start of friends
         tosend = tosend + entrytag + nametag + escape(friendusername) + endnametag
-        tosend = tosend + scoretag + str(friends.score) + endscoretag 
+        tosend = tosend + scoretag + str(friends.score) + endscoretag
         tosend = tosend + piclinktag + escape(get_pic_link(friendusername)) + endpiclinktag
         tosend = tosend + lovekeywordstag
 
@@ -231,7 +231,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-type', 'application/xml')
         self.end_headers()
-    
+
     def _writetextheaders(self):
         self.send_response(200)
         self.send_header('Content-type', 'text/plain')
@@ -254,25 +254,23 @@ class RequestHandler(BaseHTTPRequestHandler):
 #        data = data.lower()
         print "Command: " + command
         print "Data: " + data
-        
+
         ################
         ######TEST######
         ################
         # ignore anything but the SSDummies
         if command == "testusername":
             frienemy_result = tallstore.get_frienemies_by_id(data, test_mode=True)
+            self._writexmlheaders()
             self.send_result(create_xml(frienemy_result))
             return
         ################
         ######TEST######
         ################
-        
-        
-        
+
         if command == "username":
             frienemy_result = tallstore.get_frienemies_by_id(data) # Ska ersÃ¤ttas med anrop till storage handler
             if frienemy_result == False:
-#                self.send_result('User not found, attempting to add.')
                 succeeded, message = send_to_request(data)
 #                succeeded = False
 #                message = "Request is not online. Cannot retrieve new users from Twitter."
@@ -290,7 +288,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                     return
         elif command == "keywords":
             keys = data.split(",")
-            frienemy_result = tallstore.get_frienemies_by_keywords(keys)                
+            frienemy_result = tallstore.get_frienemies_by_keywords(keys)
         else:
             self._writetextheaders()
             self.send_result("Error: bad argument") 

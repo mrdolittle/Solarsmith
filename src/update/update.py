@@ -79,7 +79,7 @@ def main():
                     
                     #If the rate limit was exceeded, pause for 1h1min and try again.
                     except addalyse.AddalyseRateLimitExceededError as err:
-                        sys.stderr.write("RateLimitExceeded, trying again in 1h")
+                        sys.stderr.write("RateLimitExceeded, trying again in " + str(CONFIG.get_rate_limit_exceeded_time()) + " seconds.\n")
                         time.sleep(CONFIG.get_rate_limit_exceeded_time())
                         retry = True
                     
@@ -94,7 +94,7 @@ def main():
             else:
                 print "This user has recently been updated."
         print "Completed one update cycle. Sleeping for " + str(cycle_time) + " seconds."
-        time.sleep(cycle_time)       
+        time.sleep(cycle_time)
 
 if __name__ == "__main__":
     main()

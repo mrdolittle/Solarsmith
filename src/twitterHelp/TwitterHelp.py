@@ -8,6 +8,9 @@ import twitter
 import urllib2
 import time
 from xml.sax.saxutils import unescape
+import configHandler
+
+CONFIG = configHandler.Config()
 
 class TwitterHelp:
     '''TwitterHelp contains the Twitter API as well as 
@@ -67,11 +70,12 @@ class TwitterHelp:
         @param since_id: [optional] The ID of the earliest tweet that will be included
         @return: A list of status objects
         re-throws exceptions from self.twitter_API.GetUserTimeline(id=username, count=200, since_id=since_id) '''
+        global CONFIG
         
         all_statuses = []
         page = 1
-        page_ultimate_limit = 3
-        view_size = 140
+        page_ultimate_limit = CONFIG.TH_GET_ALL_STATUSES_PAGE_ULTIMATE_LIMIT  
+        view_size = CONFIG.TH_GET_ALL_STATUSES_VIEW_SIZE
         # get statuses and append to all_statuses
         
         while True:
@@ -87,7 +91,7 @@ class TwitterHelp:
                     if e.message != "Capacity Error":
                         raise
                     print "Got capacity error. Retrying page", page, "for user", username, "in 60 seconds."
-                    time.sleep(60)
+                    time.sleep(CONFIG.TH_GET_ALL_STATUSES_SLEEP_TIME)
                         
                     
                     
@@ -98,8 +102,11 @@ class TwitterHelp:
             else:
                 break
             
-            # avoid doing an extra call to GetUserTimeline if we already have all tweets 
-            if len(statuses) < view_size or page >= page_ultimate_limit: 
+            # # avoid doing an extra call to GetUserTimeline if we already have all tweets 
+            # if len(statuses) < view_size:
+            #     break
+            
+            if page >= page_ultimate_limit: 
                 break
             page = page + 1  # next page
             

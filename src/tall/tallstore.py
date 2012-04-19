@@ -11,8 +11,10 @@ import sys
 import traceback
 import httplib2
 
-CONFIG = configHandler.Config()
-SOLR_SERVER = CONFIG.get_solr_server()
+CONFIG = configHandler.Config(setting=1)
+#SOLR_SERVER = CONFIG.get_solr_server()
+# Running via tunnel...
+SOLR_SERVER = "http://localhost:8888/solr/"
 SCORELIMIT_FRIEND = 0.008       # Filter for friends
 SCORELIMIT_ENEMY  = 0.008       # filter for enemies
 QUERY_ROWS = 30                 # number of results to ask solr for
@@ -23,22 +25,25 @@ def solr_fail(e):
     traceback.print_exc()
     return "Error: Connection to Solr lost."
 
+
 def other_fail(e):
     sys.stderr.write("Unhandled exception\n")
     traceback.print_exc()
     return "Error: Unknown error."
+
 
 def connect_to_solr():
     global SOLR_INTERFACE
     try:
         SOLR_INTERFACE = sunburnt.SolrInterface(SOLR_SERVER)
     except sunburnt.SolrError as e:
-        sys.stderr.write("Cannot connect to Solr. Got SolrError: "  + str(e) + "\nStack trace:\n")
+        sys.stderr.write("Cannot connect to Solr. Got SolrError: " + str(e) + "\nStack trace:\n")
         traceback.print_exc()
         exit(1)
     except httplib2.ServerNotFoundError as e:
-        sys.stderr.write("Cannot connect to Solr. Got: "  + str(e) + "\n")
+        sys.stderr.write("Cannot connect to Solr. Got: " + str(e) + "\n")
         exit(1)
+
 
 def get_and_sort_common_keywords(userskeywords, otherkeywords):
 #    print "other keywords: "
@@ -125,34 +130,44 @@ def get_frienemies_by_id(username, test_mode=False):
     # use the first 500 most relevant keywords when constructing query (to avoid a too long query)
     userlovekeywords = sorted(searchee.lovekeywords_list, key=lambda (a,b): b, reverse=True)[0:500]
     userhatekeywords = sorted(searchee.hatekeywords_list, key=lambda (a,b): b, reverse=True)[0:500]
-    
-    query = SOLR_INTERFACE.Q(lovekeywords=userlovekeywords[0][0]) ** userlovekeywords[0][1]
-    for keyword, weight in userlovekeywords[1:]:
-        query = query | SOLR_INTERFACE.Q(lovekeywords=keyword) ** weight
-    for keyword, weight in userhatekeywords:
-        query = query | SOLR_INTERFACE.Q(hatekeywords=keyword) ** weight
-        
-    try:
-        friends = SOLR_INTERFACE.query(query).exclude(id=searchee.getId()).field_limit(['id', 'lovekeywords_list_scaled', 'hatekeywords_list_scaled'],
-                                                                                       score=True).paginate(rows=QUERY_ROWS).execute(constructor=SolrUser)
-    except sunburnt.SolrError as e:
-        return solr_fail(e)
-    except Exception as e:
-        return other_fail(e)
 
-    query = SOLR_INTERFACE.Q(hatekeywords=userlovekeywords[0][0]) ** userlovekeywords[0][1]
-    for keyword, weight in userlovekeywords[1:]:
-        query = query | SOLR_INTERFACE.Q(hatekeywords=keyword) ** weight
-    for keyword, weight in userhatekeywords:
-        query = query | SOLR_INTERFACE.Q(lovekeywords=keyword) ** weight
+    # TODO: handle no userlovekeywords case better (at least when we have userhatekeywords)
+    if userlovekeywords:
+        query = SOLR_INTERFACE.Q(lovekeywords=userlovekeywords[0][0]) ** userlovekeywords[0][1]
+        for keyword, weight in userlovekeywords[1:]:
+            query = query | SOLR_INTERFACE.Q(lovekeywords=keyword) ** weight
+        for keyword, weight in userhatekeywords:
+            query = query | SOLR_INTERFACE.Q(hatekeywords=keyword) ** weight
         
-    try:
-        enemies = SOLR_INTERFACE.query(query).exclude(id=searchee.getId()).field_limit(['id', 'lovekeywords_list_scaled', 'hatekeywords_list_scaled'],
+        try:
+            friends = SOLR_INTERFACE.query(query).exclude(id=searchee.getId()).field_limit(['id', 'lovekeywords_list_scaled', 'hatekeywords_list_scaled'],
+                                                                                           score=True).paginate(rows=QUERY_ROWS).execute(constructor=SolrUser)
+        except sunburnt.SolrError as e:
+            return solr_fail(e)
+        except Exception as e:
+            return other_fail(e)
+    else:
+        sys.stderr.write("Warning: User has no lovekeywords so we did not output any friends\n")
+        friends = []
+
+    # TODO: handle no userlovekeywords case better (at least when we have userhatekeywords)
+    if userlovekeywords:
+        query = SOLR_INTERFACE.Q(hatekeywords=userlovekeywords[0][0]) ** userlovekeywords[0][1]
+        for keyword, weight in userlovekeywords[1:]:
+            query = query | SOLR_INTERFACE.Q(hatekeywords=keyword) ** weight
+        for keyword, weight in userhatekeywords:
+            query = query | SOLR_INTERFACE.Q(lovekeywords=keyword) ** weight
+        
+        try:
+            enemies = SOLR_INTERFACE.query(query).exclude(id=searchee.getId()).field_limit(['id', 'lovekeywords_list_scaled', 'hatekeywords_list_scaled'],
                                                                                        score=True).paginate(rows=QUERY_ROWS).execute(constructor=SolrUser)
-    except sunburnt.SolrError as e:
-        return solr_fail(e)
-    except Exception as e:
-        return other_fail(e)
+        except sunburnt.SolrError as e:
+            return solr_fail(e)
+        except Exception as e:
+            return other_fail(e)
+    else:
+        sys.stderr.write("Warning: User has no lovekeywords so we did not output any enemies either\n")
+        enemies = []
 
     
     # Filter friends and enemies on score and on keywords the searchee and they have in common

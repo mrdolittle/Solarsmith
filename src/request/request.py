@@ -230,7 +230,7 @@ class UsernameHandler(threading.Thread):
                         data[1].send("3")       #3 = Protected User (hidden from public requests)
                         retry = False
                     elif res == "RateLimitExceeded":
-                        print "RateLimitExceeded"
+                        print "RateLimitExceeded, waiting " + str(CONFIG.get_rate_limit_exceeded_time()) + " seconds.\n"
                         data[1].send("4")       #4 = Other error, send this and wait for 1h1min.
                         time.sleep(CONFIG.get_rate_limit_exceeded_time())
                         retry = True
