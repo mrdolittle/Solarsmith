@@ -16,7 +16,10 @@ import nltk
 import ast
 import tweet_features, tweet_pca
 CORPUS1="../analyse/sentiment.csv"
-CORPUS2="../analyse/newcorpus3"
+# CORPUS2="../analyse/newcorpus3"
+CORPUS2="../analyse/manual"
+# CORPUS2="../analyse/manual.snapshot1"
+
 
 
     
