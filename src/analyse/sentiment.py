@@ -12,7 +12,7 @@ the influence of covariant features.
 
 """
 
-import  random
+import random
 import nltk
 import ast
 import tweet_features, tweet_pca
