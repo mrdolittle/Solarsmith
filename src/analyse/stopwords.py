@@ -510,7 +510,8 @@ STOPWORDS = set(["something",
                  "feel",
                  "worst",
                  "pay",
-                 "stupid"
+                 "stupid",
+                 "taking"
                  ])
 
 def filter_keywords(keywords, key=nop):
@@ -538,7 +539,8 @@ def strip_tweet(tweet):
     '''Strips tweet of scary features like hashtags at the start or
     end of a tweet as well as some smileys etc.
 
-    TODO: * test whether this approach to hashtags is not insane etc.
+    TODO: * Remove words consisting of only repeated underline (other characters?)
+          * test whether this approach to hashtags is not insane etc.
           * More words to transform?
           * DONE keep eventual punctation (or any non-alnum chars really)
             at the end of hashtag when removing it, instead of completely nuking it.
