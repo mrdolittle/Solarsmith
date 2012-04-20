@@ -139,8 +139,8 @@ def get_significant_features(sentence,features_dict, num_words = 1,words_in_feat
     #return only the words without the start indexes
     return [word for (x,y,word) in res]
 
-def get_significant_features_2(sentence, trained, num_words = 1, words_in_feature=3):
-    '''trained is a trained naive bayes classifier. This is used to check if the word
+def get_significant_features_2(sentence, trained_classifier, num_words = 1, words_in_feature=3):
+    '''trained_classifier is a trained_classifier naive bayes classifier. This is used to check if the word
     has been classified and at the end to remove the neutral features from the result.'''
     # get words in sentence
     words = get_words(sentence)# sentence.lower().split()
@@ -156,7 +156,7 @@ def get_significant_features_2(sentence, trained, num_words = 1, words_in_featur
     
     
     print sentence
-    print len(trained)
+    print len(trained_classifier)
     
     tmp_dict={} 
     
@@ -171,10 +171,10 @@ def get_significant_features_2(sentence, trained, num_words = 1, words_in_featur
             candidate_feature=" ".join(words[start:end]).strip(",")
             # only add features
             # TODO: check if this is the correct test to check if the word is in the 
-            # trained classifier
+            # trained_classifier classifier
             tmp_dict.clear()
             tmp_dict[candidate_feature]=True
-            if trained.classify(tmp_dict)!=None:
+            if trained_classifier.classify(tmp_dict)!=None:
                 print candidate_feature
                 # add the word and the index to tmpList
                 tmpList.append((start, end, candidate_feature))
@@ -211,7 +211,7 @@ def get_significant_features_2(sentence, trained, num_words = 1, words_in_featur
     for word in [word for (x,y,word) in res]:
         tmp_dict.clear()
         tmp_dict[candidate_feature]=True
-        if trained.classify(tmp_dict)!="neutral":
+        if trained_classifier.classify(tmp_dict)!="neutral":
             res2.append(word)
             
     return res2
