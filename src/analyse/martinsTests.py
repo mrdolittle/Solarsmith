@@ -27,19 +27,21 @@ Neutral is also important.
 
 7. Train on neutral sentences also, but remove neutral features from naive bayes after training, 
 so that neutral features (like "ice-cream") are removed.
+In sentiment: purge_neutral
 
 Special cases
 1. If a not or similar negating statement is before a postive feature, maybe the whole feature is negative?
 
-
 2. maybe use bayesian thing to find negating statements
+
+Muahaha!
+res=[]
+for x from listx also y from listy:
+        res.append(x*54+4*y)
 
 @author: mbernt
 '''
 import re
-
-
-
 
 def get_words_list(sentence, num_words = 1,words_in_feature=3):
     '''Used to get all features/words up to the specified
@@ -132,6 +134,8 @@ def get_significant_features(sentence,features_dict, num_words = 1,words_in_feat
         # next number of words
         num_words = num_words + 1
         
+    
+    
     #return only the words without the start indexes
     return [word for (x,y,word) in res]
     
