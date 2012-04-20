@@ -681,7 +681,7 @@
 (u'#YouGetMajorPointsIf you can deal with my love for Twilight.', 'positive')
 (u'RT @dashones: I love Twilight  movies!! #NoHomo', 'positive')
 (u'I love the twilight saga.', 'positive')
-(u'Ranma 1/2 is a better love story', 'positive') #manually split
+(u'Ranma 1/2 is a better love story', 'positive') #manually split and fixerated
 (u'is a better love story then Twilight ever will be. #FaggotAssTweet #ButReally', 'negative') #manually split
 (u"Finally kuantan got their own version of twilight which is more realistic and achievable!HAHA.and i'm Alice ;) me love this version more ;)", 'negative')
 (u'\u201c@cecy_castaneda: @yaynutts I freaking love you !\u201d I love yah too Twilight girl:)', 'positive')
@@ -2731,3 +2731,19 @@
 (u"Interview with Bahraini Opposition Activist: Regime Using Formula One Race to 'Trick the World'\nhttp://t.co/wmUGPlQQ", 'negative')
 (u'You can feel this feeling all around the world', 'positive')
 (u'RT @RealRClark25: God did not send the Son into the world to condemn the world,but in order that the world might be saved through him.-John3:17....', 'neutral')
+(u'@ChrisLuhrman sounds fun.', 'positive')
+(u'Can you make a YouTube video of your adventures with your new houseguest?', 'neutral')
+(u"I think it'd be fun to watch.", 'positive')
+(u'http://t.co/aTCSsYx5 funniest video OUT :)', 'positive')
+(u'At NSU this time.', 'neutral')
+(u'The video in class lol', 'positive')
+(u'Boost your traffic with related RSS feed to your WP blog.', 'neutral')
+(u'Welcome to Korea Gaga Omfg!!!', 'positive')
+(u'This will make me chuckle  http://t.co/F2MnMODm', 'positive')
+(u'@heatherpeace Just got to see the video and am absolutely loving it.', 'positive')
+(u'Brilliant love.', 'positive')
+(u'RT @showtym8: @UrBoi_KayB the video lool', 'positive')
+(u'Did you know that more and more people are sending Save the Date video DVDs instead of a printed card?', 'neutral')
+(u'Love this... http://t.co/UQ6WwwrG', 'positive')
+(u"I liked a @YouTube video http://t.co/VSoBliqU Ed SHEERAN 'Sunburn'  -  Between You and Me Music", 'positive')
+(u'LOOOOOOOOOOL', 'positive')
