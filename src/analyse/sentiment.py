@@ -10,7 +10,6 @@ to a naive Bayes CLASSIFIER to assign a label of 'positive', 'negative', or
 the influence of covariant features.
 
 """
-import  random
 import nltk
 import ast
 import csv
@@ -28,12 +27,14 @@ def purge_neutral(features_dict):
         classification=CLASSIFIER.classify(word_true_dict(feature[0]))
         #print classification
         if classification == 'neutral':
+            #print features[0]
             try:
-                features_dict.pop(feature[0])
+                features_dict.pop(feature[0]) 
+                print features[0]
             except Exception,e:
-                None
-    for feat in features_dict:
-        print feat
+                print e
+  #  for feat in features_dict:
+        #print feat
 def get_significant_features(sentence,features_dict, num_words = 1,words_in_feature=3):
     '''Can be used when classifying, so that "don't like" isn't affected by like.
     
@@ -52,9 +53,6 @@ def get_significant_features(sentence,features_dict, num_words = 1,words_in_feat
     # could place features in lists according to their 
     # startindex so that it's faster to remove sub features
     
-    
-    # print features_dict
-    #  print sentence
     
     # for each num_words
     while num_words <= words_in_feature:
