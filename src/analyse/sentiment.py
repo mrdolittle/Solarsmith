@@ -9,6 +9,7 @@ to a naive Bayes CLASSIFIER to assign a label of 'positive', 'negative', or
 'neutral'.  Optionally, a principle components transform (PCT) is used to lessen
 the influence of covariant features.
 
+
 """
 
 import  random
