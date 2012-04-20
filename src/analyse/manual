@@ -681,7 +681,7 @@
 (u'#YouGetMajorPointsIf you can deal with my love for Twilight.', 'positive')
 (u'RT @dashones: I love Twilight  movies!! #NoHomo', 'positive')
 (u'I love the twilight saga.', 'positive')
-(u'Ranma 1/2', 'positive') #manually split
+(u'Ranma 1/2 is a better love story', 'positive') #manually split
 (u'is a better love story then Twilight ever will be. #FaggotAssTweet #ButReally', 'negative') #manually split
 (u"Finally kuantan got their own version of twilight which is more realistic and achievable!HAHA.and i'm Alice ;) me love this version more ;)", 'negative')
 (u'\u201c@cecy_castaneda: @yaynutts I freaking love you !\u201d I love yah too Twilight girl:)', 'positive')
