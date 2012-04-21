@@ -521,8 +521,8 @@ STOPWORDS = set(["something",
                             # we see "wee" in lovekeywords it usually
                             # isn't because the person at hand likes
                             # piss...
-                 "yay"
-
+                 "yay",
+                 "beware"
                  ])
 
 def filter_keywords(keywords, key=nop):
