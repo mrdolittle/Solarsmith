@@ -23,6 +23,8 @@ from common import *
 # watching
 # saying
 #### Should probably be just weighted down, not ever completely removed
+# tonight (vagueish, though just night seems slightly (just) better)
+# season (just for it's vagueness)
 # blog
 # picture 
 # hell
