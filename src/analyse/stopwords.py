@@ -516,12 +516,13 @@ STOPWORDS = set(["something",
                  "happy",
                  "guy",
                  "account",
-                 "wee",     # now while this could be constructed as a
+                 "wee",     # now while this could be construed as a
                             # keyword (wee == pee == piss etc.) when
                             # we see "wee" in lovekeywords it usually
                             # isn't because the person at hand likes
                             # piss...
                  "yay"
+
                  ])
 
 def filter_keywords(keywords, key=nop):
