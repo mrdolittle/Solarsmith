@@ -564,10 +564,12 @@ STOPWORDS = set(["something",
                  "sucks",
                  "suck",
                  "miss",
-                 "list"  # TODO: STEM CAUTISOULY. the stemmer shoulde maybe actually go backwards and
+                 "list", # TODO: STEM CAUTISOULY. the stemmer shoulde maybe actually go backwards and
                          # make list -> lists even. Maybe the keyword extractor should be cautious of
                          # determinants for stuff like "The List" (at least when titlecapsed...) darnit
                          # is NLP difficult BLAH
+                 "dang",
+                 "darn"
                  ])
 
 def filter_keywords(keywords, key=nop):
