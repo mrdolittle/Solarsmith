@@ -8,9 +8,25 @@ Includes methods: filter_keyword
 @author: 0tchii, Xantoz
 '''
 
+
 import re
 from common import *
 
+# This is a huge list, meant to filter out stuff that
+# isn't good KEYWORDS, after the extracting has been done.
+# TODO: move me outta this file and into some separate file
+# (preferrably newline-separated but with support for comments)
+# ---
+# POSSIBLE OPTIMIZATION: bloom filter (though this is hardly
+# speed/memory-critical as of now. Could maybe be memory-critical,
+# though probably not)
+# ---
+# Words marked with a comment of STEM CAUTIOUSLY indicate that these
+# words should perhaps not be stemmed by the keyword stemmer as the
+# non-stemmed versions might have legitimate interest as
+# keywords. E.g. damning, damnation are interesting but damn
+# isn't. 'dudes' is possibly interesting (maybe not...) but 'dude'
+# almost always isn't.
 STOPWORDS = set(["something",
                  "nothing",
                  "loving",       # ex: "just got my iphone in the mail, loving it!". This might somehow be appropriate as a keyword though...
@@ -525,7 +541,33 @@ STOPWORDS = set(["something",
                  "beware",
                  "ima",                                      # lazy people usually write this instead of "i'ma". it's not a keyword. Maybe we should synonym on this though
                  "bye",
-                 "yesss"
+                 "yesss",
+                 "love",
+                 "lmfao",
+                 "hahaha",
+                 "hate",
+                 "reason",
+                 "goal",
+                 "dude",                                     # though in the plural this might be a good keyword. TODO: STEM CAUTIOUSLY. make "dudes" exempt from stemming when implementing that
+                 "wtf",
+                 "wont",                                     # similar to 'ima' this shouldn't really be needed and should instead be sanitized by strip_tweet
+                 "saying",
+                 "damn",                                     # TODO: STEM CAUTISOULY. have caution when stemming "damning" and "damnation"
+                 "som",                                      # what is this even doing here? it's like a swedish word!
+                 "start",                                    # TODO: STEM CAUTISOULY. starting might be very slightly interesting (ok maybe not)
+                 "haha",
+                 "ahaha",                                     # maybe we should regex for laughing sounds...
+                 "tat",
+                 "thats",
+                 "that",
+                 "dis",                                      # similar to ima could be handled in strip_tweet
+                 "sucks",
+                 "suck",
+                 "miss",
+                 "list"  # TODO: STEM CAUTISOULY. the stemmer shoulde maybe actually go backwards and
+                         # make list -> lists even. Maybe the keyword extractor should be cautious of
+                         # determinants for stuff like "The List" (at least when titlecapsed...) darnit
+                         # is NLP difficult BLAH
                  ])
 
 def filter_keywords(keywords, key=nop):
@@ -541,7 +583,7 @@ def filter_keywords(keywords, key=nop):
 # smileys and other words that shouldn't be left intact as to not confuse the keyword-exrctracty shit
 # TODO: generate this in some function or something instead, so many combinations!
 #       lotsa more smileys and other words that are wierd and stuff.
-TWEET_STOPSMILEYS = set(["T_T", "^^", "^_^", ":)", ":(", ":<", ":>", ":-)", ":-(", ":-<", ";-)", ";)", ";(", ";-(", ":D", "D:", ":-D", "D-:",
+TWEET_STOPSMILEYS = set(["-_-", "T_T", "^^", "^_^", ":)", ":(", ":<", ":>", ":-)", ":-(", ":-<", ";-)", ";)", ";(", ";-(", ":D", "D:", ":-D", "D-:",
                          ":3",   # cat
                          ">:3",  # lion
                          "}:3"]) # elk
@@ -553,7 +595,8 @@ def strip_tweet(tweet):
     '''Strips tweet of scary features like hashtags at the start or
     end of a tweet as well as some smileys etc.
 
-    TODO: * Remove words consisting of only repeated underline (other characters?)
+    TODO: * Convert ima -> i'ma, wont -> won't, dis -> this etc. etc. (maybe not the last one, could be "to diss" or something)
+          * Remove words consisting of only repeated underline (other characters?)
           * test whether this approach to hashtags is not insane etc.
           * More words to transform?
           * DONE keep eventual punctation (or any non-alnum chars really)
