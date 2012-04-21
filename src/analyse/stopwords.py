@@ -597,7 +597,7 @@ STOPWORDS = set(["something",
                  "dang",
                  "darn",
                  "wow",
-                 "people", # this is a somwhat valid keyword, but it appears so frequently that it sort of loses any meaning for matching purposes
+                 "people", # SHOULD WE HAVE THIS? this is a somwhat valid keyword, but it appears so frequently that it sort of loses any meaning for matching purposes
                  "buy",    # TODO: STEM CAUTIOUSLY. 'buying' might still make good sense as a keyword (though our keyword stemmer oughn't stem VBG to NN anyhow
                  "hmm",
                  "stop",                                # WEE! 'stop' is a stopword
