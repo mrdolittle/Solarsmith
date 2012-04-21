@@ -616,7 +616,8 @@ STOPWORDS = set(["something",
                  "fine",                                     # though it is conceivable that "a fine" or fines is a keyword of interest... so STEM CAUTIOUSLY
                  "win",                                      # STEM CAUTIOUSLY. 'winning' is a good keyword. and probably something else to
                  "wins",
-                 "dear"
+                 "dear",
+                 "please"                                   # STEM CAUTIOUSLY. 'pleasure' for instance
                  ])
 
 def filter_keywords(keywords, key=nop):
