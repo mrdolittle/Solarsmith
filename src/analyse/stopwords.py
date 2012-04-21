@@ -22,14 +22,20 @@ from common import *
 # account,
 # tomorrow,
 # watching
+# saying
 #### Should probably be just weighted down, not ever completely removed
+# picture 
+# hell
 # internet
-# google(maybe even that since everybody seems to love it so much),
-# tv
+# google(maybe even this: since everybody seems to love it so much)
+# tv(maybe much, this is a pretty good keyword overall)
+# talk
 # followers
 # twitter
 # friend
 # idea(?)
+# wait (should be downweighted quite fiercly though)
+# people(?) (CURRENTLY STOPWORDED, should maybe be only downvoted)
 
 
 # This is a huge list, meant to filter out stuff that
