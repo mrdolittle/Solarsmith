@@ -12,6 +12,11 @@ from keywords import extract_keywords
 from sentiment import analyse_sentiment
 from common import *
 
+#### TODO:
+# Some sort of database of keyword implications. like
+# pottermore -> harry potter, justin beaver -> justin bieber.
+# Probably weighted a percentage (0.8 or so) of the original keywords' weight
+
 def analyse_sentence(sentence):
     '''Takes a tweet and performs sentiment analysis on the given
     tweet, then gives the weight that was returned from the sentiment
