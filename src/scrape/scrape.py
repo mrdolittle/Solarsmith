@@ -103,7 +103,7 @@ def gather_data_loop(request_per_hour = 3600, users_to_add = 21):
         
         for user in set_to_add:
             if not sh.contains(user):
-                retry = True #A retry variable for an inner "goto"
+                retry = True     # A retry variable for an inner "goto"
                 while(retry):
                     time.sleep(sleep_time)
                     try:
@@ -111,7 +111,7 @@ def gather_data_loop(request_per_hour = 3600, users_to_add = 21):
                             users_added.add(user)
                             added_users += 1
                             retry = False
-                    except addalyse.AddalyseRateLimitExceededError as err: #Halt for 1 hour if the rate limit is exceeded
+                    except addalyse.AddalyseRateLimitExceededError as err: # Halt for 1 hour if the rate limit is exceeded
                         sys.stderr.write("RateLimitExceeded, trying again in " + str(CONFIG.get_rate_limit_exceeded_time()) + " seconds.\n")
                         time.sleep(CONFIG.get_rate_limit_exceeded_time())
                         retry = True
