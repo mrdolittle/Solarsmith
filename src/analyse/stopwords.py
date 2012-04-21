@@ -12,6 +12,26 @@ Includes methods: filter_keyword
 import re
 from common import *
 
+#### TODO: Words that MAYBE should be stopworded or maybe just weighted down due to their commonality
+# blog,
+# post,
+# birthday,
+# check,
+# hope,
+# sun(maybe?),
+# account,
+# tomorrow,
+# watching
+#### Should probably be just weighted down, not ever completely removed
+# internet
+# google(maybe even that since everybody seems to love it so much),
+# tv
+# followers
+# twitter
+# friend
+# idea(?)
+
+
 # This is a huge list, meant to filter out stuff that
 # isn't good KEYWORDS, after the extracting has been done.
 # TODO: move me outta this file and into some separate file
@@ -572,7 +592,10 @@ STOPWORDS = set(["something",
                  "darn",
                  "wow",
                  "people", # this is a somwhat valid keyword, but it appears so frequently that it sort of loses any meaning for matching purposes
-                 "buy"     # TODO: STEM CAUTIOUSLY. 'buying' might still make good sense as a keyword (though our keyword stemmer oughn't stem VBG to NN anyhow
+                 "buy",    # TODO: STEM CAUTIOUSLY. 'buying' might still make good sense as a keyword (though our keyword stemmer oughn't stem VBG to NN anyhow
+                 "hmm",
+                 "stop",                                # WEE! 'stop' is a stopword
+                 "answer"                                   # STEM CAUTIOUSLY. 'answering' might be relevant
                  ])
 
 def filter_keywords(keywords, key=nop):
