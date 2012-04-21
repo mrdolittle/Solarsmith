@@ -39,6 +39,7 @@ from common import *
 # wait (should be downweighted quite fiercly though)
 # people(?) (CURRENTLY STOPWORDED, should maybe be only downvoted)
 # info
+# playing
 
 
 # This is a huge list, meant to filter out stuff that
