@@ -643,7 +643,7 @@ def strip_tweet(tweet):
     '''Strips tweet of scary features like hashtags at the start or
     end of a tweet as well as some smileys etc.
 
-    TODO: * Convert ima -> i'ma, wont -> won't, dis -> this etc. etc. (maybe not the last one, could be "to diss" or something)
+    TODO: * Convert ima -> i'ma, wont -> won't, dis -> this, u -> you etc. etc. (maybe not the last one, could be "to diss" or something)
           * Remove words consisting of only repeated underline (other characters?)
           * test whether this approach to hashtags is not insane etc.
           * More words to transform?
