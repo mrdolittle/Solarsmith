@@ -21,7 +21,8 @@ class StorageHandler:
 
     def __init__(self, solr_server, schema=None):
         '''Pass url to Solr server that the storage handler should connect to.'''
-        
+
+        print "Connecting to Solr server at:", solr_server
         self.si = sunburnt.SolrInterface(solr_server, schema)
         
     def get_user_fields(self, username, *fields):
