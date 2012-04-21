@@ -22,6 +22,7 @@ from common import *
 # tomorrow,
 # watching
 # saying
+# funny
 #### Should probably be just weighted down, not ever completely removed
 # tonight (vagueish, though just night seems slightly (just) better)
 # season (just for it's vagueness)
