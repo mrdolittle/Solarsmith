@@ -603,7 +603,8 @@ STOPWORDS = set(["something",
                  "hmm",
                  "stop",                                # WEE! 'stop' is a stopword
                  "answer",                                   # STEM CAUTIOUSLY. 'answering' might be relevant
-                 "free"                                      # probably...
+                 "free",                                      # probably...
+                 "auto"
                  ])
 
 def filter_keywords(keywords, key=nop):
