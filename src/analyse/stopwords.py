@@ -23,15 +23,18 @@ from common import *
 # watching
 # saying
 # funny
+# playing
 #### Should probably be just weighted down, not ever completely removed
+# read
 # tonight (vagueish, though just night seems slightly (just) better)
 # season (just for it's vagueness)
 # blog
 # picture 
 # hell
 # internet
+# tv(true maybe, this is a pretty good keyword overall)
+# game
 # google(maybe even this: since everybody seems to love it so much)
-# tv(maybe much, this is a pretty good keyword overall)
 # talk
 # followers
 # twitter
