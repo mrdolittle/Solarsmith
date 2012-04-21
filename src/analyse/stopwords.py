@@ -46,6 +46,11 @@ from common import *
 # people(?) (CURRENTLY STOPWORDED, should maybe be only downvoted)
 # info
 # playing
+# weekend
+# boy
+# dad
+# mom
+# brother
 
 
 
@@ -626,7 +631,8 @@ STOPWORDS = set(["something",
                  "dear",
                  "please",                                   # STEM CAUTIOUSLY. 'pleasure' for instance
                  "crap",
-                 "past"                                      # probably...
+                 "past",                                      # probably...
+                 "hour"
                  ])
 
 def filter_keywords(keywords, key=nop):
