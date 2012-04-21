@@ -18,7 +18,7 @@ from common import *
 # birthday,
 # check,
 # hope,
-# sun(maybe?),
+# sun(maybe?), (realise this is a former company's name though! (could be supported through explicit_keywords only thought))
 # account,
 # tomorrow,
 # watching
@@ -36,6 +36,7 @@ from common import *
 # idea(?)
 # wait (should be downweighted quite fiercly though)
 # people(?) (CURRENTLY STOPWORDED, should maybe be only downvoted)
+# info
 
 
 # This is a huge list, meant to filter out stuff that
@@ -601,7 +602,8 @@ STOPWORDS = set(["something",
                  "buy",    # TODO: STEM CAUTIOUSLY. 'buying' might still make good sense as a keyword (though our keyword stemmer oughn't stem VBG to NN anyhow
                  "hmm",
                  "stop",                                # WEE! 'stop' is a stopword
-                 "answer"                                   # STEM CAUTIOUSLY. 'answering' might be relevant
+                 "answer",                                   # STEM CAUTIOUSLY. 'answering' might be relevant
+                 "free"                                      # probably...
                  ])
 
 def filter_keywords(keywords, key=nop):
