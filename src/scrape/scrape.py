@@ -86,9 +86,15 @@ def gather_data_loop(request_per_hour = 3600, users_to_add = 21):
         try: 
             set_to_add = th.get_public_tweeters()
         except twitter.TwitterError as err:
-            sys.stderr.write("Got TwitterError while trying to get public timeline " + str(err) + "\n")
-            traceback.print_exc()
-            time.sleep(100)
+            if err.message[0:19] == 'Rate limit exceeded':
+                # TODO: optimal version of this would query the twitter api for how long to wait exactly!
+                sys.stderr.write("Rate limit exceeded while trying to get public timeline, trying again in "
+                                 + str(CONFIG.get_rate_limit_exceeded_time()) + " seconds.\n")
+                time.sleep(CONFIG.get_rate_limit_exceeded_time())
+            else:
+                sys.stderr.write("Got TwitterError while trying to get public timeline " + str(err) + ". Retrying soon.\n")
+                traceback.print_exc()
+                time.sleep(100)
             continue            # retry the loop
         
         print "These will be added:"
