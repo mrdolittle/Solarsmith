@@ -13,7 +13,6 @@ import re
 from common import *
 
 #### TODO: Words that MAYBE should be stopworded or maybe just weighted down due to their commonality
-# blog,
 # post,
 # birthday,
 # check,
@@ -24,6 +23,7 @@ from common import *
 # watching
 # saying
 #### Should probably be just weighted down, not ever completely removed
+# blog
 # picture 
 # hell
 # internet
