@@ -552,9 +552,9 @@ STOPWORDS = set(["something",
                  "wtf",
                  "wont",                                     # similar to 'ima' this shouldn't really be needed and should instead be sanitized by strip_tweet
                  "saying",
-                 "damn",                                     # TODO: STEM CAUTISOULY. have caution when stemming "damning" and "damnation"
+                 "damn",                                     # TODO: STEM CAUTIOUSLY. have caution when stemming "damning" and "damnation"
                  "som",                                      # what is this even doing here? it's like a swedish word!
-                 "start",                                    # TODO: STEM CAUTISOULY. starting might be very slightly interesting (ok maybe not)
+                 "start",                                    # TODO: STEM CAUTIOUSLY. starting might be very slightly interesting (ok maybe not)
                  "haha",
                  "ahaha",                                     # maybe we should regex for laughing sounds...
                  "tat",
@@ -564,14 +564,15 @@ STOPWORDS = set(["something",
                  "sucks",
                  "suck",
                  "miss",
-                 "list", # TODO: STEM CAUTISOULY. the stemmer shoulde maybe actually go backwards and
+                 "list", # TODO: STEM CAUTIOUSLY. the stemmer shoulde maybe actually go backwards and
                          # make list -> lists even. Maybe the keyword extractor should be cautious of
                          # determinants for stuff like "The List" (at least when titlecapsed...) darnit
                          # is NLP difficult BLAH
                  "dang",
                  "darn",
                  "wow",
-                 "people"
+                 "people", # this is a somwhat valid keyword, but it appears so frequently that it sort of loses any meaning for matching purposes
+                 "buy"     # TODO: STEM CAUTIOUSLY. 'buying' might still make good sense as a keyword (though our keyword stemmer oughn't stem VBG to NN anyhow
                  ])
 
 def filter_keywords(keywords, key=nop):
