@@ -575,7 +575,7 @@ STOPWORDS = set(["something",
                  "beware",
                  "ima",                                      # lazy people usually write this instead of "i'ma". it's not a keyword. Maybe we should synonym on this though
                  "bye",
-                 "yesss",
+                 "yesss",                                   # maybe this should have a regex
                  "love",
                  "lmfao",
                  "hahaha",
