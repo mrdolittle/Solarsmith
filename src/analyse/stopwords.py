@@ -57,6 +57,9 @@ from common import *
 # keywords. E.g. damning, damnation are interesting but damn
 # isn't. 'dudes' is possibly interesting (maybe not...) but 'dude'
 # almost always isn't.
+#
+# By having words like these in a list-of-words-to-protect-from-stemming
+# we can avoid having them stopworded
 STOPWORDS = set(["something",
                  "nothing",
                  "loving",       # ex: "just got my iphone in the mail, loving it!". This might somehow be appropriate as a keyword though...
@@ -608,7 +611,8 @@ STOPWORDS = set(["something",
                  "answer",                                   # STEM CAUTIOUSLY. 'answering' might be relevant
                  "free",                                      # probably...
                  "auto",
-                 "sigh"                                     # though it is sort of conceivable for somebody to _REALLY_ like sighs...
+                 "sigh",                                     # though it is sort of conceivable for somebody to _REALLY_ like sighs...
+                 "fine"                                      # though it is conceivable that "a fine" or fines is a keyword of interest... so STEM CAUTIOUSLY
                  ])
 
 def filter_keywords(keywords, key=nop):
