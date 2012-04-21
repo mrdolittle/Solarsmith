@@ -569,7 +569,9 @@ STOPWORDS = set(["something",
                          # determinants for stuff like "The List" (at least when titlecapsed...) darnit
                          # is NLP difficult BLAH
                  "dang",
-                 "darn"
+                 "darn",
+                 "wow",
+                 "people"
                  ])
 
 def filter_keywords(keywords, key=nop):
