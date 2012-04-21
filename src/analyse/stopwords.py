@@ -522,7 +522,10 @@ STOPWORDS = set(["something",
                             # isn't because the person at hand likes
                             # piss...
                  "yay",
-                 "beware"
+                 "beware",
+                 "ima",                                      # lazy people usually write this instead of "i'ma". it's not a keyword. Maybe we should synonym on this though
+                 "bye",
+                 "yesss"
                  ])
 
 def filter_keywords(keywords, key=nop):
