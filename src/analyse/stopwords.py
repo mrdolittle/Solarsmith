@@ -13,6 +13,7 @@ import re
 from common import *
 
 #### TODO: Words that MAYBE should be stopworded or maybe just weighted down due to their commonality
+# fail
 # post,
 # birthday,
 # check,
