@@ -21,12 +21,14 @@ from common import *
 # sun(maybe?), (realise this is a former company's name though! (could be supported through explicit_keywords only thought))
 # account,
 # tomorrow,
-# watching
+# watching (watch?)
 # saying
-# funny
 # playing
 # version
+# word (be VERY careful of Microsoft Word, which is a valid keyword and all)
+# help
 #### Should probably be just weighted down, not ever completely removed
+# watch (people could really like watches for instance)
 # read
 # tonight (vagueish, though just night seems slightly (just) better)
 # season (just for it's vagueness)
@@ -633,7 +635,8 @@ STOPWORDS = set(["something",
                  "crap",
                  "past",                                      # probably...
                  "hour",
-                 "piece"
+                 "piece",
+                 "funny"
                  ])
 
 def filter_keywords(keywords, key=nop):
