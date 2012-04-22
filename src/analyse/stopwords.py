@@ -578,7 +578,7 @@ STOPWORDS = set(["something",
                  "taking",
                  "happening",
                  "happy",
-                 "guy",
+                 "guy",                                     #FIXME?: poor people with the name guy. MAYBE JUST DOWNWEIGHT THIS
                  "account",
                  "wee",     # now while this could be construed as a
                             # keyword (wee == pee == piss etc.) when
