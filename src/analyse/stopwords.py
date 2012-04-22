@@ -632,7 +632,8 @@ STOPWORDS = set(["something",
                  "please",                                   # STEM CAUTIOUSLY. 'pleasure' for instance
                  "crap",
                  "past",                                      # probably...
-                 "hour"
+                 "hour",
+                 "piece"
                  ])
 
 def filter_keywords(keywords, key=nop):
