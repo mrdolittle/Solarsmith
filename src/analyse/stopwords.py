@@ -53,6 +53,7 @@ from common import *
 # dad
 # mom
 # brother
+# nice (since it's a city besides being a word)
 
 
 
