@@ -638,7 +638,8 @@ STOPWORDS = set(["something",
                  "hour",
                  "piece",
                  "funny",
-                 "view"                                     # STEM CAUTIOUSLY. 'views' like in the youtube sense or so could be an interesting keyword
+                 "view",                                     # STEM CAUTIOUSLY. 'views' like in the youtube sense or so could be an interesting keyword
+                 "question"                                  # STEM CAUTIOUSLY. 'questions' and maybe even 'questioning' might be somewhat interesting
                  ])
 
 def filter_keywords(keywords, key=nop):
