@@ -20,6 +20,11 @@ A main thread will continuously check a list to make sure that it is
 empty.  If it is not empty, the thread will pop the first element and
 process it by sending it through the addalyse package and then expect
 an answer. This will be done untill the list is empty again.
+
+TODO: Send another error message for when user doesn't have any tweets
+     (similar to user not exists but gui should then inform that no tweets
+     exist)
+
 '''
 
 import addalyse 

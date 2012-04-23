@@ -17,6 +17,7 @@ def extract_keywords_grammar(text):
     '''Uses chunks matching to identify keywords in a tweet. The code looks much nicer this way :P'''
 
     sequence = nltk.pos_tag(nltk.word_tokenize(text))
+    sequence = filter(lambda (a,b): a != 'URLYBURLYSMURLYPURLY', sequence) # KLUDGE: try to firmly kill all urluburlysmurly-stuff, maybe this should be a variable now?
     if sequence == []:          # gets rid of all the 'Warning: parsing empty text' messages
         return []
     words = []

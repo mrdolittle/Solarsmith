@@ -9,14 +9,20 @@ to a naive Bayes CLASSIFIER to assign a label of 'positive', 'negative', or
 'neutral'.  Optionally, a principle components transform (PCT) is used to lessen
 the influence of covariant features.
 
+
 """
+
+import random
 import nltk
 import ast
 import csv
 import tweet_features, tweet_pca
 import features
 CORPUS1="../analyse/sentiment.csv"
-CORPUS2="../analyse/newcorpus3"
+# CORPUS2="../analyse/newcorpus3"
+CORPUS2="../analyse/manual"
+# CORPUS2="../analyse/manual.snapshot1"
+
 
 def one_features():
     return True

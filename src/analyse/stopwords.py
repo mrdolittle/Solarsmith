@@ -8,9 +8,74 @@ Includes methods: filter_keyword
 @author: 0tchii, Xantoz
 '''
 
+
 import re
 from common import *
 
+#### TODO: Words that MAYBE should be stopworded or maybe just weighted down due to their commonality
+# fail
+# post,
+# birthday,
+# check,
+# hope,
+# sun(maybe?), (realise this is a former company's name though! (could be supported through explicit_keywords only thought))
+# account,
+# tomorrow,
+# watching (watch?)
+# saying
+# playing
+# version
+# word (be VERY careful of Microsoft Word, which is a valid keyword and all)
+# help
+#### Should probably be just weighted down, not ever completely removed
+# watch (people could really like watches for instance)
+# read
+# tonight (vagueish, though just night seems slightly (just) better)
+# season (just for it's vagueness)
+# blog
+# picture 
+# hell
+# internet
+# tv(true maybe, this is a pretty good keyword overall)
+# game
+# google(maybe even this: since everybody seems to love it so much)
+# talk
+# followers
+# twitter
+# friend
+# idea(?)
+# wait (should be downweighted quite fiercly though)
+# people(?) (CURRENTLY STOPWORDED, should maybe be only downvoted)
+# info
+# playing
+# weekend
+# boy
+# dad
+# mom
+# brother
+# nice (since it's a city besides being a word)
+
+
+
+
+# This is a huge list, meant to filter out stuff that
+# isn't good KEYWORDS, after the extracting has been done.
+# TODO: move me outta this file and into some separate file
+# (preferrably newline-separated but with support for comments)
+# ---
+# POSSIBLE OPTIMIZATION: bloom filter (though this is hardly
+# speed/memory-critical as of now. Could maybe be memory-critical,
+# though probably not)
+# ---
+# Words marked with a comment of STEM CAUTIOUSLY indicate that these
+# words should perhaps not be stemmed by the keyword stemmer as the
+# non-stemmed versions might have legitimate interest as
+# keywords. E.g. damning, damnation are interesting but damn
+# isn't. 'dudes' is possibly interesting (maybe not...) but 'dude'
+# almost always isn't.
+#
+# By having words like these in a list-of-words-to-protect-from-stemming
+# we can avoid having them stopworded
 STOPWORDS = set(["something",
                  "nothing",
                  "loving",       # ex: "just got my iphone in the mail, loving it!". This might somehow be appropriate as a keyword though...
@@ -509,7 +574,74 @@ STOPWORDS = set(["something",
                  "rule",
                  "feel",
                  "worst",
-                 "pay"
+                 "pay",
+                 "stupid",
+                 "taking",
+                 "happening",
+                 "happy",
+                 "guy",                                     #FIXME?: poor people with the name guy. MAYBE JUST DOWNWEIGHT THIS
+                 "account",
+                 "wee",     # now while this could be construed as a
+                            # keyword (wee == pee == piss etc.) when
+                            # we see "wee" in lovekeywords it usually
+                            # isn't because the person at hand likes
+                            # piss...
+                 "yay",
+                 "beware",
+                 "ima",                                      # lazy people usually write this instead of "i'ma". it's not a keyword. Maybe we should synonym on this though
+                 "bye",
+                 "yesss",                                   # maybe this should have a regex
+                 "love",
+                 "lmfao",
+                 "hahaha",
+                 "hate",
+                 "reason",
+                 "goal",
+                 "dude",                                     # though in the plural this might be a good keyword. TODO: STEM CAUTIOUSLY. make "dudes" exempt from stemming when implementing that
+                 "wtf",
+                 "wont",                                     # similar to 'ima' this shouldn't really be needed and should instead be sanitized by strip_tweet
+                 "saying",
+                 "damn",                                     # TODO: STEM CAUTIOUSLY. have caution when stemming "damning" and "damnation"
+                 "som",                                      # what is this even doing here? it's like a swedish word!
+                 "start",                                    # TODO: STEM CAUTIOUSLY. starting might be very slightly interesting (ok maybe not)
+                 "haha",
+                 "ahaha",                                     # maybe we should regex for laughing sounds...
+                 "tat",
+                 "thats",
+                 "that",
+                 "dis",                                      # similar to ima could be handled in strip_tweet
+                 "sucks",
+                 "suck",
+                 "miss",
+                 "list", # TODO: STEM CAUTIOUSLY. the stemmer shoulde maybe actually go backwards and
+                         # make list -> lists even. Maybe the keyword extractor should be cautious of
+                         # determinants for stuff like "The List" (at least when titlecapsed...) darnit
+                         # is NLP difficult BLAH
+                 "dang",
+                 "darn",
+                 "wow",
+                 "people", # SHOULD WE HAVE THIS? this is a somwhat valid keyword, but it appears so frequently that it sort of loses any meaning for matching purposes
+                 "buy",    # TODO: STEM CAUTIOUSLY. 'buying' might still make good sense as a keyword (though our keyword stemmer oughn't stem VBG to NN anyhow
+                 "hmm",
+                 "stop",                                # WEE! 'stop' is a stopword
+                 "answer",                                   # STEM CAUTIOUSLY. 'answering' might be relevant
+                 "free",                                      # probably...
+                 "auto",
+                 "sigh",                                     # though it is sort of conceivable for somebody to _REALLY_ like sighs...
+                 "fine",                                     # though it is conceivable that "a fine" or fines is a keyword of interest... so STEM CAUTIOUSLY
+                 "win",                                      # STEM CAUTIOUSLY. 'winning' is a good keyword. and probably something else to
+                 "wins",
+                 "dear",
+                 "please",                                   # STEM CAUTIOUSLY. 'pleasure' for instance
+                 "crap",
+                 "past",                                      # probably...
+                 "hour",
+                 "piece",
+                 "funny",
+                 "view",                                     # STEM CAUTIOUSLY. 'views' like in the youtube sense or so could be an interesting keyword
+                 "question",                                  # STEM CAUTIOUSLY. 'questions' and maybe even 'questioning' might be somewhat interesting
+                 "cool",                                       # STEM CAUTIOUSLY. 'cooling' is a nice keyt\section{word}
+                 "a long time"
                  ])
 
 def filter_keywords(keywords, key=nop):
@@ -525,7 +657,7 @@ def filter_keywords(keywords, key=nop):
 # smileys and other words that shouldn't be left intact as to not confuse the keyword-exrctracty shit
 # TODO: generate this in some function or something instead, so many combinations!
 #       lotsa more smileys and other words that are wierd and stuff.
-TWEET_STOPSMILEYS = set(["T_T", "^^", "^_^", ":)", ":(", ":<", ":>", ":-)", ":-(", ":-<", ";-)", ";)", ";(", ";-(", ":D", "D:", ":-D", "D-:",
+TWEET_STOPSMILEYS = set(["-_-", "T_T", "^^", "^_^", ":)", ":(", ":<", ":>", ":-)", ":-(", ":-<", ";-)", ";)", ";(", ";-(", ":D", "D:", ":-D", "D-:",
                          ":3",   # cat
                          ">:3",  # lion
                          "}:3"]) # elk
@@ -537,7 +669,9 @@ def strip_tweet(tweet):
     '''Strips tweet of scary features like hashtags at the start or
     end of a tweet as well as some smileys etc.
 
-    TODO: * test whether this approach to hashtags is not insane etc.
+    TODO: * Convert ima -> i'ma, wont -> won't, dis -> this, u -> you etc. etc. (maybe not the last one, could be "to diss" or something)
+          * Remove words consisting of only repeated underline (other characters?)
+          * test whether this approach to hashtags is not insane etc.
           * More words to transform?
           * DONE keep eventual punctation (or any non-alnum chars really)
             at the end of hashtag when removing it, instead of completely nuking it.
