@@ -13,7 +13,7 @@ import select
 import socket
 import urlparse
 
-from storageHandler import tallstore
+import tallstore
 import configHandler
 
 CONFIG = configHandler.Config()
@@ -270,6 +270,8 @@ class RequestHandler(BaseHTTPRequestHandler):
         ################
 
         if command == "username":
+            data = data.replace('*', '')
+            print "new data: " + data
             frienemy_result = tallstore.get_frienemies_by_id(data) # Ska ersÃ¤ttas med anrop till storage handler
             if frienemy_result == False:
                 succeeded, message = send_to_request(data)
