@@ -270,6 +270,8 @@ class RequestHandler(BaseHTTPRequestHandler):
         ################
 
         if command == "username":
+            data = data.replace('*', '')
+            print "new data: " + data
             frienemy_result = tallstore.get_frienemies_by_id(data) # Ska ersÃ¤ttas med anrop till storage handler
             if frienemy_result == False:
                 succeeded, message = send_to_request(data)
@@ -306,14 +308,13 @@ class RequestHandler(BaseHTTPRequestHandler):
         self._writexmlheaders()
         self.send_result(create_xml(frienemy_result))
 
-def main():
-    '''Start the TALL http server'''
-    print "Connecting to Solr"
-    tallstore.connect_to_solr()
-    serveraddr = ('', 8001)
-    srvr = ThreadingServer(serveraddr, RequestHandler)
-    print "Server started"
-    srvr.serve_forever()
 
-if __name__ == "__main__":
-    main()
+'''
+This is for starting the server.
+'''
+print "Connecting to Solr"
+tallstore.connect_to_solr()
+serveraddr = ('', 8001)
+srvr = ThreadingServer(serveraddr, RequestHandler)
+print "Server started"
+srvr.serve_forever()
