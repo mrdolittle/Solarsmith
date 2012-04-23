@@ -116,6 +116,7 @@ def gather_data_loop(request_per_hour = 3600, users_to_add = 21, no_analyse=Fals
         for user in set_to_add:
             if NO_ANALYSE:
                 tweets = th.get_all_statuses(user)
+                print "### NEW USER: " + user
                 for t in tweets:
                     try:
                         print t.GetText()
