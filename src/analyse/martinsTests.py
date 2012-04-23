@@ -139,6 +139,27 @@ def get_significant_features(sentence,features_dict, num_words = 1,words_in_feat
     #return only the words without the start indexes
     return [word for (x,y,word) in res]
 
+def classifier_contains_string(dict_with_feature, trained_classifier):
+    '''Classifier is very stupid, so had to use this workaround.'''
+    #print CLASSIFIER.classify({}.fromkeys(["Bisbhgkdfdagbsfkdbgsu"],True))
+    #print CLASSIFIER.probdist({}.fromkeys(["Bisbhgkdfdagbsfkdbgsu"],True))
+    #lol=CLASSIFIER.prob_classify({}.fromkeys(["sibgvosdhgsubvofbhudgu"],True))
+    #lol2=lol.samples()
+    #for lo in lol2:
+    #    print lol.prob(lo)
+    
+    listx1=trained_classifier.prob_classify({})
+    listx2=listx1.samples()
+    
+    listy1=trained_classifier.prob_classify(dict_with_feature)
+    listy2=listy1.samples()
+    
+    # compare against default values, if there is a difference then the feature exist, probably
+    for bool in map((lambda x, y: listx1.prob(x) == listy1.prob(y)), listx2, listy2):
+        if not bool:
+            return True
+    return False
+
 def get_significant_features_2(sentence, trained_classifier, num_words = 1, words_in_feature=3):
     '''trained_classifier is a trained_classifier naive bayes classifier. This is used to check if the word
     has been classified and at the end to remove the neutral features from the result.'''
@@ -174,7 +195,7 @@ def get_significant_features_2(sentence, trained_classifier, num_words = 1, word
             # trained_classifier classifier
             tmp_dict.clear()
             tmp_dict[candidate_feature]=True
-            if trained_classifier.classify(tmp_dict)!=None:
+            if classifier_contains_string(tmp_dict,trained_classifier):
                 print candidate_feature
                 # add the word and the index to tmpList
                 tmpList.append((start, end, candidate_feature))
@@ -208,13 +229,19 @@ def get_significant_features_2(sentence, trained_classifier, num_words = 1, word
 
     # add non neutral words to the final res list (res2)
     res2= []
-    for word in [word for (x,y,word) in res]:
+    list=[word for (x,y,word) in res]
+    for word in list:
         tmp_dict.clear()
         tmp_dict[candidate_feature]=True
         if trained_classifier.classify(tmp_dict)!="neutral":
             res2.append(word)
-            
-    return res2
+    
+    # if contain no other than neutral return
+    # the list with neutral anyway
+    if len(res2)>0:        
+        return res2
+    else:
+        return list
             
     
 
