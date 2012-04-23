@@ -23,30 +23,33 @@ CORPUS1="../analyse/sentiment.csv"
 CORPUS2="../analyse/manual"
 # CORPUS2="../analyse/manual.snapshot1"
 
-def classifier_contains(trained_classifier, dict_with_feature):
+def classifier_contains(trained_classifier, dict_with_features):
     '''Classifier is very stupid, so had to use this workaround.
+    It check if the classifier contains any of the feature in
+    dict_with_features
     example: 
     classifier_contains(CLASSIFIER,{}.fromkeys(["sibgvosdhgsubvofbhudgu","GdrhdFd"],True))
     gives false, probably'''
-    #print CLASSIFIER.classify({}.fromkeys(["Bisbhgkdfdagbsfkdbgsu"],True))
-    #print CLASSIFIER.probdist({}.fromkeys(["Bisbhgkdfdagbsfkdbgsu"],True))
-    #lol=CLASSIFIER.prob_classify({}.fromkeys(["sibgvosdhgsubvofbhudgu"],True))
-    #lol2=lol.samples()
-    #for lo in lol2:
-    #    print lol.prob(lo)
     
     listx1=trained_classifier.prob_classify({})
     listx2=listx1.samples()
     
-    listy1=trained_classifier.prob_classify(dict_with_feature)
+    listy1=trained_classifier.prob_classify(dict_with_features)
     listy2=listy1.samples()
     
-    #listx1.prob(listx2[0])
+    #listx1.prob(listx2[i])
     # compare against default values, if there is a difference then the feature exist, probably
     for booli in map((lambda x, y: listx1.prob(x) == listy1.prob(y)), listx2, listy2):
         if not booli:
             return True
     return False
+
+def get_classification_tuples(prob_classification):
+    '''Uses the output from CLASSIFIER.prob_classify as input, and
+    gives a list of tuples as output.'''
+    return map((lambda sample: (sample, prob_classification.prob(sample))),  prob_classification.samples())
+    
+    
 
 def one_features():
     return True
@@ -274,6 +277,7 @@ feature_dict=None
 
 #print list of tuples [('positive', 0.7037326500107238), ...]
 #print map((lambda lo: (lo, lol.prob(lo))),  lol2)
+#print get_classification_tuples(CLASSIFIER.prob_classify({}.fromkeys(["sibgvosdhgsubvofbhudgu","i like"],True)))
 
     
     
