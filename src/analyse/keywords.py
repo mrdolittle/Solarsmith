@@ -28,7 +28,7 @@ def extract_keywords_grammar(text):
     words = []
     grammar=''' Noun: {(((<NNP>|<NN>|<NNS>)<IN><DT>(<NNP>|<NN>|<NNS>))|((<JJ>|<JJR>)+(<NN>|<NNS>|<VBG>)+))}
                 ToVerb: {<TO><VB>}
-                Name:{<NNP>*}                
+                Name: {<NNP>*}                
             '''
     grammarSingular='''Noun: {(<NN>|<NNS>|<VBG>)}
                         Name: {<NNP>}
