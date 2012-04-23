@@ -18,6 +18,8 @@ import features
 CORPUS1="../analyse/sentiment.csv"
 CORPUS2="../analyse/newcorpus3"
 
+def one_features():
+    return True
 def purge_neutral(features_dict):
     global CLASSIFIER
     feature_list=CLASSIFIER.most_informative_features(len(features_dict))
@@ -25,7 +27,8 @@ def purge_neutral(features_dict):
         # print dict{[feature])}
         #print word_true_dict(feature[0])
         classification=CLASSIFIER.classify(word_true_dict(feature[0]))
-        #print classification
+        print classification
+        print feature
         if classification == 'neutral':
             #print features[0]
             try:
@@ -174,7 +177,7 @@ def analyse_sentiment(sentence):
         return 0.5 # byts mot en riktig relevansmetod
 
 
-method=1
+method=2
 
 
 
@@ -188,14 +191,19 @@ with open(CORPUS2, 'rb') as fp:
     tweets = []
     for row in fp:
         tweets.append(ast.literal_eval(row))
+print "PRINTING LENGTH OF MANUAL CORPUS"        
+print len(tweets)
 if method==1:
     min_length=2
     max_length=3
 #Retrieve NEUTRAL SET (appending to tweets list)
 if method==2:
-    min_length=2
-    max_length=3
+    min_length=1
+    max_length=1
     readcorpus(CORPUS1,tweets)
+    
+print "PRINTING LENGTH OF FULLCORPUS"        
+print len(tweets)
 
     
 ## treat neutral and irrelevant the same
