@@ -139,29 +139,30 @@ def get_significant_features(sentence,features_dict, num_words = 1,words_in_feat
     #return only the words without the start indexes
     return [word for (x,y,word) in res]
 
-def classifier_contains_string(dict_with_feature, trained_classifier):
-    '''Classifier is very stupid, so had to use this workaround.'''
-    #print CLASSIFIER.classify({}.fromkeys(["Bisbhgkdfdagbsfkdbgsu"],True))
-    #print CLASSIFIER.probdist({}.fromkeys(["Bisbhgkdfdagbsfkdbgsu"],True))
-    #lol=CLASSIFIER.prob_classify({}.fromkeys(["sibgvosdhgsubvofbhudgu"],True))
-    #lol2=lol.samples()
-    #for lo in lol2:
-    #    print lol.prob(lo)
+def classifier_contains(trained_classifier, dict_with_features):
+    '''Classifier is very stupid, so had to use this workaround.
+    It check if the classifier contains any of the feature in
+    dict_with_features
+    example: 
+    classifier_contains(CLASSIFIER,{}.fromkeys(["sibgvosdhgsubvofbhudgu","GdrhdFd"],True))
+    gives false, probably'''
     
     listx1=trained_classifier.prob_classify({})
     listx2=listx1.samples()
     
-    listy1=trained_classifier.prob_classify(dict_with_feature)
+    listy1=trained_classifier.prob_classify(dict_with_features)
     listy2=listy1.samples()
     
+    #listx1.prob(listx2[i])
     # compare against default values, if there is a difference then the feature exist, probably
-    for bool in map((lambda x, y: listx1.prob(x) == listy1.prob(y)), listx2, listy2):
-        if not bool:
+    for booli in map((lambda x, y: listx1.prob(x) == listy1.prob(y)), listx2, listy2):
+        if not booli:
             return True
     return False
 
 def get_significant_features_2(sentence, trained_classifier, num_words = 1, words_in_feature=3):
-    '''trained_classifier is a trained_classifier naive bayes classifier. This is used to check if the word
+    '''untested!
+    trained_classifier is a trained_classifier naive bayes classifier. This is used to check if the word
     has been classified and at the end to remove the neutral features from the result.'''
     # get words in sentence
     words = get_words(sentence)# sentence.lower().split()
@@ -169,7 +170,7 @@ def get_significant_features_2(sentence, trained_classifier, num_words = 1, word
     # adjust so that the words_in_feature is less than 
     # the number of words in the sentence
     words_in_feature = min(words_in_feature, len(words))
-    res = []
+    accumilator = []
     
     # could place features in lists according to their 
     # startindex so that it's faster to remove sub features
@@ -183,19 +184,19 @@ def get_significant_features_2(sentence, trained_classifier, num_words = 1, word
     
     # for each num_words
     while num_words <= words_in_feature:
-        tmpList=[]
+        tmpList = []
         # add all features with num_words
         start = 0
         end=start + num_words
         while end <= len(words):
             # construct feature and strip commas from beginning and end
-            candidate_feature=" ".join(words[start:end]).strip(",")
+            candidate_feature = " ".join(words[start:end]).strip(",")
             # only add features
             # TODO: check if this is the correct test to check if the word is in the 
             # trained_classifier classifier
             tmp_dict.clear()
-            tmp_dict[candidate_feature]=True
-            if classifier_contains_string(tmp_dict,trained_classifier):
+            tmp_dict[candidate_feature] = True
+            if classifier_contains(tmp_dict, trained_classifier):
                 print candidate_feature
                 # add the word and the index to tmpList
                 tmpList.append((start, end, candidate_feature))
@@ -204,44 +205,44 @@ def get_significant_features_2(sentence, trained_classifier, num_words = 1, word
         
          
         # remove if sub-feature
-        # warning! bad time complexity! O(len(res)*len(tmpList))
-        keepList=[]
-        if num_words>1:
-            for (i,j,word) in res:
-                add=True
-                for (i2,j2,word2) in tmpList:
+        # warning! bad time complexity! O(len(accumilator)*len(tmpList))
+        keepList = []
+        if num_words > 1:
+            for (i, j, word) in accumilator:
+                add = True
+                for (i2, j2, word2) in tmpList:
                     # must be in the same place to be a sub feature
-                    if i2<=i and j<=j2:
+                    if i2 <= i and j <= j2:
                         # must be in the larger feature to be a sub feature
-                        if word2.find(word)!=-1:
-                            # it's a sub feature so remove it from the result list
-                            add=False
-                            #res.remove((i,j,word))
+                        if word2.find(word) != -1:
+                            # it's a sub feature so remove it from the result res1
+                            add = False
+                            #accumilator.remove((i,j,word))
                 # is not a sub feature so keep it
                 if add:
-                    keepList.append((i,j,word))
-        res=keepList
+                    keepList.append((i, j, word))
+        accumilator = keepList
                             
-        res=res+tmpList
-        print res
+        accumilator= accumilator + tmpList
+        print accumilator
         # next number of words
         num_words = num_words + 1
 
-    # add non neutral words to the final res list (res2)
-    res2= []
-    list=[word for (x,y,word) in res]
-    for word in list:
+    # add non neutral words to res2
+    res1 = [word for (x, y, word) in accumilator]
+    res2 = []
+    for word in res1:
         tmp_dict.clear()
-        tmp_dict[candidate_feature]=True
-        if trained_classifier.classify(tmp_dict)!="neutral":
+        tmp_dict[candidate_feature] = True
+        if trained_classifier.classify(tmp_dict) != "neutral":
             res2.append(word)
     
-    # if contain no other than neutral return
-    # the list with neutral anyway
+    # if contain non neutral words, remove neutral
+    # else return list with neutral words.
     if len(res2)>0:        
         return res2
     else:
-        return list
+        return res1
             
     
 
