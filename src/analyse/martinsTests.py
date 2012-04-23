@@ -139,6 +139,9 @@ def get_significant_features(sentence,features_dict, num_words = 1,words_in_feat
     #return only the words without the start indexes
     return [word for (x,y,word) in res]
 
+def classifier_contains_string(dict_with_feature, trained_classifier):
+    trained_classifier.classify(tmp_dict)
+
 def get_significant_features_2(sentence, trained_classifier, num_words = 1, words_in_feature=3):
     '''trained_classifier is a trained_classifier naive bayes classifier. This is used to check if the word
     has been classified and at the end to remove the neutral features from the result.'''
