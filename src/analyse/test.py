@@ -28,3 +28,11 @@ print analyse(tweet)
 
 tweet=["Google Chrome is the best web browser in the world"]
 print analyse(tweet)
+tweet=["I HATE GOOGLE"]
+print analyse(tweet)
+tweet=["I dislike google"]
+print analyse(tweet)
+tweet=["I dont like justin bieber"]
+print analyse(tweet)
+tweet=["I dont like google"]
+print analyse(tweet)
