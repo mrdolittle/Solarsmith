@@ -183,7 +183,7 @@ def analyse_sentiment(sentence):
         return 0.5 # byts mot en riktig relevansmetod
 
 
-method=2
+method=1
 
 
 
@@ -234,6 +234,16 @@ CLASSIFIER = nltk.NaiveBayesClassifier.train(v_train);
 v_train=None
 feature_dict=None
 
+#print CLASSIFIER.classify({}.fromkeys(["Bisbhgkdfdagbsfkdbgsu"],True))
+#print CLASSIFIER.probdist({}.fromkeys(["Bisbhgkdfdagbsfkdbgsu"],True))
+#lol=CLASSIFIER.prob_classify({}.fromkeys(["sibgvosdhgsubvofbhudgu"],True))
+#lol2=lol.samples()
+
+
+#for lo in lol2:
+#    print lol.prob(lo)
+    
+    
 if method==2:
     feature_dict= {}.fromkeys([t[0] for t in CLASSIFIER.most_informative_features(200000)])
     print len(feature_dict)
