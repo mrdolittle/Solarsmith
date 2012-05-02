@@ -25,6 +25,8 @@ CORPUS1="../analyse/sentiment.csv"
 CORPUS2="../analyse/manual"
 # CORPUS2="../analyse/manual.snapshot1"
 CORPUS3="../analyse/newcorpus3"
+CODE='../analyse/sentiment.py'
+TRAINEDBAYES='../analyse/trainedbayes.pickle'
 
 def classifier_contains(trained_classifier, dict_with_features):
     '''Classifier is very stupid, so had to use this workaround.
@@ -328,13 +330,14 @@ def analyse_sentiment(sentence):
 
 
 maxtime=0
-files=[CORPUS2,'../analyse/sentiment.py',CORPUS1,CORPUS3]
+files=[CORPUS2,CODE,CORPUS1,CORPUS3]
 for f in files:
     tmptime = os.path.getctime(f)
     if tmptime > maxtime:
         maxtime=tmptime
 bayestime=0
-bayestime=os.path.getmtime('trainedbayes.pickle')
+with open(TRAINEDBAYES) as fp:
+    bayestime=os.path.getmtime(TRAINEDBAYES)
 print ("maxtime is ",maxtime," bayestime is ",bayestime)
 
 ##method 1 is reading ONLY the manualtagged corpus and training naivebayes based on that
