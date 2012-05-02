@@ -1,4 +1,6 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
+# coding=utf-8
 '''test script for fast and convienient test of alot of data
 '''
 
