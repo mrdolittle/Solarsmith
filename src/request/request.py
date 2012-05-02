@@ -41,6 +41,7 @@ import time
 CONFIG = configHandler.Config()
 SOLR_SERVER = CONFIG.get_solr_server()
 LISTEN = True
+CURRENTLY_PROCESSING = ""
         
 def add_to_solr(username):
     '''Requests a certain Twitter username to be added.  @argument
@@ -177,6 +178,8 @@ class Client(threading.Thread):
     def run(self):
         '''This method will run continuously until the client is shut
         down or until the terminate command is called upon'''
+        #Global currently processing
+        global CURRENTLY_PROCESSING
         
         #Set the while parameter
         running = True
@@ -189,8 +192,11 @@ class Client(threading.Thread):
             if data:                
                 #Send the response
                 self.client.send("Server response: Received username: " + data)
-                if data not in self.request_list:
+                if data not in self.request_list and not CURRENTLY_PROCESSING:
                     self.request_list.append((data, self.client))
+                else:
+                    self.client.send("User already being processed.")
+                    sys.stdout.write("User already being processed.")
 #            else:
 #                #self.client.close()
                 running = False
@@ -211,12 +217,14 @@ class UsernameHandler(threading.Thread):
     def run(self):
         global LISTEN
         global CONFIG
+        global CURRENTLY_PROCESSING
         
         #Set the while parameter.
         running = True
         while(running):
             if self.request_list != []:
                 data = self.request_list.pop() #data[0] = username, data[1] = socket
+                CURRENTLY_PROCESSING = data[0]
                 retry = True
                 while(retry):
                     sys.stdout.write("Processing username: " + data[0] + "\n")
