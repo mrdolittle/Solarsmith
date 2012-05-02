@@ -336,8 +336,12 @@ for f in files:
     if tmptime > maxtime:
         maxtime=tmptime
 bayestime=0
-with open(TRAINEDBAYES) as fp:
+
+#with open(TRAINEDBAYES) as fp:
+try:
     bayestime=os.path.getmtime(TRAINEDBAYES)
+except OSError as e:
+    print 'Oh dear.'
 print ("maxtime is ",maxtime," bayestime is ",bayestime)
 
 ##method 1 is reading ONLY the manualtagged corpus and training naivebayes based on that
@@ -371,7 +375,7 @@ else:
     #Retrieve NEUTRAL SET (appending to tweets list)
     if method==2:
         min_length=1
-        max_length=3
+        max_length=1
         readcorpus(CORPUS1,tweets)
         
     print "PRINTING LENGTH OF FULLCORPUS"        
