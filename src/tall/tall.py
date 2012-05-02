@@ -78,6 +78,8 @@ def send_to_request(username):
     elif response == "3":
         # Tala om att anvÃ¤ndaren Ã¤r skyddad
         return (False, "Error: User is hidden and cannot be shown.")
+    elif response == "User being processed":
+        return (False, "User is being processed, please try again in a minute.")
     else:
         # Response was something else
 #        print response
