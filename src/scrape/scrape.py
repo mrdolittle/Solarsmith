@@ -119,8 +119,9 @@ def gather_data_loop(request_per_hour = 3600, users_to_add = 21, no_analyse=Fals
                 print "#####_NEW_USER_#####"
                 for t in tweets:
                     try:
-                        print t.GetText()
+                        text = t.GetText()
                         print "#####_NEW_TWEET_#####"
+                        print text
                     except UnicodeEncodeError:
                         continue
                 time.sleep(sleep_time)
