@@ -375,7 +375,7 @@ else:
     #Retrieve NEUTRAL SET (appending to tweets list)
     if method==2:
         min_length=1
-        max_length=1
+        max_length=3
         readcorpus(CORPUS1,tweets)
         
     print "PRINTING LENGTH OF FULLCORPUS"        
