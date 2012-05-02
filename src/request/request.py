@@ -196,7 +196,7 @@ class Client(threading.Thread):
                     self.request_list.append((data, self.client))
                 else:
                     self.client.send("User already being processed.")
-                    sys.stdout.write("User already being processed.")
+                    sys.stdout.write("User already being processed.\n")
 #            else:
 #                #self.client.close()
                 running = False
