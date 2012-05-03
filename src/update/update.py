@@ -65,12 +65,18 @@ def main():
                                  update_count + 1)
                         retry = False
                     
-                    #If the user can no longer be found on Twitter: Remove from Solr
-                    except addalyse.AddalyseUserNotOnTwitterError as err:
-                        sys.stderr.write("Got: " + str(err) + ". Twitter acount deleted. Deleting from SOLR.\n")
+                    #If If the user is now protecting his/her account: Remove from Solr
+                    except addalyse.AddalyseProtectedUserError as err:
+                        sys.stderr.write("Got: " + str(err) + ". Twitter account protected. Deleting from SOLR.\n")
                         sh.delete_ci(username)
                         retry = False
                     
+                    #If the user can no longer be found on Twitter: Remove from Solr
+                    except addalyse.AddalyseUserNotOnTwitterError as err:
+                        sys.stderr.write("Got: " + str(err) + ". Twitter account deleted. Deleting from SOLR.\n")
+                        sh.delete_ci(username)
+                        retry = False
+                        
                     #If Solr can not be updated with new Tweet data at the time of the update. Wait for 1h with this user.
                     except addalyse.AddalyseUnableToProcureTweetsError as err:
                         sys.stderr.write(str(err) + "\n")

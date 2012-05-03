@@ -8,11 +8,15 @@ Module to handle configuration of the servers. Mainly where to find other server
 
 
 class Config():
-    '''TODO: DOCUMENT ME CLASS HERE'''
+    '''The Config class that will either read data from a file for further use by other modules,
+        or use hardcoded data.'''
 
     
     def __init__(self, conf_file="../../configuration_file.conf", setting=3):
-        ''' TODO: DOCUMENT MY CONSTRUCTOR '''
+        ''' Set the defaut variables, or read from a file if the setting is not changed.
+        @param setting = 1: Set the connection values to "localhost.
+        @param setting = 2: Set the connection values to hardcoded values.
+        @param setting = 3: Read all values from a file called configuration_file.conf  '''
         
         #Default values
         self.SOLR_SERVER = "http://xantoz.failar.nu:8080/solr/"

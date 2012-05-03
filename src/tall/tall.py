@@ -78,6 +78,8 @@ def send_to_request(username):
     elif response == "3":
         # Tala om att anvÃ¤ndaren Ã¤r skyddad
         return (False, "Error: User is hidden and cannot be shown.")
+    elif response == "User being processed":
+        return (False, "User is being processed, please try again in a minute.")
     else:
         # Response was something else
 #        print response
@@ -309,12 +311,12 @@ class RequestHandler(BaseHTTPRequestHandler):
         self.send_result(create_xml(frienemy_result))
 
 
-'''
-This is for starting the server.
-'''
-print "Connecting to Solr"
-tallstore.connect_to_solr()
-serveraddr = ('', 8001)
-srvr = ThreadingServer(serveraddr, RequestHandler)
-print "Server started"
-srvr.serve_forever()
+
+if __name__ == "__main__":        
+    # This is for starting the server.
+    print "Connecting to Solr"
+    tallstore.connect_to_solr()
+    serveraddr = ('', 8001)
+    srvr = ThreadingServer(serveraddr, RequestHandler)
+    print "Server started"
+    srvr.serve_forever()

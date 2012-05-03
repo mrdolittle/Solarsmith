@@ -74,6 +74,8 @@ def addalyse(*args):
             raise AddalyseProtectedUserError('Not authorized')
         elif e.message == "Capacity Error":
             raise AddalyseUnableToProcureTweetsError('Twitter is lazy: Capacity error')
+        elif e.message[0:23] == "User has been suspended":
+            raise AddalyseUserNotOnTwitterError(e.message)
         elif e.message[0:19] == 'Rate limit exceeded':
             raise AddalyseRateLimitExceededError(e.message)
         else:
