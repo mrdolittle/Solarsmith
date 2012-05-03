@@ -13,7 +13,7 @@ import argparse
 
 parser = argparse.ArgumentParser(description='A scraper, collecting data from twitter.')
 parser.add_argument('-n','--noanalyse', help='If set to "true", skips the analysing part, and prints all twitter data to standard out.', required=False)
-parser.add_argument('-l','--localread', help='If set to "true", reads tweets from a file instead of from  twitter.', required=False)
+parser.add_argument('-l','--localread', help='If filename is specified, reads tweets from that file instead of from  twitter.', required=False)
 args = vars(parser.parse_args())
 NO_ANALYSE = False
 
@@ -38,8 +38,8 @@ SOLR_SERVER = CONFIG.get_solr_server()
 
 def main():
     '''Finds new user to add to database.'''
-    if args['localread'] == "true":
-        scrape_from_file()
+    if args['localread']:
+        scrape_from_file(args['localread'])
     else:
         gather_data_loop()
     
@@ -165,17 +165,19 @@ def gather_data_loop(request_per_hour = 3600, users_to_add = 21, no_analyse=Fals
             #   print str(kkey) + ": " + all_added_users[key][kkey]
 
             
-def scrape_from_file():
+def scrape_from_file(filename):
     ''' The main method which will ask for a file to read from, read it, analyse it and store it.
     (Using other methods)'''
+    
+    print "Filename: " + filename
 
     #Global variables
     global SOLR_SERVER
     global CONFIG
         
     #What file do you want to read from?
-    file_path = getFile()
-    file = open(file_path,'r')
+    #file_path = getFile()
+    file = open(filename,'r')
     
     #Set the read variables:
     current_user = ""
