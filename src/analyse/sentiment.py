@@ -264,6 +264,8 @@ def word_true_dict(words):
     for word in words:
         feat[word]=True
     return feat
+def get_feature(words,start,end):
+    return " ".join(words[start:end]).strip(",")
 
 def get_words(sentence):
     '''Split into list of words in lower case.'''
@@ -289,10 +291,43 @@ def get_words_list(sentence,num_words=2, words_in_feature=3):
         end=start + num_words
         while end <= len(words):
             res.append(" ".join(words[start:end]).strip(","))
+            #res.append(get_feature(words,start,end))
             start = start + 1
             end = start + num_words
         num_words = num_words + 1
     return res
+
+def get_words_list_2(sentence, num_words = 1,words_in_feature=3, allowed_features_dict=None):
+    '''Used to get all features/words up to the specified
+    words_in_feature. 
+    Ex. 
+    get_words_list("hej pa daj", 2)
+    gives 
+    ['hej', 'pa', 'daj', 'hej pa', 'pa daj']'''
+    # get words in sentence
+    words = get_words(sentence)# sentence.lower().split()
+    
+    # adjust so that the words_in_feature is less than 
+    # the number of words in the sentence
+    words_in_feature = min(words_in_feature, len(words))
+    res = []
+    # for each num_words
+    while num_words <= words_in_feature:
+        # add all features with num_words
+        start = 0
+        end=start + num_words
+        while end <= len(words):
+            # construct feature and strip commas from beginning and end
+            tmp=get_feature(words,start,end)
+            #res.append(" ".join(words[start:end]).strip(","))
+            #tmp=" ".join(words[start:end]).strip(",")
+            if allowed_features_dict == None or allowed_features_dict.has_key(tmp):
+                res.append(tmp)
+            start = start + 1
+            end = start + num_words
+        num_words = num_words + 1
+    return res
+
 
 def readcorpus(filename,tweets):
     with open(filename, 'rb') as fp:
@@ -300,6 +335,23 @@ def readcorpus(filename,tweets):
         for row in reader:
             tweets.append([row[4], row[1]])
     
+def special_train(tweets, min_length=1, max_length=3, limit=0):
+    '''trains a naive bayes and then takes the most informative features to make an allowed_features_dict.
+    A new bayes is trained but only with the allowed features,his is then returned. 
+    This will make the memory much smaller.
+    limit==0 means no limit.'''
+    features_dict = [(word_true_dict(get_words_list(t,min_length,max_length)),s) for (t,s) in tweets]
+    print "length of featurelist "+ str(len(features_dict))
+    trained_bayes = nltk.NaiveBayesClassifier.train(features_dict)
+    if limit == 0:
+        return trained_bayes
+    features_dict=None
+    allowed_dict={}.fromkeys([x for (x,y) in trained_bayes.most_informative_features(limit)])
+    print "length of allowed_dict "+ str(len(allowed_dict))
+    trained_bayes=None
+    features_dict = [(word_true_dict(get_words_list_2(sentence, min_length, max_length, allowed_dict)), sentiment) for (sentence, sentiment) in tweets]
+    print "length of featurelist "+ str(len(features_dict))
+    return nltk.NaiveBayesClassifier.train(features_dict)
 
 def analyse_sentiment(sentence):
     '''Analyses sentence sentiment. Returns a number of size
@@ -352,7 +404,7 @@ method=2
 
 ## DONT RETRAIN NAIVEBAYES IF CURRENT ONE IS UP TO DATE
 if maxtime<bayestime and (maxtime!=0 and bayestime!=0):
-    with open('../analyse/trainedbayes.pickle') as fp:
+    with open('../analyse/trainedbayes.pickle','rb') as fp:
         print "LOADING CLASSIFIER FROM FILE"
         CLASSIFIER=pickle.load(fp)
 else:    
@@ -390,22 +442,20 @@ else:
     
     # training with martins method
     
-    v_train = [(word_true_dict(get_words_list(t,min_length,max_length)),s) for (t,s) in tweets]
-    
+    #v_train = [(word_true_dict(get_words_list(t,min_length,max_length)),s) for (t,s) in tweets]
+    #print ("lenght of v_train",len(v_train))
     #training with feature_extraction method
-    #v_train = [(word_true_dict(features.extract_features(t)),s) for (t,s) in tweets]
-    tweets=None
-    # Old tweetlist simplistic tweetfeature
-    #fvecs = [(tweet_features.make_tweet_dict(t),s) for (t,s) in tweets]
     
     
+    #tweets=None
     
-    CLASSIFIER = nltk.NaiveBayesClassifier.train(v_train);
+    CLASSIFIER=special_train(tweets,min_length,max_length,0)
+    
+    #CLASSIFIER = nltk.NaiveBayesClassifier.train(v_train);
     v_train=None
     feature_dict=None
-    f=open('../analyse/trainedbayes.pickle','wb')
-    pickle.dump(CLASSIFIER,f)
-    f.close()
+    with open('../analyse/trainedbayes.pickle','wb') as f:
+        pickle.dump(CLASSIFIER,f)
             
     
     
