@@ -12,13 +12,10 @@ the influence of covariant features.
 
 """
 import os.path
-import time
-import random
 import pickle
 import nltk
 import ast
 import csv
-import tweet_features, tweet_pca
 import features
 CORPUS1="../analyse/sentiment.csv"
 # CORPUS2="../analyse/newcorpus3"
@@ -427,7 +424,7 @@ else:
     #Retrieve NEUTRAL SET (appending to tweets list)
     if method==2:
         min_length=1
-        max_length=3
+        max_length=1
         readcorpus(CORPUS1,tweets)
         
     print "PRINTING LENGTH OF FULLCORPUS"        
@@ -457,28 +454,3 @@ else:
     with open('../analyse/trainedbayes.pickle','wb') as f:
         pickle.dump(CLASSIFIER,f)
             
-    
-    
-    
-    #print CLASSIFIER.classify({}.fromkeys(["Bisbhgkdfdagbsfkdbgsu"],True))
-    #print CLASSIFIER.probdist({}.fromkeys(["Bisbhgkdfdagbsfkdbgsu"],True))
-    
-    # testing classifier_contains
-    #print classifier_contains(CLASSIFIER,{}.fromkeys(["sibgvosdhgsubvofbhudgu","GdsD"],True))
-    #print classifier_contains(CLASSIFIER,{}.fromkeys(["sibgvosdhgsubvofbhudgu","i like"],True))
-    
-    #lol=CLASSIFIER.prob_classify({}.fromkeys(["sibgvosdhgsubvofbhudgu","i like"],True))
-    #lol2=lol.samples()
-    
-    #for lo in lol2:
-    #    print lol.prob(lo)
-    
-    
-    #print list of tuples [('positive', 0.7037326500107238), ...]
-    #print get_classification_tuples(CLASSIFIER.prob_classify({}.fromkeys(["sibgvosdhgsubvofbhudgu","i like"],True)))
-    
-        
-        
-    
-    
-    #CLASSIFIER = nltk.classify.maxent.train_maxent_CLASSIFIER_with_gis(v_train);
