@@ -124,7 +124,12 @@ def special_train(tweets, min_length=1, max_length=3, limit=0):
     
     # train with only the most informative features with the given min_length and max_length
     training_list = [(word_true_dict(get_words_list_2(sentence, min_length, max_length, allowed_dict)), sentiment) for (sentence, sentiment) in tweets]
-    return nltk.NaiveBayesClassifier.train(training_list)     
+    return nltk.NaiveBayesClassifier.train(training_list)   
+
+def pointful_train(tweets, min_length=1, max_length=3, limit=0):  
+    '''will contain training with replacement of blabla features.
+    Not finished!'''
+    None
      
      
 
@@ -313,15 +318,15 @@ def get_words(sentence):
     '''Split into list of words in lower case.'''
     return sentence.lower().split()#re.findall(re.compile(r"[a-z.0-9]+"), sentence.lower())
 
-def replace_nonfeatures(sentence, first_features_dict, num_words, words_in_feature, replace_with="."):
-    '''Takes a sentence and replaces all non_features with the replace string ".".
-    non_feastures is those "features" that aren't in the first_features_dict.
-    The first_features_dict is a dictionairy constructed from the features
-    found on a previous run of the bayesian thing, but that used all words as features.
+def replace_non_keep_features(sentence, keep_features_dict, num_words, words_in_feature, replace_with="."):
+    '''Takes a sentence and replaces all non_keep_features with the replace string ".".
+    non_keep_features is those "features" that aren't in the keep_features_dict.
+    The keep_features_dict can be constructed from the features of a previous run of
+    the  naive bayes which used all features.
     
-    Can later be used if replacing non_features with "." and training on that data 
+    Can later be used if replacing non_features with "." and training on that data.
     '''
-    print first_features_dict
+    print keep_features_dict
     print sentence
     # get words in sentence
     words = get_words(sentence)#sentence.lower().split()
@@ -344,7 +349,7 @@ def replace_nonfeatures(sentence, first_features_dict, num_words, words_in_featu
         while end <= len(words):
             tmp=" ".join(words[start:end])
             #print tmp
-            if first_features_dict.has_key(tmp):
+            if keep_features_dict.has_key(tmp):
                 #print tmp
                 i=start
                 while i<end:
@@ -384,7 +389,7 @@ def get_words_list2(sentence,
     '''
     #print get_words_list(sentence,num_words,words_in_feature)
     #print sentence
-    sentence=replace_nonfeatures(sentence, first_features_dict, num_words_in_dict, words_in_feature_int_dict)
+    sentence=replace_non_keep_features(sentence, first_features_dict, num_words_in_dict, words_in_feature_int_dict)
     print sentence
     #print sentence
     listy=get_words_list(sentence, num_words, words_in_feature)
@@ -403,7 +408,7 @@ def get_words_list2(sentence,
 
 dicti={}.fromkeys(["really","like","really like","wonderful"])
 
-#print replace_nonfeatures("I really like the wonderful mac-air",dicti,1,3)
+#print replace_non_keep_features("I really like the wonderful mac-air",dicti,1,3)
 #print get_words_list2("I really like the wonderful mac-air",{}.fromkeys(["really","like","really like","wonderful"]))
 print get_significant_features("I really like the wonderful mac-air",{}.fromkeys(["really","like","really like","wonderful"]))
 
