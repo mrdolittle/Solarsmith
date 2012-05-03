@@ -41,7 +41,7 @@ for x from listx also y from listy:
 
 @author: mbernt
 '''
-import re
+#import re
 
 def get_words_list(sentence, num_words = 1,words_in_feature=3):
     '''Used to get all features/words up to the specified
@@ -64,7 +64,7 @@ def get_words_list(sentence, num_words = 1,words_in_feature=3):
         end=start + num_words
         while end <= len(words):
             # construct feature and strip commas from beginning and end
-            res.append(" ".join(words[start:end]).strip(","))
+            res.append(get_feature(words,start,end))#" ".join(words[start:end]).strip(","))
             start = start + 1
             end = start + num_words
         num_words = num_words + 1
@@ -101,7 +101,8 @@ def get_words_list_2(sentence, num_words = 1,words_in_feature=3, allowed_feature
 
 
 def special_train(tweets, min_length=1, max_length=3, limit=200000):
-    '''trains a naive bayes and then takes the most informative features to make an allowed_features_dict.
+    '''get latest version in sentiment.
+    trains a naive bayes and then takes the most informative features to make an allowed_features_dict.
     A new bayes is trained but only with the allowed features, this is then returned. 
     This will make the memory much smaller.
     limit==0 means no limit.'''
@@ -405,6 +406,13 @@ dicti={}.fromkeys(["really","like","really like","wonderful"])
 #print get_words_list2("I really like the wonderful mac-air",{}.fromkeys(["really","like","really like","wonderful"]))
 print get_significant_features("I really like the wonderful mac-air",{}.fromkeys(["really","like","really like","wonderful"]))
 
-print ["hello","little","cat"]
-print get_feature(["hello","little","cat"],0,2)
+#print ["hello","little","cat"]
+#print get_feature(["hello","little","cat"],0,2)
+
+sentence='hej pa lilla daj'
+print "test get_words_list with sentence: "+sentence
+print get_words_list(sentence,1,3)
+print get_words_list_2(sentence,1,3,{}.fromkeys(get_words_list(sentence,1,3)))
+print word_true_dict(get_words_list(sentence,1,3))
+print len(word_true_dict(get_words_list(sentence,1,3)))
 
