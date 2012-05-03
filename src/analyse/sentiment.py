@@ -190,7 +190,7 @@ def get_significant_features_2(sentence, trained_classifier, num_words = 1, word
         end=start + num_words
         while end <= len(words):
             # construct feature and strip commas from beginning and end
-            candidate_feature=" ".join(words[start:end]).strip(",")
+            candidate_feature=get_feature(words, start, end)#" ".join(words[start:end]).strip(",")
             # only add features
             # TODO: check if this is the correct test to check if the word is in the 
             # trained_classifier classifier
@@ -215,7 +215,7 @@ def get_significant_features_2(sentence, trained_classifier, num_words = 1, word
                     if i2<=i and j<=j2:
                         # must be in the larger feature to be a sub feature
                         if word2.find(word)!=-1:
-                            # it's a sub feature so remove it from the result list
+                            # it's a sub feature so remove it from the result list1
                             add=False
                             #res.remove((i,j,word))
                 # is not a sub feature so keep it
@@ -228,21 +228,21 @@ def get_significant_features_2(sentence, trained_classifier, num_words = 1, word
         # next number of words
         num_words = num_words + 1
 
-    # add non neutral words to the final res list (res2)
+    # add non neutral words to the final res list1 (res2)
     res2= []
-    list=[word for (x,y,word) in res]
-    for word in list:
+    list1=[word for (x,y,word) in res]
+    for word in list1:
         tmp_dict.clear()
         tmp_dict[candidate_feature]=True
         if trained_classifier.classify(tmp_dict)!="neutral":
             res2.append(word)
     
     # if contain no other than neutral return
-    # the list with neutral anyway
+    # the list1 with neutral anyway
     if len(res2)>0:        
         return res2
     else:
-        return list
+        return list1
 
 
     
@@ -268,7 +268,7 @@ def get_words(sentence):
     '''Split into list of words in lower case.'''
     return sentence.lower().split()#re.findall(re.compile(r"[a-z.0-9]+"), sentence.lower())
 
-def get_words_list(sentence,num_words=2, words_in_feature=3):
+def get_words_list(sentence, num_words = 1,words_in_feature=3):
     '''Used to get all features/words up to the specified
     words_in_feature. 
     Ex. 
@@ -276,7 +276,8 @@ def get_words_list(sentence,num_words=2, words_in_feature=3):
     gives 
     ['hej', 'pa', 'daj', 'hej pa', 'pa daj']'''
     # get words in sentence
-    words = sentence.lower().split()
+    words = get_words(sentence)# sentence.lower().split()
+    
     # adjust so that the words_in_feature is less than 
     # the number of words in the sentence
     words_in_feature = min(words_in_feature, len(words))
@@ -287,8 +288,8 @@ def get_words_list(sentence,num_words=2, words_in_feature=3):
         start = 0
         end=start + num_words
         while end <= len(words):
-            res.append(" ".join(words[start:end]).strip(","))
-            #res.append(get_feature(words,start,end))
+            # construct feature and strip commas from beginning and end
+            res.append(get_feature(words,start,end))#" ".join(words[start:end]).strip(","))
             start = start + 1
             end = start + num_words
         num_words = num_words + 1
@@ -315,9 +316,7 @@ def get_words_list_2(sentence, num_words = 1,words_in_feature=3, allowed_feature
         end=start + num_words
         while end <= len(words):
             # construct feature and strip commas from beginning and end
-            tmp=get_feature(words,start,end)
-            #res.append(" ".join(words[start:end]).strip(","))
-            #tmp=" ".join(words[start:end]).strip(",")
+            tmp=get_feature(words,start,end)#res.append(" ".join(words[start:end]).strip(","))
             if allowed_features_dict == None or allowed_features_dict.has_key(tmp):
                 res.append(tmp)
             start = start + 1
