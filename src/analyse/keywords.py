@@ -15,7 +15,7 @@ import operator
 import sys
 
 NAMEEXCEPTIONS = [['star','wars']]
-XOFYXCEPTIONS = set(['lot','alot'])
+XOFYXCEPTIONS = set(['lot','alot','kind'])
 
 def extract_keywords_grammar(text):
     '''Uses chunks matching to identify keywords in a tweet. The code looks much nicer this way :P'''
@@ -29,10 +29,10 @@ def extract_keywords_grammar(text):
     sequence = map(lambda (a,b): (a.lower(),b), sequence)
     words = []
     skiplistsingular = []
-    grammar=''' Noun: {(((<NNP>|<NN>|<NNS>)<IN><DT>(<NNP>|<NN>|<NNS>))|((<JJ>|<JJR>)+(<NN>|<NNS>|<VBG>)+))}
+    grammar=''' Name: {(<NNP>|<NNPS>)*} 
+                Noun: {((<NN><NN>+)|((<NNP>|<NN>|<NNS>)<IN><DT>(<NNP>|<NN>|<NNS>))|((<JJ>|<JJR>)+(<NN>|<NNS>|<VBG>)+))}
                 ToVerb: {<TO><VB>}
                 XofY: {(<NNP>|<NN>|<NNS>)(<IN>(<NNP>|<NN>|<NNS>))+}
-                Name: {(<NNP>|<NNPS>)*} 
             '''
     grammarSingular='''Noun: {(<NN>|<NNS>|<VBG>)}
                         Name: {<NNP>}
@@ -40,22 +40,35 @@ def extract_keywords_grammar(text):
     chunks = nltk.RegexpParser(grammar)
     chunksSingular = nltk.RegexpParser(grammarSingular)
     
+    def multiwords(t):
+        return reduce(lambda x,y: x + " " + y, map(lambda (x,_1): x, t)) 
+    
     for t in chunks.parse(sequence).subtrees():
         if t.node == "Noun":
-            keys = reduce(lambda x,y: x + " " + y, map(lambda (x,_1): x, t))            
-            words.append((keys,1.0))         
+            keys = multiwords(t)            
+            words.append((keys,1.0))
+            if len(t)>1:
+                if t[1][1]=="IN":
+                    skiplistsingular.append(t[0][0])
+                    skiplistsingular.append(t[3][0])
+                if t[0][1]=="JJ":
+                    t1 = t[1:]
+                    keys = multiwords(t1)
+                    words.append((keys,0.75))                  
         elif t.node == "ToVerb":
             words.append((t[1][0],1.0))
         elif t.node == "XofY":
             t = t[-3:]
             if t[0][0] not in XOFYXCEPTIONS:
                 skiplistsingular.append(t[0][0])
+                words.append((t[0][0],0.7))
                 skiplistsingular.append(t[2][0])
+                words.append((t[2][0],0.7))
                 word = ""
                 for x in t:
                     word = word + x[0] + " "
                 word = word.rstrip()
-                words.append((word,1.5))
+                words.append((word,1.0))
         elif t.node == "Name":
             if len(t)>1:
                 words.append((reduce(lambda x,y: x + " " + y if len(y)>2 else x, map(lambda (x,_1): x, t)), 1.0))
