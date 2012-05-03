@@ -11,7 +11,7 @@ Then replace non-features with "." and train an additional bayesian thing on the
 get_words_list2 # not tested enough
 
 2. if larger feature is a real feature and contains real smaller feature then only use the larger when classifying.
-get_significant_features # not tested enough
+get_significant_features_2 # also removes neutral features if there are other sentiments with emotions
 
 3. combine 1 and 2, and use very large features in 2 (can still use relatively small features in 1). 
 The combination of these two give the effect that it tries to find as large features as possible 
@@ -69,6 +69,54 @@ def get_words_list(sentence, num_words = 1,words_in_feature=3):
             end = start + num_words
         num_words = num_words + 1
     return res
+
+def get_words_list_2(sentence, num_words = 1,words_in_feature=3, allowed_features_dict=None):
+    '''Used to get all features/words up to the specified
+    words_in_feature. 
+    Ex. 
+    get_words_list("hej pa daj", 2)
+    gives 
+    ['hej', 'pa', 'daj', 'hej pa', 'pa daj']'''
+    # get words in sentence
+    words = get_words(sentence)# sentence.lower().split()
+    
+    # adjust so that the words_in_feature is less than 
+    # the number of words in the sentence
+    words_in_feature = min(words_in_feature, len(words))
+    res = []
+    # for each num_words
+    while num_words <= words_in_feature:
+        # add all features with num_words
+        start = 0
+        end=start + num_words
+        while end <= len(words):
+            # construct feature and strip commas from beginning and end
+            tmp=get_feature(words,start,end)#res.append(" ".join(words[start:end]).strip(","))
+            if allowed_features_dict == None or allowed_features_dict.has_key(tmp):
+                res.append(tmp)
+            start = start + 1
+            end = start + num_words
+        num_words = num_words + 1
+    return res
+
+
+def special_train(tweets, min_length=1, max_length=3, limit=200000):
+    '''trains a naive bayes and then takes the most informative features to make an allowed_features_dict.
+    A new bayes is trained but only with the allowed features, this is then returned. 
+    This will make the memory much smaller.
+    limit==0 means no limit.'''
+    features_dict = [(word_true_dict(get_words_list(t,min_length,max_length)),s) for (t,s) in tweets]
+    trained_bayes = nltk.NaiveBayesClassifier.train(features_dict)
+    if limit == 0:
+        return trained_bayes
+    features_dict=None
+    allowed_dict={}.fromkeys(trained_bayes.most_informative_features(limit))
+    trained_bayes=None
+    features_dict = [(word_true_dict(get_words_list_2(sentence, min_length, max_length, allowed_dict)), sentiment) for (sentence, sentiment) in tweets]
+    return nltk.NaiveBayesClassifier.train(features_dict)
+     
+     
+     
 
 def get_significant_features(sentence,features_dict, num_words = 1,words_in_feature=3):
     '''Can be used when classifying, so that "don't like" isn't affected by like.
@@ -190,7 +238,7 @@ def get_significant_features_2(sentence, trained_classifier, num_words = 1, word
         end=start + num_words
         while end <= len(words):
             # construct feature and strip commas from beginning and end
-            candidate_feature = " ".join(words[start:end]).strip(",")
+            candidate_feature = get_feature(words, start, end)# " ".join(words[start:end]).strip(",") #TODO: use get_feature here
             # only add features
             # TODO: check if this is the correct test to check if the word is in the 
             # trained_classifier classifier
@@ -307,6 +355,9 @@ def replace_nonfeatures(sentence, first_features_dict, num_words, words_in_featu
     # replace with '.' those that are keeping==false
     return " ".join(map((lambda word, keep: word if keep else replace_with)   ,words,keeping))
 
+def get_feature(words,start,end):
+    return " ".join(words[start:end]).strip(",")
+
 def get_words_list2(sentence, 
                   first_features_dict, num_words_in_dict = 1, words_in_feature_int_dict=3,
                   num_words= 1, words_in_feature=20):   
@@ -353,4 +404,7 @@ dicti={}.fromkeys(["really","like","really like","wonderful"])
 #print replace_nonfeatures("I really like the wonderful mac-air",dicti,1,3)
 #print get_words_list2("I really like the wonderful mac-air",{}.fromkeys(["really","like","really like","wonderful"]))
 print get_significant_features("I really like the wonderful mac-air",{}.fromkeys(["really","like","really like","wonderful"]))
+
+print ["hello","little","cat"]
+print get_feature(["hello","little","cat"],0,2)
 
