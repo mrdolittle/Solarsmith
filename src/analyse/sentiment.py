@@ -143,22 +143,19 @@ def get_significant_features(sentence,features_dict, num_words = 2,words_in_feat
 
 def classifier_contains_string(dict_with_feature, trained_classifier):
     '''Classifier is very stupid, so had to use this workaround.'''
-    #print CLASSIFIER.classify({}.fromkeys(["Bisbhgkdfdagbsfkdbgsu"],True))
-    #print CLASSIFIER.probdist({}.fromkeys(["Bisbhgkdfdagbsfkdbgsu"],True))
-    #lol=CLASSIFIER.prob_classify({}.fromkeys(["sibgvosdhgsubvofbhudgu"],True))
-    #lol2=lol.samples()
-    #for lo in lol2:
-    #    print lol.prob(lo)
-    
+    # get objects that contain samples and values, and then a list of the names of the samples
+    # this is for the default values
     listx1=trained_classifier.prob_classify({})
     listx2=listx1.samples()
     
+    # get objects that contain samples and values, and then a list of the names of the samples
+    # this is for dict_with_feature
     listy1=trained_classifier.prob_classify(dict_with_feature)
     listy2=listy1.samples()
     
     # compare against default values, if there is a difference then the feature exist, probably
-    for bool in map((lambda x, y: listx1.prob(x) == listy1.prob(y)), listx2, listy2):
-        if not bool:
+    for booli in map((lambda x, y: listx1.prob(x) == listy1.prob(y)), listx2, listy2):
+        if not booli:
             return True
     return False
 
