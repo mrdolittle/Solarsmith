@@ -119,11 +119,13 @@ def gather_data_loop(request_per_hour = 3600, users_to_add = 21, no_analyse=Fals
             if NO_ANALYSE:
                 tweets = th.get_all_statuses(user)
                 print "#####_NEW_USER_#####"
+                print user
                 for t in tweets:
                     try:
                         text = t.GetText()
                         print "#####_NEW_TWEET_#####"
                         print text
+                        print "#####_END_OF_TWEET_#####"
                     except UnicodeEncodeError:
                         continue
                 time.sleep(sleep_time)
@@ -157,62 +159,63 @@ def gather_data_loop(request_per_hour = 3600, users_to_add = 21, no_analyse=Fals
             print key + " was added"
             #for key in all_added_users[key]:
             #   print str(kkey) + ": " + all_added_users[key][kkey]
+
             
-    def scrape_from_file():
-        ''' The main method which will ask for a file to read from, read it, analyse it and store it.
-        (Using other methods)'''
+def scrape_from_file():
+    ''' The main method which will ask for a file to read from, read it, analyse it and store it.
+    (Using other methods)'''
+
+    #Global variables
+    global SOLR_SERVER
+    global CONFIG
+        
+    #What file do you want to read from?
+    file_path = getFile()
+    file = open(file_path,'r')
     
-        #Global variables
-        global SOLR_SERVER
-        global CONFIG
-            
-        #What file do you want to read from?
-        file_path = getFile()
-        file = open(file_path,'r')
+    #Set the read variables:
+    current_user = ""
+    tweet_content = []
+    in_tweet = False
+    
+    #Setup the Solr server variable
+    solr_server = CONFIG.get_solr_server
+    sh = solr_server if isinstance(solr_server, StorageHandler) else StorageHandler(solr_server)
+    
+    #Start reading the file
+    for text in file.readline():
         
-        #Set the read variables:
-        current_user = ""
-        tweet_content = []
-        in_tweet = False
-        
-        #Setup the Solr server variable
-        solr_server = CONFIG.get_solr_server
-        sh = solr_server if isinstance(solr_server, StorageHandler) else StorageHandler(solr_server)
-        
-        #Start reading the file
-        for text in file.readline():
-            
-            if not "TwitterHelp.get_all_statuses():" in text:
-                            
-                #Look for a user and store the username in a variable:
-                if text == "#####_NEW_USER_#####":
-                    current_user = file.readline()
+        if not "TwitterHelp.get_all_statuses():" in text:
+                        
+            #Look for a user and store the username in a variable:
+            if text == "#####_NEW_USER_#####":
+                current_user = file.readline()
+                
+                #Look for a new Tweet and read till new_user or new_tweet.
+            elif text == "#####_NEW_TWEET_#####":
+                in_tweet = True
                     
-                    #Look for a new Tweet and read till new_user or new_tweet.
-                elif text == "#####_NEW_TWEET_#####":
-                    in_tweet = True
-                        
-                #Look for the end of a Tweet
-                elif text == "#####_END_OF_TWEET_#####":
-                    in_tweet = False
-                    if tweet_content != []:
-                        #Analyse if there's any content
-                        (lovekeywords, hatekeywords) = addalyse(filter_analysis(analyse(tweet_content)))
-                        
-                        #Store into Solr
-                        #parameter 4 = 1, update everything on the next update
-                        #parameter 5 = 0, full update on next update
-                        sh.add_profile(current_user, lovekeywords, hatekeywords, 1, 0)
-                        
-                        #Debug print
-                        print "Username: " + current_user + " has the following content:\n" + tweet_content
-                        print "\n\n The following lovekeywords were found: \n" + lovekeywords
-                        print "\n\n The following hatekeywords were found: \n" + hatekeywords
-                                
-                #Store the content of a Tweet.
-                elif in_tweet:
-                    if text != "":
-                        tweet_content.append(text)
+            #Look for the end of a Tweet
+            elif text == "#####_END_OF_TWEET_#####":
+                in_tweet = False
+                if tweet_content != []:
+                    #Analyse if there's any content
+                    (lovekeywords, hatekeywords) = addalyse(filter_analysis(analyse(tweet_content)))
+                    
+                    #Store into Solr
+                    #parameter 4 = 1, update everything on the next update
+                    #parameter 5 = 0, full update on next update
+                    sh.add_profile(current_user, lovekeywords, hatekeywords, 1, 0)
+                    
+                    #Debug print
+                    print "Username: " + current_user + " has the following content:\n" + tweet_content
+                    print "\n\n The following lovekeywords were found: \n" + lovekeywords
+                    print "\n\n The following hatekeywords were found: \n" + hatekeywords
+                            
+            #Store the content of a Tweet.
+            elif in_tweet:
+                if text != "":
+                    tweet_content.append(text)
                                 
 def getFile():
     print "Enter the path to the file that you wish to read from:"
