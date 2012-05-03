@@ -385,9 +385,6 @@ def analyse_sentiment(sentence):
 
 
 
-
-
-
 maxtime=0
 files=[CORPUS2,CODE,CORPUS1,CORPUS3]
 for f in files:
@@ -423,12 +420,12 @@ else:
     with open(CORPUS2, 'rb') as fp:
         for row in fp:
             tweets.append(ast.literal_eval(row))
-    with open(CORPUS3, 'rb') as fp:
-        for row in fp:
-            tweets.append(ast.literal_eval(row))
+    #with open(CORPUS3, 'rb') as fp:
+    #    for row in fp:
+    #        tweets.append(ast.literal_eval(row))
             
-    if method==2:
-        readcorpus(CORPUS1,tweets) 
+    #if method==2:
+        #readcorpus(CORPUS1,tweets) 
 
     print "PRINTING LENGTH OF FULLCORPUS"        
     print len(tweets)
