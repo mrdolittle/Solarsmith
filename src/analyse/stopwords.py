@@ -642,7 +642,8 @@ STOPWORDS = set(["something",
                  "question",                                  # STEM CAUTIOUSLY. 'questions' and maybe even 'questioning' might be somewhat interesting
                  "cool",                                       # STEM CAUTIOUSLY. 'cooling' is a nice keyt\section{word}
                  "a long time",
-                 "episode"                                  # way too common word
+                 "episode",                                  # way too common word
+                 "lame"
                  ])
 
 def filter_keywords(keywords, key=nop):
