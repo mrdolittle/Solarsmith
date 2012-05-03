@@ -364,11 +364,13 @@ def analyse_sentiment(sentence):
     sentiment.'''
     global CLASSIFIER
     global method
+    global min_length
+    global max_length
     if method==1:
-        featureset=word_true_dict(get_words_list(sentence))
+        featureset=word_true_dict(get_words_list(sentence, min_length, max_length))
     if method==2:
         #featureset=word_true_dict(get_significant_features(sentence,feature_dict))
-        featureset=word_true_dict(get_significant_features_2(sentence,CLASSIFIER))
+        featureset=word_true_dict(get_significant_features_2(sentence, CLASSIFIER, min_length, max_length))
         
    
     #classification = CLASSIFIER.classify(tweet_features.make_tweet_dict(sentence))
@@ -403,7 +405,7 @@ print ("maxtime is ",maxtime," bayestime is ",bayestime)
 
 ##method 1 is reading ONLY the manualtagged corpus and training naivebayes based on that
 ##method 2 is reading the manualtagged and an other corpus with much more neutral tweets,
-## then purging all neutral tweets from the corpus in the end
+## then using get significant_features_2
     
 method=2
 
@@ -424,17 +426,10 @@ else:
     with open(CORPUS3, 'rb') as fp:
         for row in fp:
             tweets.append(ast.literal_eval(row))
-    print "PRINTING LENGTH OF MANUAL CORPUS"        
-    print len(tweets)
-    if method==1:
-        min_length=2
-        max_length=3
-    #Retrieve NEUTRAL SET (appending to tweets list)
+            
     if method==2:
-        min_length=1
-        max_length=1
-        readcorpus(CORPUS1,tweets)
-        
+        readcorpus(CORPUS1,tweets) 
+
     print "PRINTING LENGTH OF FULLCORPUS"        
     print len(tweets)
     
@@ -443,20 +438,14 @@ else:
     for t in tweets:
         if t[1] == 'irrelevant':
             t[1] = 'neutral'
-            
     
-    # training with martins method
-    
-    #v_train = [(word_true_dict(get_words_list(t,min_length,max_length)),s) for (t,s) in tweets]
-    #print ("lenght of v_train",len(v_train))
-    #training with feature_extraction method
-    
-    
-    #tweets=None
-    
+    # determines the feature size (how many words are in a feature)
+    min_length=1
+    max_length=3        
+
+    # train with the given tweets and these parameters, limit=0 means no limit
     CLASSIFIER=special_train(tweets,min_length,max_length,0)
     
-    #CLASSIFIER = nltk.NaiveBayesClassifier.train(v_train);
     v_train=None
     feature_dict=None
     with open('../analyse/trainedbayes.pickle','wb') as f:
