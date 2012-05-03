@@ -29,10 +29,10 @@ def extract_keywords_grammar(text):
     sequence = map(lambda (a,b): (a.lower(),b), sequence)
     words = []
     skiplistsingular = []
-    grammar=''' Noun: {(((<NNP>|<NN>|<NNS>)<IN><DT>(<NNP>|<NN>|<NNS>))|((<JJ>|<JJR>)+(<NN>|<NNS>|<VBG>)+)|(<NN><NN>+))}
+    grammar=''' Name: {(<NNP>|<NNPS>)*} 
+                Noun: {((<NN><NN>+)|((<NNP>|<NN>|<NNS>)<IN><DT>(<NNP>|<NN>|<NNS>))|((<JJ>|<JJR>)+(<NN>|<NNS>|<VBG>)+))}
                 ToVerb: {<TO><VB>}
                 XofY: {(<NNP>|<NN>|<NNS>)(<IN>(<NNP>|<NN>|<NNS>))+}
-                Name: {(<NNP>|<NNPS>)*} 
             '''
     grammarSingular='''Noun: {(<NN>|<NNS>|<VBG>)}
                         Name: {<NNP>}
