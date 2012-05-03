@@ -99,23 +99,32 @@ def get_words_list_2(sentence, num_words = 1,words_in_feature=3, allowed_feature
         num_words = num_words + 1
     return res
 
-
-def special_train(tweets, min_length=1, max_length=3, limit=200000):
-    '''get latest version in sentiment.
+def special_train(tweets, min_length=1, max_length=3, limit=0):
+    '''get latest version in sentiment!
     trains a naive bayes and then takes the most informative features to make an allowed_features_dict.
-    A new bayes is trained but only with the allowed features, this is then returned. 
+    A new bayes is trained but only with the allowed features,his is then returned. 
     This will make the memory much smaller.
     limit==0 means no limit.'''
-    features_dict = [(word_true_dict(get_words_list(t,min_length,max_length)),s) for (t,s) in tweets]
-    trained_bayes = nltk.NaiveBayesClassifier.train(features_dict)
+    # train with all features with the given min_length and max_length
+    training_list = [(word_true_dict(get_words_list(sentence,min_length,max_length)),sentiment) for (sentence,sentiment) in tweets]
+    trained_bayes = nltk.NaiveBayesClassifier.train(training_list)
+    
+    # 0 means no limit so return the result
     if limit == 0:
         return trained_bayes
-    features_dict=None
-    allowed_dict={}.fromkeys(trained_bayes.most_informative_features(limit))
-    trained_bayes=None
-    features_dict = [(word_true_dict(get_words_list_2(sentence, min_length, max_length, allowed_dict)), sentiment) for (sentence, sentiment) in tweets]
-    return nltk.NaiveBayesClassifier.train(features_dict)
-     
+    
+    training_list=None # throw to pacman
+    
+    # get create a dictionary from the most informative features
+    allowed_dict={}.fromkeys([x for (x,y) in trained_bayes.most_informative_features(limit)])
+    
+    trained_bayes=None # throw to pacman
+    
+    #print "length of allowed_dict "+ str(len(allowed_dict))
+    
+    # train with only the most informative features with the given min_length and max_length
+    training_list = [(word_true_dict(get_words_list_2(sentence, min_length, max_length, allowed_dict)), sentiment) for (sentence, sentiment) in tweets]
+    return nltk.NaiveBayesClassifier.train(training_list)     
      
      
 
@@ -210,7 +219,7 @@ def classifier_contains(trained_classifier, dict_with_features):
     return False
 
 def get_significant_features_2(sentence, trained_classifier, num_words = 1, words_in_feature=3):
-    '''untested!
+    '''latest version in sentiment!
     trained_classifier is a trained_classifier naive bayes classifier. This is used to check if the word
     has been classified and at the end to remove the neutral features from the result.'''
     # get words in sentence
@@ -220,14 +229,6 @@ def get_significant_features_2(sentence, trained_classifier, num_words = 1, word
     # the number of words in the sentence
     words_in_feature = min(words_in_feature, len(words))
     accumilator = []
-    
-    # could place features in lists according to their 
-    # startindex so that it's faster to remove sub features
-    
-    
-    
-    print sentence
-    print len(trained_classifier)
     
     tmp_dict={} 
     
@@ -312,7 +313,7 @@ def get_words(sentence):
     '''Split into list of words in lower case.'''
     return sentence.lower().split()#re.findall(re.compile(r"[a-z.0-9]+"), sentence.lower())
 
-def replace_nonfeatures(sentence, first_features_dict, num_words, words_in_feature,replace_with="."):
+def replace_nonfeatures(sentence, first_features_dict, num_words, words_in_feature, replace_with="."):
     '''Takes a sentence and replaces all non_features with the replace string ".".
     non_feastures is those "features" that aren't in the first_features_dict.
     The first_features_dict is a dictionairy constructed from the features

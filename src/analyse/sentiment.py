@@ -326,11 +326,17 @@ def get_words_list_2(sentence, num_words = 1,words_in_feature=3, allowed_feature
     return res
 
 
-def readcorpus(filename,tweets):
+def read_csv_corpus(filename,tweets):
     with open(filename, 'rb') as fp:
         reader = csv.reader(fp, delimiter=',', quotechar='"', escapechar='\\')
         for row in reader:
             tweets.append([row[4], row[1]])
+
+def read_corpuses(filenames,tweets):
+    for filename in filenames:
+        with open(filename, 'rb') as fp:
+            for row in fp:
+                tweets.append(ast.literal_eval(row))
     
 def special_train(tweets, min_length=1, max_length=3, limit=0):
     '''trains a naive bayes and then takes the most informative features to make an allowed_features_dict.
@@ -388,6 +394,7 @@ def analyse_sentiment(sentence):
 
 
 
+
 maxtime=0
 files=[CORPUS2,CODE,CORPUS1,CORPUS3]
 for f in files:
@@ -420,15 +427,26 @@ else:
 
     ## read all tweets and labels
     tweets = []
-    with open(CORPUS2, 'rb') as fp:
-        for row in fp:
-            tweets.append(ast.literal_eval(row))
-    with open(CORPUS3, 'rb') as fp:
-        for row in fp:
-            tweets.append(ast.literal_eval(row))
-            
+    
+    # add to list of corpuses
+    corpus_list=[]
+    corpus_list.append(CORPUS2)
+    corpus_list.append(CORPUS3)
     if method==2:
-        readcorpus(CORPUS1,tweets) 
+        #read_csv_corpus(CORPUS1,tweets) 
+        corpus_list.append(CORPUS1)
+        
+    # read from the corpuses
+    read_corpuses(corpus_list, tweets)
+    
+    #with open(CORPUS2, 'rb') as fp:
+    #    for row in fp:
+    #        tweets.append(ast.literal_eval(row))
+    #with open(CORPUS3, 'rb') as fp:
+    #    for row in fp:
+    #        tweets.append(ast.literal_eval(row))
+            
+    
 
     print "PRINTING LENGTH OF FULLCORPUS"        
     print len(tweets)
