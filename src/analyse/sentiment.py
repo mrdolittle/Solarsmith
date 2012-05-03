@@ -340,18 +340,26 @@ def special_train(tweets, min_length=1, max_length=3, limit=0):
     A new bayes is trained but only with the allowed features,his is then returned. 
     This will make the memory much smaller.
     limit==0 means no limit.'''
-    features_dict = [(word_true_dict(get_words_list(t,min_length,max_length)),s) for (t,s) in tweets]
-    print "length of featurelist "+ str(len(features_dict))
-    trained_bayes = nltk.NaiveBayesClassifier.train(features_dict)
+    # train with all features with the given min_length and max_length
+    training_list = [(word_true_dict(get_words_list(sentence,min_length,max_length)),sentiment) for (sentence,sentiment) in tweets]
+    trained_bayes = nltk.NaiveBayesClassifier.train(training_list)
+    
+    # 0 means no limit so return the result
     if limit == 0:
         return trained_bayes
-    features_dict=None
+    
+    training_list=None # throw to pacman
+    
+    # get create a dictionary from the most informative features
     allowed_dict={}.fromkeys([x for (x,y) in trained_bayes.most_informative_features(limit)])
-    print "length of allowed_dict "+ str(len(allowed_dict))
-    trained_bayes=None
-    features_dict = [(word_true_dict(get_words_list_2(sentence, min_length, max_length, allowed_dict)), sentiment) for (sentence, sentiment) in tweets]
-    print "length of featurelist "+ str(len(features_dict))
-    return nltk.NaiveBayesClassifier.train(features_dict)
+    
+    trained_bayes=None # throw to pacman
+    
+    #print "length of allowed_dict "+ str(len(allowed_dict))
+    
+    # train with only the most informative features with the given min_length and max_length
+    training_list = [(word_true_dict(get_words_list_2(sentence, min_length, max_length, allowed_dict)), sentiment) for (sentence, sentiment) in tweets]
+    return nltk.NaiveBayesClassifier.train(training_list)     
 
 def analyse_sentiment(sentence):
     '''Analyses sentence sentiment. Returns a number of size
