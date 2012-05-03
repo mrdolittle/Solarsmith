@@ -668,22 +668,22 @@ DOTS_REGEX = re.compile(r'\.{2,}')
 AT_REGEX = re.compile(r'\s+@\s+')
 def strip_tweet(tweet):
     '''Strips tweet of scary features like hashtags at the start or
-    end of a tweet as well as some smileys etc.
+    end of a tweet as well as some smileys etc. Also canonicalises some words, turning e.g. thanx -> thanks
+    '''
+    # TODO: * Convert ima -> i'ma, wont -> won't, dis -> this, u -> you, cant -> can't etc. etc. (maybe not the last one, could be "to diss" or something)
+    #       * Remove words consisting of only repeated underline (other characters?)
+    #       * test whether this approach to hashtags is not insane etc.
+    #       * More words to transform?
+    #       * DONE keep eventual punctation (or any non-alnum chars really)
+    #         at the end of hashtag when removing it, instead of completely nuking it.
+    #       * DONE? strip at-sign and maybe even split those names at camelCase
+    #       (seems common) (maybe be wholly crazy and get fullname from twitter?)
+    #       * Strip URLS completely at the very end or so (like hashtags)
 
-    TODO: * Convert ima -> i'ma, wont -> won't, dis -> this, u -> you etc. etc. (maybe not the last one, could be "to diss" or something)
-          * Remove words consisting of only repeated underline (other characters?)
-          * test whether this approach to hashtags is not insane etc.
-          * More words to transform?
-          * DONE keep eventual punctation (or any non-alnum chars really)
-            at the end of hashtag when removing it, instead of completely nuking it.
-          * DONE? strip at-sign and maybe even split those names at camelCase
-          (seems common) (maybe be wholly crazy and get fullname from twitter?)
-          * Strip URLS completely at the very end or so (like hashtags)
-          '''
     global TWEET_STOPSMILEYS, URL_REGEX, DOTS_REGEX, AT_REGEX
 
 
-    def transform(a):
+    def transform(a):                                       # TODO: break this out to become own function or so
         if a[0:2] == '<3':
             # convert hearts to: love 
             return u'love ' + a[2:]
