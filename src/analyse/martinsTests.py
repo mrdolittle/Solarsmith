@@ -133,6 +133,7 @@ def pointy_train(tweets, min_length=1, max_length=3, new_min_length=1, new_max_l
     
     Returns the pointified naive bayes classifier and the keep_dictionairy that is needed 
     in get_significant_pointyfied_features_dict when doing the analyse_sentiment.
+    These are returned as a tuple like this: (classifier, dictionary)
     
     example use:
     train:
