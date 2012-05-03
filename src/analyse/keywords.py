@@ -15,7 +15,7 @@ import operator
 import sys
 
 NAMEEXCEPTIONS = [['star','wars']]
-XOFYXCEPTIONS = set(['lot','alot','kind'])
+XOFYXCEPTIONS = set(['lot','alot','kind','lame','lamer'])
 
 def extract_keywords_grammar(text):
     '''Uses chunks matching to identify keywords in a tweet. The code looks much nicer this way :P'''
@@ -29,13 +29,15 @@ def extract_keywords_grammar(text):
     sequence = map(lambda (a,b): (a.lower(),b), sequence)
     words = []
     skiplistsingular = []
-    grammar=''' Name: {(<NNP>|<NNPS>)*} 
-                Noun: {((<NN><NN>+)|((<NNP>|<NN>|<NNS>)<IN><DT>(<NNP>|<NN>|<NNS>))|((<JJ>|<JJR>)+(<NN>|<NNS>|<VBG>)+))}
+    grammar=''' Name: {(<NN>|<NNS>)(<NN>|<NNS>)+} 
+                Name2: {(<NNP>|<NNPS>)(<NNP>|<NNPS>)+}
+                Noun: {(((<NNP>|<NN>|<NNS>)<IN><DT>(<NNP>|<NN>|<NNS>))|((<JJ>|<JJR>)+(<NN>|<NNS>|<VBG>)+))}
                 ToVerb: {<TO><VB>}
                 XofY: {(<NNP>|<NN>|<NNS>)(<IN>(<NNP>|<NN>|<NNS>))+}
             '''
-    grammarSingular='''Noun: {(<NN>|<NNS>|<VBG>)}
-                        Name: {<NNP>}
+    grammarSingular='''
+                        Noun: {(<NN>|<NNS>|<VBG>)}
+                        Name: {(<NNP>|<NNPS>)}
                     '''
     chunks = nltk.RegexpParser(grammar)
     chunksSingular = nltk.RegexpParser(grammarSingular)
@@ -68,20 +70,24 @@ def extract_keywords_grammar(text):
                 for x in t:
                     word = word + x[0] + " "
                 word = word.rstrip()
-                words.append((word,1.0))
-        elif t.node == "Name":
+                words.append((word,1.0))  
+        elif t.node == "Name" or t.node == "Name2":
             if len(t)>1:
                 words.append((reduce(lambda x,y: x + " " + y if len(y)>2 else x, map(lambda (x,_1): x, t)), 1.0))
                 if map(lambda x: x[0], t) not in NAMEEXCEPTIONS:
                     for x in t:
-                        words.append((x[0],0.5))   
+                        words.append((x[0],0.5)) 
+                        skiplistsingular.append(x[0])
+                else:
+                     for y in map(lambda x: x[0], t):
+                         skiplistsingular.append(y)
             else:
                 words.append((t[0][0],1.0))
                 
     for s in chunksSingular.parse(sequence).subtrees():
-        if s.node == "Noun":
+        if s.node == "Noun" or s.node == "Name":
             if s[0][0] not in skiplistsingular:
-                words.append((s[0][0],1.0))                    
+                words.append((s[0][0],1.0))                  
     return words
 
 # def extract(text,words):
