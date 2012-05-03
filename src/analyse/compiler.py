@@ -3,16 +3,19 @@ the format that the result that the rest of the project is expecting (two keywor
 of keyword and weight).
 
 This is what implements the actual analyse function that we export in __init__.py
-
-TODO: Do some sort of stemming somewhere around here (at least stem
-      away plurals!) or alternatively at the end of extract_keywords
 '''
+
 import nltk
 from keywords import extract_keywords
 from sentiment import analyse_sentiment
 from common import *
 
 #### TODO:
+# Do some sort of stemming somewhere around here (at least stem
+#       away plurals!) or alternatively at the end of
+#       extract_keywords. Also see non_aggressive_stemmer in
+#       extract_keywords which aims to be the same thing but isn't
+#       maybe we should focus on that
 # Some sort of database of keyword implications. like
 # pottermore -> harry potter, justin beaver -> justin bieber.
 # Probably weighted a percentage (0.8 or so) of the original keywords' weight
@@ -57,7 +60,9 @@ def analyse_sentences_var_2_helper(sentences):
     return keywords.items()
 
 def splittify(keywords):
-    '''It's magical!'''
+    '''Takes a list of keywords with positive/negative weights and
+    returns two lists on with all the keywords that had positive
+    weigths and one with all the negative (or 0) weights.'''
     # Homework for the ones interested in the perversions of lists and functional
     # programming. (This just might be the Haskell way to do it..., or Lisp for that matter).
 
