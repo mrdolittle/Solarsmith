@@ -13,6 +13,7 @@ import argparse
 
 parser = argparse.ArgumentParser(description='A scraper, collecting data from twitter.')
 parser.add_argument('-n','--noanalyse', help='If set to "true", skips the analysing part, and prints all twitter data to standard out.', required=False)
+parser.add_argument('-l','--localread', help='If set to "true", reads tweets from a file instead of from  twitter.', required=False)
 args = vars(parser.parse_args())
 NO_ANALYSE = False
 
@@ -37,7 +38,10 @@ SOLR_SERVER = CONFIG.get_solr_server()
 
 def main():
     '''Finds new user to add to database.'''
-    gather_data_loop()
+    if args['localread'] == "true":
+        scrape_from_file()
+    else:
+        gather_data_loop()
     
 def load_followers(users, requests_per_hour=30):
     '''Loads followers to a specified set of users.
