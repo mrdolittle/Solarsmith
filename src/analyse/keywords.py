@@ -29,7 +29,7 @@ def extract_keywords_grammar(text):
     sequence = map(lambda (a,b): (a.lower(),b), sequence)
     words = []
     skiplistsingular = []
-    grammar=''' Noun: {(((<NNP>|<NN>|<NNS>)<IN><DT>(<NNP>|<NN>|<NNS>))|((<JJ>|<JJR>)+(<NN>|<NNS>|<VBG>)+))}
+    grammar=''' Noun: {(((<NNP>|<NN>|<NNS>)<IN><DT>(<NNP>|<NN>|<NNS>))|((<JJ>|<JJR>)+(<NN>|<NNS>|<VBG>)+)|(<NN><NN>+))}
                 ToVerb: {<TO><VB>}
                 XofY: {(<NNP>|<NN>|<NNS>)(<IN>(<NNP>|<NN>|<NNS>))+}
                 Name: {(<NNP>|<NNPS>)*} 
@@ -40,10 +40,21 @@ def extract_keywords_grammar(text):
     chunks = nltk.RegexpParser(grammar)
     chunksSingular = nltk.RegexpParser(grammarSingular)
     
+    def multiwords(t):
+        return reduce(lambda x,y: x + " " + y, map(lambda (x,_1): x, t)) 
+    
     for t in chunks.parse(sequence).subtrees():
         if t.node == "Noun":
-            keys = reduce(lambda x,y: x + " " + y, map(lambda (x,_1): x, t))            
-            words.append((keys,1.0))         
+            keys = multiwords(t)            
+            words.append((keys,1.0))
+            if len(t)>1:
+                if t[1][1]=="IN":
+                    skiplistsingular.append(t[0][0])
+                    skiplistsingular.append(t[3][0])
+                if t[0][1]=="JJ":
+                    t1 = t[1:]
+                    keys = multiwords(t1)
+                    words.append((keys,0.75))                  
         elif t.node == "ToVerb":
             words.append((t[1][0],1.0))
         elif t.node == "XofY":
