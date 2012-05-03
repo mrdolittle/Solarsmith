@@ -15,7 +15,7 @@ import operator
 import sys
 
 NAMEEXCEPTIONS = [['star','wars']]
-XOFYXCEPTIONS = set(['lot','alot'])
+XOFYXCEPTIONS = set(['lot','alot','kind'])
 
 def extract_keywords_grammar(text):
     '''Uses chunks matching to identify keywords in a tweet. The code looks much nicer this way :P'''
@@ -29,10 +29,10 @@ def extract_keywords_grammar(text):
     sequence = map(lambda (a,b): (a.lower(),b), sequence)
     words = []
     skiplistsingular = []
-    grammar=''' Noun: {(((<NNP>|<NN>|<NNS>)<IN><DT>(<NNP>|<NN>|<NNS>))|((<JJ>|<JJR>)+(<NN>|<NNS>|<VBG>)+)|(<NN><NN>+))}
+    grammar=''' Name: {(<NNP>|<NNPS>)*} 
+                Noun: {((<NN><NN>+)|((<NNP>|<NN>|<NNS>)<IN><DT>(<NNP>|<NN>|<NNS>))|((<JJ>|<JJR>)+(<NN>|<NNS>|<VBG>)+))}
                 ToVerb: {<TO><VB>}
                 XofY: {(<NNP>|<NN>|<NNS>)(<IN>(<NNP>|<NN>|<NNS>))+}
-                Name: {(<NNP>|<NNPS>)*} 
             '''
     grammarSingular='''Noun: {(<NN>|<NNS>|<VBG>)}
                         Name: {<NNP>}
@@ -61,12 +61,14 @@ def extract_keywords_grammar(text):
             t = t[-3:]
             if t[0][0] not in XOFYXCEPTIONS:
                 skiplistsingular.append(t[0][0])
+                words.append((t[0][0],0.7))
                 skiplistsingular.append(t[2][0])
+                words.append((t[2][0],0.7))
                 word = ""
                 for x in t:
                     word = word + x[0] + " "
                 word = word.rstrip()
-                words.append((word,1.5))
+                words.append((word,1.0))
         elif t.node == "Name":
             if len(t)>1:
                 words.append((reduce(lambda x,y: x + " " + y if len(y)>2 else x, map(lambda (x,_1): x, t)), 1.0))
