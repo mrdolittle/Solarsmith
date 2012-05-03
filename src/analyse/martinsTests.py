@@ -124,12 +124,56 @@ def special_train(tweets, min_length=1, max_length=3, limit=0):
     
     # train with only the most informative features with the given min_length and max_length
     training_list = [(word_true_dict(get_words_list_2(sentence, min_length, max_length, allowed_dict)), sentiment) for (sentence, sentiment) in tweets]
-    return nltk.NaiveBayesClassifier.train(training_list)   
+    return nltk.NaiveBayesClassifier.train(training_list)
 
-def pointful_train(tweets, min_length=1, max_length=3, limit=0):  
-    '''will contain training with replacement of blabla features.
-    Not finished!'''
-    None
+def pointy_train(tweets, min_length=1, max_length=3, new_min_length=1, new_max_length=3, limit=0):
+    '''Untested!
+    
+    similar to special train, but the retrain step uses pointyfied sentences. 
+    
+    Returns the pointified naive bayes classifier and the keep_dictionairy that is needed 
+    in get_significant_pointyfied_features_dict when doing the analyse_sentiment.
+    
+    example use:
+    train:
+    pointy_train(tweets, min_length=1, max_length=3, new_min_length=1, new_max_length=3, limit=0)#limit=0 means no limit
+    
+    analyse:
+    CLASSIFIER.classify(get_significant_pointyfied_features_dict(sentence, keep_dict,trained_classifier, 
+    min_length=1, max_length=3, new_min_length=1, new_max_length=5))'''
+    
+    
+    # train with all features with the given min_length and max_length
+    training_list = [(word_true_dict(get_words_list(sentence,min_length,max_length)),sentiment) for (sentence,sentiment) in tweets]
+    trained_bayes = nltk.NaiveBayesClassifier.train(training_list)
+    
+    # 0 means no limit so return the result
+    if limit == 0:
+        return trained_bayes
+    
+    training_list=None # throw to pacman
+    
+    # get create a dictionary from the most informative features
+    keep_dict={}.fromkeys([x for (x,y) in trained_bayes.most_informative_features(limit)])
+    
+    trained_bayes=None # throw to pacman
+    
+    # train with those features not in keep_dict replaced with points
+    training_list = [(get_pointyfied_features_dict(sentence, keep_dict, min_length, max_length, new_min_length, new_max_length), sentiment) 
+                     for (sentence, sentiment) in tweets]
+    return (nltk.NaiveBayesClassifier.train(training_list), keep_dict)
+
+def get_pointyfied_features_dict(sentence, keep_dict, min_length=1, max_length=3, new_min_length=1,new_max_length=3):
+    '''returns pointyfied word_true_dict with features. It's used when training the naive bayes classifier.
+    This is a convenience method because there were so many methods in a row.'''
+    sentence=replace_non_keep_features(sentence, keep_dict, min_length, max_length)
+    return word_true_dict(get_words_list(sentence, new_min_length, new_max_length)) 
+
+def get_significant_pointyfied_features_dict(sentence, keep_dict,trained_classifier, min_length=1, max_length=3, new_min_length=1, new_max_length=3):
+    '''returns pointyfied word_true_dict with features. It's used when anlysing a sentence.
+     This is a convenience method because there were so many methods in a row.'''
+    sentence=replace_non_keep_features(sentence, keep_dict, min_length, max_length)
+    return word_true_dict(get_significant_features_2(sentence, trained_classifier, new_min_length, new_max_length))# max length can be larger
      
      
 
@@ -347,7 +391,7 @@ def replace_non_keep_features(sentence, keep_features_dict, num_words, words_in_
         start = 0
         end=start + num_words
         while end <= len(words):
-            tmp=" ".join(words[start:end])
+            tmp=get_feature(words,start,end)#" ".join(words[start:end])
             #print tmp
             if keep_features_dict.has_key(tmp):
                 #print tmp
@@ -408,7 +452,7 @@ def get_words_list2(sentence,
 
 dicti={}.fromkeys(["really","like","really like","wonderful"])
 
-#print replace_non_keep_features("I really like the wonderful mac-air",dicti,1,3)
+print replace_non_keep_features("I really like the wonderful mac-air computer",dicti,1,3)
 #print get_words_list2("I really like the wonderful mac-air",{}.fromkeys(["really","like","really like","wonderful"]))
 print get_significant_features("I really like the wonderful mac-air",{}.fromkeys(["really","like","really like","wonderful"]))
 
