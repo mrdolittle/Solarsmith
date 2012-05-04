@@ -126,19 +126,29 @@ def special_train(tweets, min_length=1, max_length=3, limit=0):
 def pointy_train(tweets, min_length=1, max_length=3, new_min_length=1, new_max_length=3, limit=0):
     '''Untested!
     
-    similar to special train, but the retrain step uses pointyfied sentences. 
+    similar to special train, but the retrain step uses pointyfied (non-features have been
+    replaced with '.') sentences. It is hoped that this will make the features much more
+    general so that it can for example recognize ". really like .".
+    Also there will be alot more features that are the same and therefore the feature length
+    (new_max_length) can be longer without taking as much memory. 
     
     Returns the pointified naive bayes classifier and the keep_dictionairy that is needed 
     in get_significant_pointyfied_features_list when doing the analyse_sentiment.
     These are returned as a tuple like this: (classifier, dictionary)
     
+    tweets is a list of (sentence,sentiment) tuples.
+    length is how long features it will keep when replacing with '.'. 
+    limit is how many features it will use when rekognizing which features not to replace,
+    a lower value will avoid unecesary features, and will keep the returned dictionary smaller.
+    new_length is how long the new pointyfied features are gpoing to be. 
+    
     example use:
     train:
-    pointy_train(tweets, min_length=1, max_length=3, new_min_length=1, new_max_length=3, limit=0)#limit=0 means no limit
+    pointy_train(tweets, min_length=1, max_length=3, new_min_length=1, new_max_length=4, limit=0)#limit=0 means no limit
     
     analyse:
     CLASSIFIER.classify(get_significant_pointyfied_features_list(sentence, keep_dict,trained_classifier, 
-    min_length=1, max_length=3, new_min_length=1, new_max_length=5))'''
+    min_length=1, max_length=3, new_min_length=1, new_max_length=4))'''
     
     
     # train with all features with the given min_length and max_length
@@ -181,6 +191,7 @@ def get_significant_pointyfied_features_list(sentence, keep_dict,trained_classif
      be tested as the one that were used in training.'''
     sentence=replace_non_keep_features(sentence, keep_dict, min_length, max_length)
     return get_significant_features_2(sentence, trained_classifier, new_min_length, new_max_length)
+
 
 def classifier_contains(trained_classifier, dict_with_features):
     '''Classifier is very stupid, so had to use this workaround.
@@ -367,7 +378,7 @@ def get_words(sentence):
     '''Split into list of words in lower case.'''
     return sentence.lower().split()#re.findall(re.compile(r"[a-z.0-9]+"), sentence.lower())
 
-def replace_non_keep_features(sentence, keep_features_dict, num_words, words_in_feature, replace_with="."):
+def replace_non_keep_features(sentence, keep_features_dict, num_words, words_in_feature, replace_with='.'):
     '''Takes a sentence and replaces all non_keep_features with the replace string ".".
     non_keep_features is those "features" that aren't in the keep_features_dict.
     The keep_features_dict can be constructed from the features of a previous run of
@@ -418,7 +429,7 @@ def replace_non_keep_features(sentence, keep_features_dict, num_words, words_in_
 def get_feature(words,start,end):
     return " ".join(words[start:end]).strip(",")
 
-def get_words_list2(sentence, 
+def get_words_list_test(sentence, 
                   first_features_dict, num_words_in_dict = 1, words_in_feature_int_dict=3,
                   num_words= 1, words_in_feature=20):   
     '''Can only be used if you already has a list of features, in the form of a dictionary.
@@ -429,7 +440,7 @@ def get_words_list2(sentence,
     of possible features. 
     
     ex 
-    get_words_list2("I really like the wonderful mac-air",{}.fromkeys(["really","really like","wonderful"]))
+    get_words_list_test("I really like the wonderful mac-air",{}.fromkeys(["really","really like","wonderful"]))
     gives
     ['really', 'like', 'wonderful', '. really', 'really like', 'like .', '. wonderful', 'wonderful .',
     '. really like', 'really like .', 'like . wonderful', '. wonderful .', '. really like .',
