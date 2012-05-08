@@ -427,10 +427,10 @@ else:
     # add to list of corpuses
     corpus_list=[]
     corpus_list.append(CORPUS2)
-    corpus_list.append(CORPUS3)
-    if method==2:
+    #corpus_list.append(CORPUS3)
+   # if method==2:
         #read_csv_corpus(CORPUS1,tweets) 
-        corpus_list.append(CORPUS1)
+        #corpus_list.append(CORPUS1)
         
     # read from the corpuses
     read_corpuses(corpus_list, tweets)
@@ -454,7 +454,7 @@ else:
             t[1] = 'neutral'
     
     # determines the feature size (how many words are in a feature)
-    min_length=1
+    min_length=2
     max_length=3        
 
     # train with the given tweets and these parameters, limit=0 means no limit
