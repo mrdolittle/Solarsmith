@@ -20,6 +20,7 @@ CONFIG = configHandler.Config()
 REQUEST_SERVER = CONFIG.get_request_server()
 REQUEST_SERVER_PORT = 1337
 TIMEOUT_FOR_REQUEST = 15
+GENERICERROR = "Error: Something went wrong, please try again. If the problem persists, please contact support."
 
 
 def get_pic_link(username):
@@ -45,12 +46,14 @@ def send_to_request(username):
     try:
         soc = create_socket((REQUEST_SERVER, REQUEST_SERVER_PORT))
     except:
-        return False, "Error: Cannot connect to request."
+        print "Error: Cannot connect to request."
+        return False, GENERICERROR
     print "Connected"
     try:
         soc.sendall(username)
     except:
-        return False, "Error: Could not send to request"
+        print "Error: Could not send to request."
+        return False, GENERICERROR
     print "username sent: " + username
     try:
         ready = select.select([soc], [], [], TIMEOUT_FOR_REQUEST)
@@ -58,14 +61,16 @@ def send_to_request(username):
             arrived = soc.recv(1024)  # Recieves a response of at most 1k
             print "Arrived to request: " + arrived
         else:
-            return (False, "Error: Timeout")
+            print "Error: Timeout"
+            return (False, GENERICERROR)
         ready = select.select([soc], [], [], TIMEOUT_FOR_REQUEST)
         if ready[0]:
             response = soc.recv(1024)  # Recieves a response of at most 1k
         else:
-            return (False, "Error: Timeout")
+            print "Error: Timeout"
+            return (False, GENERICERROR)
     except:
-        "Error: Could not read from request"
+        print "Error: Could not read from request"
     soc.close()
     if response == "1":
         return (True, "User added, retrieving frienemies.")
@@ -84,7 +89,7 @@ def send_to_request(username):
     else:
         # Response was something else
 #        print response
-        return (False, "Error: Something went wrong, please try again. If the problem persists, please contact support.")
+        return (False, GENERICERROR)
         # Tala om fÃ¶r gui att nÃ¥nting pajade
 
     # 1 = user added
@@ -303,7 +308,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             return
         if frienemy_result == "Error: Solr connection." or frienemy_result == "Error: Unknown error.":
             self._writetextheaders()
-            self.send_result("Error: Internal error. If the problem persists, please contact support.")
+            self.send_result(GENERICERROR)
             return
         self._writexmlheaders()
         self.send_result(create_xml(frienemy_result))
