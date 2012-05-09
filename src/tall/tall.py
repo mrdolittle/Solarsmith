@@ -73,23 +73,25 @@ def send_to_request(username):
 
     elif response == "2":
 #        print response
-        return (False, "Error: User does not exist.")
+        return (False, "Error: " + username + " does not exist on Twitter. Make sure you spelled it correctly")
         # Tala om fÃ¶r gui att anvÃ¤ndaren inte finns
     elif response == "3":
         # Tala om att anvÃ¤ndaren Ã¤r skyddad
-        return (False, "Error: User is hidden and cannot be shown.")
-    elif response == "User being processed":
-        return (False, "User is being processed, please try again in a minute.")
+        return (False, "Error: " + username + " has hidden his or her profile, and cannot be shown.")
+    elif response == "5":
+        # Tala om att användaren redan hanteras
+        return (False, "Error: " + username + " is currently being processed, please try again in a minute.")
     else:
         # Response was something else
 #        print response
-        return (False, "Error: Unknown error.")
+        return (False, "Error: Something went wrong, please try again. If the problem persists, please contact support.")
         # Tala om fÃ¶r gui att nÃ¥nting pajade
 
     # 1 = user added
     # 2 = user does not exist
     # 3 = user is hidden
     # 4 = unknown error
+    # 5 = user is already being processed by request
 
 
 def get_and_sort_common_keywords(userskeywords, otherkeywords):
@@ -297,15 +299,11 @@ class RequestHandler(BaseHTTPRequestHandler):
             frienemy_result = tallstore.get_frienemies_by_keywords(keys)
         else:
             self._writetextheaders()
-            self.send_result("Error: bad argument") 
+            self.send_result("Error: Bad argument, please verify your input.") 
             return
-        if frienemy_result == "Error: Connection to Solr lost.":
+        if frienemy_result == "Error: Solr connection." or frienemy_result == "Error: Unknown error.":
             self._writetextheaders()
-            self.send_result("Error: Connection to Solr lost.")
-            return
-        elif frienemy_result == "Error: Unknown error.":
-            self._writetextheaders()
-            self.send_result("Error: Unknown error.")
+            self.send_result("Error: Internal error. If the problem persists, please contact support.")
             return
         self._writexmlheaders()
         self.send_result(create_xml(frienemy_result))
