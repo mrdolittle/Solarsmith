@@ -20,6 +20,7 @@ CONFIG = configHandler.Config()
 REQUEST_SERVER = CONFIG.get_request_server()
 REQUEST_SERVER_PORT = 1337
 TIMEOUT_FOR_REQUEST = 15
+GENERICERROR = "Error: Something went wrong, please try again. If the problem persists, please contact support."
 
 
 def get_pic_link(username):
@@ -45,12 +46,14 @@ def send_to_request(username):
     try:
         soc = create_socket((REQUEST_SERVER, REQUEST_SERVER_PORT))
     except:
-        return False, "Error: Cannot connect to request."
+        print "Error: Cannot connect to request."
+        return False, GENERICERROR
     print "Connected"
     try:
         soc.sendall(username)
     except:
-        return False, "Error: Could not send to request"
+        print "Error: Could not send to request."
+        return False, GENERICERROR
     print "username sent: " + username
     try:
         ready = select.select([soc], [], [], TIMEOUT_FOR_REQUEST)
@@ -58,14 +61,16 @@ def send_to_request(username):
             arrived = soc.recv(1024)  # Recieves a response of at most 1k
             print "Arrived to request: " + arrived
         else:
-            return (False, "Error: Timeout")
+            print "Error: Timeout"
+            return (False, GENERICERROR)
         ready = select.select([soc], [], [], TIMEOUT_FOR_REQUEST)
         if ready[0]:
             response = soc.recv(1024)  # Recieves a response of at most 1k
         else:
-            return (False, "Error: Timeout")
+            print "Error: Timeout"
+            return (False, GENERICERROR)
     except:
-        "Error: Could not read from request"
+        print "Error: Could not read from request"
     soc.close()
     if response == "1":
         return (True, "User added, retrieving frienemies.")
@@ -73,23 +78,25 @@ def send_to_request(username):
 
     elif response == "2":
 #        print response
-        return (False, "Error: User does not exist.")
+        return (False, "Error: " + username + " does not exist on Twitter. Make sure you spelled it correctly")
         # Tala om fÃ¶r gui att anvÃ¤ndaren inte finns
     elif response == "3":
         # Tala om att anvÃ¤ndaren Ã¤r skyddad
-        return (False, "Error: User is hidden and cannot be shown.")
-    elif response == "User being processed":
-        return (False, "User is being processed, please try again in a minute.")
+        return (False, "Error: " + username + " has hidden his or her profile, and cannot be shown.")
+    elif response == "5":
+        # Tala om att användaren redan hanteras
+        return (False, "Error: " + username + " is currently being processed, please try again in a minute.")
     else:
         # Response was something else
 #        print response
-        return (False, "Error: Unknown error.")
+        return (False, GENERICERROR)
         # Tala om fÃ¶r gui att nÃ¥nting pajade
 
     # 1 = user added
     # 2 = user does not exist
     # 3 = user is hidden
     # 4 = unknown error
+    # 5 = user is already being processed by request
 
 
 def get_and_sort_common_keywords(userskeywords, otherkeywords):
@@ -297,15 +304,11 @@ class RequestHandler(BaseHTTPRequestHandler):
             frienemy_result = tallstore.get_frienemies_by_keywords(keys)
         else:
             self._writetextheaders()
-            self.send_result("Error: bad argument") 
+            self.send_result("Error: Bad argument, please verify your input.") 
             return
-        if frienemy_result == "Error: Connection to Solr lost.":
+        if frienemy_result == "Error: Solr connection." or frienemy_result == "Error: Unknown error.":
             self._writetextheaders()
-            self.send_result("Error: Connection to Solr lost.")
-            return
-        elif frienemy_result == "Error: Unknown error.":
-            self._writetextheaders()
-            self.send_result("Error: Unknown error.")
+            self.send_result(GENERICERROR)
             return
         self._writexmlheaders()
         self.send_result(create_xml(frienemy_result))

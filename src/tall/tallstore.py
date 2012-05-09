@@ -23,7 +23,7 @@ QUERY_ROWS = 30                 # number of results to ask solr for
 def solr_fail(e):
     sys.stderr.write("Got SolrError: " + str(e) + "\nStack trace:\n")
     traceback.print_exc()
-    return "Error: Connection to Solr lost."
+    return "Error: Solr connection." 
 
 
 def other_fail(e):

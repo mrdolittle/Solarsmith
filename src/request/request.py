@@ -195,7 +195,7 @@ class Client(threading.Thread):
                 if data not in self.request_list and not CURRENTLY_PROCESSING:
                     self.request_list.append((data, self.client))
                 else:
-                    self.client.send("User already being processed.")
+                    self.client.send("5") # User already being processed
                     sys.stdout.write("User already being processed.\n")
 #            else:
 #                #self.client.close()
