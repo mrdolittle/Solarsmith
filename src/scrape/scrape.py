@@ -13,6 +13,7 @@ import argparse
 
 parser = argparse.ArgumentParser(description='A scraper, collecting data from twitter.')
 parser.add_argument('-n','--noanalyse', help='If set to "true", skips the analysing part, and prints all twitter data to standard out.', required=False)
+parser.add_argument('-l','--localread', help='If filename is specified, reads tweets from that file instead of from  twitter.', required=False)
 args = vars(parser.parse_args())
 NO_ANALYSE = False
 
@@ -21,6 +22,8 @@ if args['noanalyse'] == "true":
 
 if not NO_ANALYSE:
     import addalyse
+    from analyse import analyse
+    from addalyse.addalyse import filter_analysis
 import twitter
 from twitterHelp import TwitterHelp
 from storageHandler import StorageHandler
@@ -35,7 +38,10 @@ SOLR_SERVER = CONFIG.get_solr_server()
 
 def main():
     '''Finds new user to add to database.'''
-    gather_data_loop()
+    if args['localread']:
+        scrape_from_file(args['localread'])
+    else:
+        gather_data_loop()
     
 def load_followers(users, requests_per_hour=30):
     '''Loads followers to a specified set of users.
@@ -117,11 +123,13 @@ def gather_data_loop(request_per_hour = 3600, users_to_add = 21, no_analyse=Fals
             if NO_ANALYSE:
                 tweets = th.get_all_statuses(user)
                 print "#####_NEW_USER_#####"
+                print user
                 for t in tweets:
                     try:
                         text = t.GetText()
                         print "#####_NEW_TWEET_#####"
                         print text
+                        print "#####_END_OF_TWEET_#####"
                     except UnicodeEncodeError:
                         continue
                 time.sleep(sleep_time)
@@ -155,7 +163,71 @@ def gather_data_loop(request_per_hour = 3600, users_to_add = 21, no_analyse=Fals
             print key + " was added"
             #for key in all_added_users[key]:
             #   print str(kkey) + ": " + all_added_users[key][kkey]
+
+            
+def scrape_from_file(filename):
+    ''' The main method which will ask for a file to read from, read it, analyse it and store it.
+    (Using other methods)'''
+    
+    print "Filename: " + filename
+
+    #Global variables
+    global SOLR_SERVER
+    global CONFIG
+        
+    #What file do you want to read from?
+    #file_path = getFile()
+    file = open(filename,'r')
+    
+    #Set the read variables:
+    current_user = ""
+    tweet_content = []
+    in_tweet = False
+    
+    #Setup the Solr server variable
+    solr_server = CONFIG.get_solr_server
+    sh = solr_server if isinstance(solr_server, StorageHandler) else StorageHandler(solr_server)
+    
+    #Start reading the file
+    for text in file.readline():
+        
+        if not "TwitterHelp.get_all_statuses():" in text:
+                        
+            #Look for a user and store the username in a variable:
+            if text == "#####_NEW_USER_#####":
+                current_user = file.readline()
+                
+                #Look for a new Tweet and read till new_user or new_tweet.
+            elif text == "#####_NEW_TWEET_#####":
+                in_tweet = True
+                    
+            #Look for the end of a Tweet
+            elif text == "#####_END_OF_TWEET_#####":
+                in_tweet = False
+                if tweet_content != []:
+                    #Analyse if there's any content
+                    (lovekeywords, hatekeywords) = addalyse(filter_analysis(analyse(tweet_content)))
+                    
+                    #Store into Solr
+                    #parameter 4 = 1, update everything on the next update
+                    #parameter 5 = 0, full update on next update
+                    sh.add_profile(current_user, lovekeywords, hatekeywords, 1, 0)
+                    
+                    #Debug print
+                    print "Username: " + current_user + " has the following content:\n" + tweet_content
+                    print "\n\n The following lovekeywords were found: \n" + lovekeywords
+                    print "\n\n The following hatekeywords were found: \n" + hatekeywords
+                            
+            #Store the content of a Tweet.
+            elif in_tweet:
+                if text != "":
+                    tweet_content.append(text)
+                                
+def getFile():
+    print "Enter the path to the file that you wish to read from:"
+    return sys.stdin.readline()
     
 
 if __name__ == "__main__":
     main()
+

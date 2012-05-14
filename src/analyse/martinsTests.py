@@ -11,7 +11,7 @@ Then replace non-features with "." and train an additional bayesian thing on the
 get_words_list2 # not tested enough
 
 2. if larger feature is a real feature and contains real smaller feature then only use the larger when classifying.
-get_significant_features # not tested enough
+get_significant_features_2 # also removes neutral features if there are other sentiments with emotions
 
 3. combine 1 and 2, and use very large features in 2 (can still use relatively small features in 1). 
 The combination of these two give the effect that it tries to find as large features as possible 
@@ -34,14 +34,9 @@ Special cases
 
 2. maybe use bayesian thing to find negating statements
 
-Muahaha!
-res=[]
-for x from listx also y from listy:
-        res.append(x*54+4*y)
-
 @author: mbernt
 '''
-import re
+#import re
 
 def get_words_list(sentence, num_words = 1,words_in_feature=3):
     '''Used to get all features/words up to the specified
@@ -64,11 +59,160 @@ def get_words_list(sentence, num_words = 1,words_in_feature=3):
         end=start + num_words
         while end <= len(words):
             # construct feature and strip commas from beginning and end
-            res.append(" ".join(words[start:end]).strip(","))
+            res.append(get_feature(words,start,end))#" ".join(words[start:end]).strip(","))
             start = start + 1
             end = start + num_words
         num_words = num_words + 1
     return res
+
+def get_words_list_2(sentence, num_words = 1,words_in_feature=3, allowed_features_dict=None):
+    '''Used to get all features/words up to the specified
+    words_in_feature. 
+    Ex. 
+    get_words_list("hej pa daj", 2)
+    gives 
+    ['hej', 'pa', 'daj', 'hej pa', 'pa daj']'''
+    # get words in sentence
+    words = get_words(sentence)# sentence.lower().split()
+    
+    # adjust so that the words_in_feature is less than 
+    # the number of words in the sentence
+    words_in_feature = min(words_in_feature, len(words))
+    res = []
+    # for each num_words
+    while num_words <= words_in_feature:
+        # add all features with num_words
+        start = 0
+        end=start + num_words
+        while end <= len(words):
+            # construct feature and strip commas from beginning and end
+            tmp=get_feature(words,start,end)#res.append(" ".join(words[start:end]).strip(","))
+            if allowed_features_dict == None or allowed_features_dict.has_key(tmp):
+                res.append(tmp)
+            start = start + 1
+            end = start + num_words
+        num_words = num_words + 1
+    return res
+
+def special_train(tweets, min_length=1, max_length=3, limit=0):
+    '''get latest version in sentiment!
+    trains a naive bayes and then takes the most informative features to make an allowed_features_dict.
+    A new bayes is trained but only with the allowed features,his is then returned. 
+    This will make the memory much smaller.
+    limit==0 means no limit.'''
+    # train with all features with the given min_length and max_length
+    training_list = [(word_true_dict(get_words_list(sentence,min_length,max_length)),sentiment) for (sentence,sentiment) in tweets]
+    trained_bayes = nltk.NaiveBayesClassifier.train(training_list)
+    
+    # 0 means no limit so return the result
+    if limit == 0:
+        return trained_bayes
+    
+    training_list=None # throw to pacman
+    
+    # get create a dictionary from the most informative features
+    allowed_dict={}.fromkeys([x for (x,y) in trained_bayes.most_informative_features(limit)])
+    
+    trained_bayes=None # throw to pacman
+    
+    #print "length of allowed_dict "+ str(len(allowed_dict))
+    
+    # train with only the most informative features with the given min_length and max_length
+    training_list = [(word_true_dict(get_words_list_2(sentence, min_length, max_length, allowed_dict)), sentiment) for (sentence, sentiment) in tweets]
+    return nltk.NaiveBayesClassifier.train(training_list)
+
+
+
+def pointy_train(tweets, min_length=1, max_length=3, new_min_length=1, new_max_length=3, limit=0):
+    '''Untested!
+    
+    similar to special train, but the retrain step uses pointyfied (non-features have been
+    replaced with '.') sentences. It is hoped that this will make the features much more
+    general so that it can for example recognize ". really like .".
+    Also there will be alot more features that are the same and therefore the feature length
+    (new_max_length) can be longer without taking as much memory. 
+    
+    Returns the pointified naive bayes classifier and the keep_dictionairy that is needed 
+    in get_significant_pointyfied_features_list when doing the analyse_sentiment.
+    These are returned as a tuple like this: (classifier, dictionary)
+    
+    tweets is a list of (sentence,sentiment) tuples.
+    length is how long features it will keep when replacing with '.'. 
+    limit is how many features it will use when rekognizing which features not to replace,
+    a lower value will avoid unecesary features, and will keep the returned dictionary smaller.
+    new_length is how long the new pointyfied features are gpoing to be. 
+    
+    example use:
+    train:
+    pointy_train(tweets, min_length=1, max_length=3, new_min_length=1, new_max_length=4, limit=0)#limit=0 means no limit
+    
+    analyse:
+    CLASSIFIER.classify(get_significant_pointyfied_features_list(sentence, keep_dict,trained_classifier, 
+    min_length=1, max_length=3, new_min_length=1, new_max_length=4))'''
+    
+    
+    # train with all features with the given min_length and max_length
+    training_list = [(word_true_dict(get_words_list(sentence,min_length,max_length)),sentiment) for (sentence,sentiment) in tweets]
+    trained_bayes = nltk.NaiveBayesClassifier.train(training_list)
+    
+    # 0 means no limit so return the result
+    if limit == 0:
+        return trained_bayes
+    
+    training_list=None # throw to pacman
+    
+    # get create a dictionary from the most informative features
+    keep_dict={}.fromkeys([x for (x,y) in trained_bayes.most_informative_features(limit)])
+    
+    trained_bayes=None # throw to pacman
+    
+    # train with those features not in keep_dict replaced with points
+    training_list = pointy_training_list(tweets, keep_dict, min_length, max_length, new_min_length,new_max_length)
+    #training_list =[(word_true_dict(get_pointyfied_features_list(sentence, keep_dict, min_length, max_length, new_min_length, new_max_length)), sentiment) 
+    #                 for (sentence, sentiment) in tweets]
+    return (nltk.NaiveBayesClassifier.train(training_list), keep_dict)
+
+def pointy_training_list(tweets, keep_dict, min_length=1, max_length=3, new_min_length=1,new_max_length=3):
+    ''''''
+    return [(word_true_dict(get_pointyfied_features_list(sentence, keep_dict, min_length, max_length, new_min_length, new_max_length)), sentiment) 
+                     for (sentence, sentiment) in tweets]
+
+def get_pointyfied_features_list(sentence, keep_dict, min_length=1, max_length=3, new_min_length=1,new_max_length=3):
+    '''returns pointyfied word_true_dict with features. It's used when training the naive bayes classifier.
+    This is a convenience method because there were so many methods in a row.'''
+    sentence=replace_non_keep_features(sentence, keep_dict, min_length, max_length)
+    return get_words_list(sentence, new_min_length, new_max_length) 
+
+def get_significant_pointyfied_features_list(sentence, keep_dict,trained_classifier, min_length=1, max_length=3, new_min_length=1, new_max_length=3):
+    '''returns pointyfied word_true_dict with features. It's used when anlysing a sentence.
+     This is a convenience method because there were so many methods in a row.
+     
+     length parameters must be the same as the ones used in training, or the same features won't 
+     be tested as the one that were used in training.'''
+    sentence=replace_non_keep_features(sentence, keep_dict, min_length, max_length)
+    return get_significant_features_2(sentence, trained_classifier, new_min_length, new_max_length)
+
+
+def classifier_contains(trained_classifier, dict_with_features):
+    '''Classifier is very stupid, so had to use this workaround.
+    It check if the classifier contains any of the feature in
+    dict_with_features
+    example: 
+    classifier_contains(CLASSIFIER,{}.fromkeys(["sibgvosdhgsubvofbhudgu","GdrhdFd"],True))
+    gives false, probably'''
+    
+    listx1=trained_classifier.prob_classify({})
+    listx2=listx1.samples()
+    
+    listy1=trained_classifier.prob_classify(dict_with_features)
+    listy2=listy1.samples()
+    
+    #listx1.prob(listx2[i])
+    # compare against default values, if there is a difference then the feature exist, probably
+    for booli in map((lambda x, y: listx1.prob(x) == listy1.prob(y)), listx2, listy2):
+        if not booli:
+            return True
+    return False
 
 def get_significant_features(sentence,features_dict, num_words = 1,words_in_feature=3):
     '''Can be used when classifying, so that "don't like" isn't affected by like.
@@ -139,29 +283,9 @@ def get_significant_features(sentence,features_dict, num_words = 1,words_in_feat
     #return only the words without the start indexes
     return [word for (x,y,word) in res]
 
-def classifier_contains_string(dict_with_feature, trained_classifier):
-    '''Classifier is very stupid, so had to use this workaround.'''
-    #print CLASSIFIER.classify({}.fromkeys(["Bisbhgkdfdagbsfkdbgsu"],True))
-    #print CLASSIFIER.probdist({}.fromkeys(["Bisbhgkdfdagbsfkdbgsu"],True))
-    #lol=CLASSIFIER.prob_classify({}.fromkeys(["sibgvosdhgsubvofbhudgu"],True))
-    #lol2=lol.samples()
-    #for lo in lol2:
-    #    print lol.prob(lo)
-    
-    listx1=trained_classifier.prob_classify({})
-    listx2=listx1.samples()
-    
-    listy1=trained_classifier.prob_classify(dict_with_feature)
-    listy2=listy1.samples()
-    
-    # compare against default values, if there is a difference then the feature exist, probably
-    for bool in map((lambda x, y: listx1.prob(x) == listy1.prob(y)), listx2, listy2):
-        if not bool:
-            return True
-    return False
-
 def get_significant_features_2(sentence, trained_classifier, num_words = 1, words_in_feature=3):
-    '''trained_classifier is a trained_classifier naive bayes classifier. This is used to check if the word
+    '''latest version in sentiment!
+    trained_classifier is a trained_classifier naive bayes classifier. This is used to check if the word
     has been classified and at the end to remove the neutral features from the result.'''
     # get words in sentence
     words = get_words(sentence)# sentence.lower().split()
@@ -169,33 +293,25 @@ def get_significant_features_2(sentence, trained_classifier, num_words = 1, word
     # adjust so that the words_in_feature is less than 
     # the number of words in the sentence
     words_in_feature = min(words_in_feature, len(words))
-    res = []
-    
-    # could place features in lists according to their 
-    # startindex so that it's faster to remove sub features
-    
-    
-    
-    print sentence
-    print len(trained_classifier)
+    accumilator = []
     
     tmp_dict={} 
     
     # for each num_words
     while num_words <= words_in_feature:
-        tmpList=[]
+        tmpList = []
         # add all features with num_words
         start = 0
         end=start + num_words
         while end <= len(words):
             # construct feature and strip commas from beginning and end
-            candidate_feature=" ".join(words[start:end]).strip(",")
+            candidate_feature = get_feature(words, start, end)# " ".join(words[start:end]).strip(",") #TODO: use get_feature here
             # only add features
             # TODO: check if this is the correct test to check if the word is in the 
             # trained_classifier classifier
             tmp_dict.clear()
-            tmp_dict[candidate_feature]=True
-            if classifier_contains_string(tmp_dict,trained_classifier):
+            tmp_dict[candidate_feature] = True
+            if classifier_contains(tmp_dict, trained_classifier):
                 print candidate_feature
                 # add the word and the index to tmpList
                 tmpList.append((start, end, candidate_feature))
@@ -204,44 +320,44 @@ def get_significant_features_2(sentence, trained_classifier, num_words = 1, word
         
          
         # remove if sub-feature
-        # warning! bad time complexity! O(len(res)*len(tmpList))
-        keepList=[]
-        if num_words>1:
-            for (i,j,word) in res:
-                add=True
-                for (i2,j2,word2) in tmpList:
+        # warning! bad time complexity! O(len(accumilator)*len(tmpList))
+        keepList = []
+        if num_words > 1:
+            for (i, j, word) in accumilator:
+                add = True
+                for (i2, j2, word2) in tmpList:
                     # must be in the same place to be a sub feature
-                    if i2<=i and j<=j2:
+                    if i2 <= i and j <= j2:
                         # must be in the larger feature to be a sub feature
-                        if word2.find(word)!=-1:
-                            # it's a sub feature so remove it from the result list
-                            add=False
-                            #res.remove((i,j,word))
+                        if word2.find(word) != -1:
+                            # it's a sub feature so remove it from the result res1
+                            add = False
+                            #accumilator.remove((i,j,word))
                 # is not a sub feature so keep it
                 if add:
-                    keepList.append((i,j,word))
-        res=keepList
+                    keepList.append((i, j, word))
+        accumilator = keepList
                             
-        res=res+tmpList
-        print res
+        accumilator= accumilator + tmpList
+        print accumilator
         # next number of words
         num_words = num_words + 1
 
-    # add non neutral words to the final res list (res2)
-    res2= []
-    list=[word for (x,y,word) in res]
-    for word in list:
+    # add non neutral words to res2
+    res1 = [word for (x, y, word) in accumilator]
+    res2 = []
+    for word in res1:
         tmp_dict.clear()
-        tmp_dict[candidate_feature]=True
-        if trained_classifier.classify(tmp_dict)!="neutral":
+        tmp_dict[candidate_feature] = True
+        if trained_classifier.classify(tmp_dict) != "neutral":
             res2.append(word)
     
-    # if contain no other than neutral return
-    # the list with neutral anyway
+    # if contain non neutral words, remove neutral
+    # else return list with neutral words.
     if len(res2)>0:        
         return res2
     else:
-        return list
+        return res1
             
     
 
@@ -262,16 +378,17 @@ def get_words(sentence):
     '''Split into list of words in lower case.'''
     return sentence.lower().split()#re.findall(re.compile(r"[a-z.0-9]+"), sentence.lower())
 
-def replace_nonfeatures(sentence, first_features_dict, num_words, words_in_feature,replace_with="."):
-    '''Takes a sentence and replaces all non_features with the replace string ".".
-    non_feastures is those "features" that aren't in the first_features_dict.
-    The first_features_dict is a dictionairy constructed from the features
-    found on a previous run of the bayesian thing, but that used all words as features.
+def replace_non_keep_features(sentence, keep_features_dict, num_words, words_in_feature, replace_with='.'):
+    '''Takes a sentence and replaces all non_keep_features with the replace string ".".
+    non_keep_features is those "features" that aren't in the keep_features_dict.
+    The keep_features_dict can be constructed from the features of a previous run of
+    the  naive bayes which used all features.
     
-    Can later be used if replacing non_features with "." and training on that data 
+    Can later be used if replacing non_features with "." and training on that data.
     '''
-    print first_features_dict
-    print sentence
+    #print keep_features_dict
+    #print sentence
+    
     # get words in sentence
     words = get_words(sentence)#sentence.lower().split()
     #print words
@@ -284,17 +401,19 @@ def replace_nonfeatures(sentence, first_features_dict, num_words, words_in_featu
     keeping = [False for ignore in words]
     #keeping = map((lambda x: False)  ,words)
 
-
-    # for each num_words
+    # this loop finds all features in the same way as get_words_list.
+    # If a feature is in keep_features_dict then all the indexes
+    # that the features cover are marked as true
     while num_words <= words_in_feature:
         # check if feature and set keeping to true if feature
         start = 0
         end=start + num_words
         while end <= len(words):
-            tmp=" ".join(words[start:end])
+            tmp=get_feature(words,start,end)#" ".join(words[start:end])
             #print tmp
-            if first_features_dict.has_key(tmp):
+            if keep_features_dict.has_key(tmp):
                 #print tmp
+                # go through words in feature and mark each as keeping[i]=True
                 i=start
                 while i<end:
                     keeping[i]=True
@@ -304,9 +423,13 @@ def replace_nonfeatures(sentence, first_features_dict, num_words, words_in_featu
         num_words = num_words + 1
     
     # replace with '.' those that are keeping==false
-    return " ".join(map((lambda word, keep: word if keep else replace_with)   ,words,keeping))
+    # then join the resulting list with spaces
+    return " ".join(map( (lambda word, keep: word if keep else replace_with) , words, keeping))
 
-def get_words_list2(sentence, 
+def get_feature(words,start,end):
+    return " ".join(words[start:end]).strip(",")
+
+def get_words_list_test(sentence, 
                   first_features_dict, num_words_in_dict = 1, words_in_feature_int_dict=3,
                   num_words= 1, words_in_feature=20):   
     '''Can only be used if you already has a list of features, in the form of a dictionary.
@@ -317,7 +440,7 @@ def get_words_list2(sentence,
     of possible features. 
     
     ex 
-    get_words_list2("I really like the wonderful mac-air",{}.fromkeys(["really","really like","wonderful"]))
+    get_words_list_test("I really like the wonderful mac-air",{}.fromkeys(["really","really like","wonderful"]))
     gives
     ['really', 'like', 'wonderful', '. really', 'really like', 'like .', '. wonderful', 'wonderful .',
     '. really like', 'really like .', 'like . wonderful', '. wonderful .', '. really like .',
@@ -330,7 +453,7 @@ def get_words_list2(sentence,
     '''
     #print get_words_list(sentence,num_words,words_in_feature)
     #print sentence
-    sentence=replace_nonfeatures(sentence, first_features_dict, num_words_in_dict, words_in_feature_int_dict)
+    sentence=replace_non_keep_features(sentence, first_features_dict, num_words_in_dict, words_in_feature_int_dict)
     print sentence
     #print sentence
     listy=get_words_list(sentence, num_words, words_in_feature)
@@ -349,7 +472,26 @@ def get_words_list2(sentence,
 
 dicti={}.fromkeys(["really","like","really like","wonderful"])
 
-#print replace_nonfeatures("I really like the wonderful mac-air",dicti,1,3)
+print replace_non_keep_features("I really like the wonderful mac-air computer",dicti,1,3)
 #print get_words_list2("I really like the wonderful mac-air",{}.fromkeys(["really","like","really like","wonderful"]))
 print get_significant_features("I really like the wonderful mac-air",{}.fromkeys(["really","like","really like","wonderful"]))
+
+#print ["hello","little","cat"]
+#print get_feature(["hello","little","cat"],0,2)
+
+sentence="I really like the wonderful mac-air computer"
+sentence2="It's wonderful what you have done with the new garden"
+
+tweet=(sentence,'positive')
+tweet2=(sentence2,'positive2')
+tweets=[tweet,tweet2]
+print "test get_words_list with sentence: "+sentence
+print get_words_list(sentence,1,3)
+print get_words_list_2(sentence,1,3,{}.fromkeys(get_words_list(sentence,1,3)))
+print word_true_dict(get_words_list(sentence,1,3))
+print len(word_true_dict(get_words_list(sentence,1,3)))
+
+print '************************testing pointified stuff'
+print get_pointyfied_features_list(sentence, dicti,1,3,1,140)
+print pointy_training_list(tweets,dicti,1,3,1,140)
 
