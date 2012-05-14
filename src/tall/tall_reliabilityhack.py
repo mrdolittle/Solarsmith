@@ -15,6 +15,8 @@ import urlparse
 
 import tallstore
 import configHandler
+import traceback
+import sys
 
 CONFIG = configHandler.Config()
 REQUEST_SERVER = CONFIG.get_request_server()
@@ -256,7 +258,14 @@ class RequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         # KLUDGE: by always reconnecting to Solr we can handle the connection to Solr going down
         # TODO: implement a nicer solution to this by reconnecting only when handling the exception raised when Solr is unreachable
-        tallstore.connect_to_solr() 
+        try:
+            tallstore.connect_to_solr()
+        except Exception:
+            sys.stderr.write("Unhandled exception when connecting to Solr:\n")
+            traceback.print_exc()
+            self._writetextheaders()
+            self.send_result(GENERICERROR)
+            return
         
         print self.requestline
         print self.path
@@ -322,7 +331,12 @@ class RequestHandler(BaseHTTPRequestHandler):
 if __name__ == "__main__":        
     # This is for starting the server.
     print "Connecting to Solr"
-    tallstore.connect_to_solr()
+    try:
+        tallstore.connect_to_solr()
+    except Exception as e:
+        sys.stderr.write("Connecting to Solr failed. Stacktrace:\n")
+        traceback.print_exc()
+        exit(2)
     serveraddr = ('', 8001)
     srvr = ThreadingServer(serveraddr, RequestHandler)
     print "Server started"
